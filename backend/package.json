@@ -1,21 +1,29 @@
 {
   "name": "backend",
+  "type": "module",
   "scripts": {
-    "dev": "bun run --hot src/index.ts",
-    "db:deploy": "bunx prisma migrate deploy",
-    "db:reset": "bunx prisma migrate reset",
-    "db:push": "bunx prisma db push"
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:workflow": "vitest tests/workflow.test.ts",
+    "test:api": "vitest tests/api.test.ts",
+    "test:user": "vitest tests/user.test.ts"
   },
   "dependencies": {
+    "@hono/node-server": "^1.14.3",
     "@hono/zod-validator": "^0.7.0",
-    "@prisma/client": "^6.8.2",
+    "@prisma/client": "6.8.2",
     "@types/bcrypt": "^5.0.2",
     "bcrypt": "^6.0.0",
     "hono": "^4.7.10",
     "zod": "^3.25.42"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "prisma": "^6.8.2"
+    "@types/node": "^20.11.17",
+    "prisma": "^6.8.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
   }
 }

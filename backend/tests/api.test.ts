@@ -1,6 +1,6 @@
-import { describe, expect, test, beforeAll, afterAll } from "bun:test";
-import { app } from "../src/index";
-import { PrismaClient } from "@prisma/index";
+import { describe, expect, test, beforeAll, afterAll } from "vitest";
+import { app } from "../src/index.js";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 

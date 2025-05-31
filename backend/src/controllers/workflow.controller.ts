@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { PrismaClient } from '@prisma/index'
+import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 const workflowRouter = new Hono()

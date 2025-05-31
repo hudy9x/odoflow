@@ -8,8 +8,6 @@ import { sign } from "hono/jwt";
 const prisma = new PrismaClient();
 const auth = new Hono();
 
-
-
 const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
@@ -72,6 +70,8 @@ const loginSchema = z.object({
 // Login endpoint
 auth.post("/login", zValidator("json", loginSchema), async (c) => {
   const { email, password } = c.req.valid("json");
+
+  console.log(email, password)
 
   try {
     // Find user

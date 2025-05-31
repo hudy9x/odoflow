@@ -1,3 +1,4 @@
+import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import testRouter from './controllers/test.controller'
@@ -31,10 +32,10 @@ app.route('/auth', authRouter)
 // Start the server only if not in test environment
 if (process.env.NODE_ENV !== 'test') {
   const port = 3003
-  Bun.serve({
+  serve({
     fetch: app.fetch,
-    port: port,
+    port: port
+  }, (info) => {
+    console.log(`Server is running on http://localhost:${info.port}`)
   })
-
-  console.log(`Bun server is running on http://localhost:${port}`)
 }
