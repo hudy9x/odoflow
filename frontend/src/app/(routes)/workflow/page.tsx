@@ -1,4 +1,6 @@
-export default function WorkflowPage(){
-    return <div>Workflow page</div>
+import WorkflowList from '@/app/features/Workflow/WorkflowList'
+
+export default function WorkflowPage() {
+  return <WorkflowList />
 }
     
