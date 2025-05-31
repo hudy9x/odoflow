@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "frontend": "cd frontend && bun run dev",
-    "backend": "cd backend && bun run dev",
-    "test": "cd backend && bun run test"
+    "frontend": "cd frontend && pnpm dev",
+    "backend": "cd backend && pnpm dev",
+    "test": "cd backend && pnpm test"
   },
   "keywords": [],
   "author": "",
