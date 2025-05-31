@@ -1,0 +1,73 @@
+# This version key is ignored by Docker Compose V2 and later,
+# but can be kept for compatibility with older Compose versions or for documentation.
+# For V2, you don't strictly need it.
+# version: '3.8' # Removed as per modern Docker Compose practices
+
+services:
+  postgres:
+    # Use 'postgres:16' for the latest stable major version of PostgreSQL.
+    # 'postgres:latest' would also work, but pinning to a major version (e.g., 16)
+    # is generally recommended for production to control major upgrades.
+    image: postgres:16
+    restart: always
+    environment:
+      # --- IMPORTANT: Change these values for your production environment ---
+      - POSTGRES_DB=odoflow
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=dainh4123
+      # -----------------------------------------------------------------
+    ports:
+      - "5432:5432" # Maps host port 5432 to container port 5432
+    networks:
+      - app-network # A custom network for your application services
+    healthcheck:
+      # Checks if PostgreSQL is ready to accept connections
+      test: ["CMD-SHELL", "pg_isready -U postgres -d odoflow"]
+      interval: 5s # Check every 5 seconds
+      timeout: 2s # Timeout after 2 seconds
+      retries: 20 # Retry up to 20 times before marking as unhealthy
+    volumes:
+      # Persist PostgreSQL data to a named volume
+      - postgres_data:/var/lib/postgresql/data
+    command: postgres -c listen_addresses='*' # Allows connections from other containers in the network
+    logging:
+      options:
+        max-size: "10m" # Max size of log file before rotation
+        max-file: "3" # Max number of rotated log files
+
+  redis:
+    # Use 'redis:7.2-alpine' for the latest stable version of Redis (7.2)
+    # on a lightweight Alpine Linux base.
+    # 'redis:latest' would also work, but 7.2-alpine is explicit and stable.
+    image: redis:7.2-alpine
+    restart: always
+    ports:
+      - "6378:6379" # Maps host port 6379 to container port 6379 (default Redis port)
+    networks:
+      - app-network
+    healthcheck:
+      # Checks if Redis is responsive
+      test: ["CMD-SHELL", "redis-cli ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    volumes:
+      # Persist Redis data to a named volume
+      - redis_data:/data
+    # Optional: Uncomment the line below if you want to enable AOF persistence for Redis.
+    # AOF provides better data durability than RDB snapshots in some scenarios.
+    # command: redis-server --appendonly yes
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# Define the custom network
+networks:
+  app-network:
+    # You can specify a driver if needed, e.g., 'driver: bridge', but it's often default
+
+# Define the named volumes for data persistence
+volumes:
+  postgres_data:
+  redis_data:
