@@ -1,11 +1,11 @@
 import { describe, expect, test, beforeAll, afterAll } from "bun:test";
 import { app } from "../src/index";
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "@prisma/index";
 
 const prisma = new PrismaClient();
 
 describe("API Endpoints Tests", () => {
-  let createdUserId: number;
+  let createdUserId: string;
 
   // Clean up after all tests
   afterAll(async () => {

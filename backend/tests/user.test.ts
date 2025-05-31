@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeAll, afterAll } from "bun:test";
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "@prisma/index";
 
 const prisma = new PrismaClient();
 
@@ -8,6 +8,7 @@ describe("User Model Tests", () => {
   const testUser = {
     email: "test@example.com",
     name: "Test User",
+    password: "testpassword123", // Adding required password field
   };
 
   // Clean up after all tests

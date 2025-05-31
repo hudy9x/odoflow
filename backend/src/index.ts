@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { PrismaClient } from './generated/prisma'
+import { PrismaClient } from '@prisma/index'
 
 export const app = new Hono()
 const prisma = new PrismaClient()
@@ -10,11 +10,13 @@ const testRouter = new Hono()
 // Create random user
 testRouter.post('/user', async (c) => {
   try {
-    const randomEmail = `user${Date.now()}@test.com`
+    const timestamp = Date.now()
+    const randomEmail = `user${timestamp}@test.com`
     const user = await prisma.user.create({
       data: {
         email: randomEmail,
-        name: `Test User ${Date.now()}`
+        name: `Test User ${timestamp}`,
+        password: `test${timestamp}` // Adding required password field
       }
     })
     return c.json({ success: true, user })
@@ -27,7 +29,7 @@ testRouter.post('/user', async (c) => {
 // Delete user by ID
 testRouter.delete('/user/:id', async (c) => {
   try {
-    const id = parseInt(c.req.param('id'))
+    const id = c.req.param('id') // UUID is a string
     const user = await prisma.user.delete({
       where: { id }
     })

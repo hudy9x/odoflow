@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "frontend": "cd frontend && bun run dev",
-    "backend": "cd backend && bun run dev"
+    "backend": "cd backend && bun run dev",
+    "test": "cd backend && bun run test"
   },
   "keywords": [],
   "author": "",
