@@ -7,8 +7,12 @@
     "db:push": "bunx prisma db push"
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.7.0",
     "@prisma/client": "^6.8.2",
-    "hono": "^4.7.10"
+    "@types/bcrypt": "^5.0.2",
+    "bcrypt": "^6.0.0",
+    "hono": "^4.7.10",
+    "zod": "^3.25.42"
   },
   "devDependencies": {
     "@types/bun": "latest",
