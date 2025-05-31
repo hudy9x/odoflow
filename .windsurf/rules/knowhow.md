@@ -1,5 +1,14 @@
 ---
-trigger: manual
+trigger: always_on
 ---
 
-nothing here
+Package manager is pnpm. And it has been installed already.
+
+## Regarding Frontend
+- it locates ./frontend
+- it uses next.js
+- it uses shadcn for ui components
+- it always define authentication pages in ./frontend/src/app/(auth) folder
+- it always define other pages in ./frontend/src/app/(routes) folder
+- it DOES NOT define logic inside page.tsx. But move the logic to ./frontend/src/app/features folder.
+- every requests to backend must be in ./frontend/src/app/services
