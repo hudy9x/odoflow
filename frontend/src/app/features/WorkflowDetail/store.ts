@@ -12,9 +12,11 @@ interface WorkflowState {
   updateNodes: (changes: NodeChange[]) => void
   updateEdges: (changes: EdgeChange[]) => void
   onConnect: (connection: Connection) => void
+  isLeafNode: (nodeId: string) => boolean
+  addConnectedNode: (sourceId: string, type: string) => void
 }
 
-export const useWorkflowStore = create<WorkflowState>((set) => ({
+export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   workflowId: null,
   nodes: [],
   edges: [],
@@ -83,6 +85,40 @@ export const useWorkflowStore = create<WorkflowState>((set) => ({
   onConnect: (connection) => {
     set((state) => ({
       edges: addEdge(connection, state.edges)
+    }))
+  },
+
+  isLeafNode: (nodeId: string) => {
+    const state = get()
+    return !state.edges.some((edge: Edge) => edge.source === nodeId)
+  },
+
+  addConnectedNode: (sourceId, type) => {
+    const state = get()
+    const sourceNode = state.nodes.find((n: Node) => n.id === sourceId)
+    if (!sourceNode) return
+
+    // Create new node positioned to the right of source node
+    const newNode = {
+      id: `${type}-${Math.random().toString(36).substr(2, 9)}`,
+      type,
+      position: {
+        x: sourceNode.position.x + 200, // 200px to the right
+        y: sourceNode.position.y, // Same Y level
+      },
+      data: {}
+    }
+
+    // Create edge connecting source to new node
+    const newEdge = {
+      id: `${sourceId}-${newNode.id}`,
+      source: sourceId,
+      target: newNode.id
+    }
+
+    set((state) => ({
+      nodes: [...state.nodes, newNode],
+      edges: [...state.edges, newEdge]
     }))
   }
 }))

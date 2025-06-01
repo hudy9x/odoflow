@@ -1,17 +1,22 @@
 import { Handle, Position } from '@xyflow/react';
-import { Badge } from "@/components/ui/badge"
+import { useWorkflowStore } from "../WorkflowDetail/store";
+import { NodeTypeSelect } from "./NodeTypeSelect";
 
 interface NodeBaseProps {
+  id?: string;
   title: string;
   description: string;
-  noEdges?: boolean;
   icon: React.ReactNode;
   badgeNumber?: number;
   onClick?: () => void;
   color: string;
+  noEdges?: boolean;
 }
 
-export function NodeBase({ title, description, noEdges, icon, badgeNumber, onClick, color }: NodeBaseProps) {
+export function NodeBase({ id, title, description, icon, onClick, color, noEdges }: NodeBaseProps) {
+  const { isLeafNode, addConnectedNode } = useWorkflowStore()
+  const isLeaf = id ? isLeafNode(id) : false
+
   return (
     <div 
       onClick={onClick}
@@ -37,6 +42,9 @@ export function NodeBase({ title, description, noEdges, icon, badgeNumber, onCli
         <div className="text-white w-12 h-12 flex items-center justify-center">
           {icon}
         </div>
+        {isLeaf && id && (
+          <NodeTypeSelect onSelect={(type) => addConnectedNode(id, type)} />
+        )}
       </div>
 
       {/* Node label */}
