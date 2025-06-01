@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { getWorkflow } from '@/app/services/workflow.service'
 import type { Workflow } from '@/types/workflow'
+import WorkflowNodes from './WorkflowNodes'
 
 export default function WorkflowDetail({ id }: { id: string }) {
   const router = useRouter()
@@ -73,7 +74,8 @@ export default function WorkflowDetail({ id }: { id: string }) {
   }
 
   return (
-    <div className="container mx-auto py-6 max-w-4xl">
+    <div className="fixed top-0 left-0 right-0 bottom-0 w-screen h-screen">
+      <div className='fixed top-4 left-4 z-50'>
       <Button
         variant="ghost"
         className="mb-4"
@@ -82,23 +84,10 @@ export default function WorkflowDetail({ id }: { id: string }) {
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Workflows
       </Button>
+      </div>
+     
+     <WorkflowNodes/>
 
-      <Card>
-        <CardHeader>
-        <CardTitle>{workflow.name}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {workflow.description && (
-          <p className="text-gray-600 mb-4">{workflow.description}</p>
-        )}
-        <div className="flex items-center gap-2">
-          <span className="font-semibold">Status:</span>
-          <span className={workflow.isActive ? 'text-green-600' : 'text-gray-600'}>
-            {workflow.isActive ? 'Active' : 'Inactive'}
-          </span>
-        </div>
-      </CardContent>
-    </Card>
     </div>
   )
 }
