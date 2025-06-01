@@ -16,12 +16,6 @@ interface WorkflowState {
   addConnectedNode: (sourceId: string, type: string) => void
 }
 
-const defaultEdgeStyle = {
-  stroke: '#d2d2d2',
-  strokeWidth: 4,
-  strokeDasharray: '5,5',
-}
-
 export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   workflowId: null,
   nodes: [],
@@ -90,7 +84,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
 
   onConnect: (connection) => {
     set((state) => ({
-      edges: addEdge({ ...connection, style: defaultEdgeStyle }, state.edges)
+      edges: addEdge({ ...connection }, state.edges)
     }))
   },
 
@@ -118,10 +112,8 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     // Create edge connecting source to new node
     const newEdge = {
       id: `${sourceId}-${newNode.id}`,
-      type:'straight',
       source: sourceId,
       target: newNode.id,
-      style: defaultEdgeStyle
     }
 
     set((state) => ({

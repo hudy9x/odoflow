@@ -17,6 +17,12 @@ const nodeTypes = {
   discord: NodeDiscord,
 };
 
+const defaultEdgeStyle = {
+  stroke: '#d2d2d2',
+  strokeWidth: 4,
+  strokeDasharray: '5,5',
+}
+
 export default function WorkflowNodes() {
   const { nodes, edges, updateNodes, updateEdges, onConnect } = useWorkflowStore();
 
@@ -43,6 +49,10 @@ export default function WorkflowNodes() {
         onEdgesChange={updateEdges}
         onConnect={onConnect}
         onNodeDragStop={handleNodeDrag}
+        defaultEdgeOptions={{
+          type: 'bezier',
+          style: defaultEdgeStyle
+        }}
         fitView
       >
         {/* <Controls /> */}
