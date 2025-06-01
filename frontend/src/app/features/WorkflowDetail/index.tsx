@@ -9,6 +9,7 @@ import { getWorkflow } from '@/app/services/workflow.service'
 import type { Workflow } from '@/types/workflow'
 import WorkflowNodes from './WorkflowNodes'
 import { useWorkflowStore } from './store'
+import WorkflowToolbar from './WorkflowToolbar'
 
 export default function WorkflowDetail({ id }: { id: string }) {
   const router = useRouter()
@@ -114,7 +115,7 @@ export default function WorkflowDetail({ id }: { id: string }) {
       </div>
      
      <WorkflowNodes/>
-
+     <WorkflowToolbar/>
     </div>
   )
 }

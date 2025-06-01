@@ -23,9 +23,19 @@ export const useWorkflowStore = create<WorkflowState>((set) => ({
 
   setInitialData: (nodes, edges) => set({ nodes, edges }),
 
-  addNode: (node) => set((state) => ({
-    nodes: [...state.nodes, node]
-  })),
+  addNode: (node) => set((state) => {
+    let newNodes = [...state.nodes]
+
+    // If this is the only node and it's a create node, remove it
+    if (newNodes.length === 1 && newNodes[0].type === 'create') {
+      newNodes = []
+    }
+
+    // Add the new node
+    newNodes.push(node)
+
+    return { nodes: newNodes }
+  }),
 
   removeNode: (nodeId) => set((state) => ({
     nodes: state.nodes.filter(n => n.id !== nodeId)

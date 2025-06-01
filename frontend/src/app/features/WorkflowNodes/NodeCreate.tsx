@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { memo, useState } from 'react';
 import { useWorkflowStore } from '../WorkflowDetail/store';
 
-export const NodeCreate = memo(({ id }: { id: string }) => {
-  const { addNode, removeNode, nodes } = useWorkflowStore();
+export const NodeCreate = memo(() => {
+  const { addNode } = useWorkflowStore();
   const [open, setOpen] = useState(false);
 
   const nodeTypes = [
@@ -26,11 +26,6 @@ export const NodeCreate = memo(({ id }: { id: string }) => {
       },
       data: {}
     };
-
-    // If this is the only node and it's a create node, remove it
-    if (nodes.length === 1 && nodes[0].type === 'create') {
-      removeNode(id);
-    }
 
     addNode(newNode);
     setOpen(false); // Close dialog after adding

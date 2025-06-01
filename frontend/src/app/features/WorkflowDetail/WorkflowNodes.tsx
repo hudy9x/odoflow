@@ -35,7 +35,7 @@ export default function WorkflowNodes() {
   }, [updateNodes]);
 
   return (
-    <div className="w-full h-[calc(100vh-4rem)]">
+    <div className="w-full h-full">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -46,9 +46,9 @@ export default function WorkflowNodes() {
         onNodeDragStop={handleNodeDrag}
         fitView
       >
-        <Controls />
+        {/* <Controls /> */}
         {/* <MiniMap /> */}
-        <Background color='#c3c3c3' variant={BackgroundVariant.Cross} gap={12} size={1} />
+        <Background variant={BackgroundVariant.Cross} gap={12} size={1} />
       </ReactFlow>
     </div>
   );

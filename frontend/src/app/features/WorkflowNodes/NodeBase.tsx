@@ -37,21 +37,12 @@ export function NodeBase({ title, description, noEdges, icon, badgeNumber, onCli
         <div className="text-white w-12 h-12 flex items-center justify-center">
           {icon}
         </div>
-        
-        {/* Notification badge */}
-        {badgeNumber !== undefined && (
-          <Badge 
-            className="absolute -top-2 -right-2 bg-red-500 text-white"
-          >
-            {badgeNumber}
-          </Badge>
-        )}
       </div>
 
       {/* Node label */}
-      <div className="mt-2 text-center">
+      <div className="mt-2 text-center absolute -bottom-1/2 left-0 w-full">
         <h3 className="font-medium text-sm">{title}</h3>
-        <p className="text-xs text-muted-foreground">{description}</p>
+        <p className="text-xs text-muted-foreground whitespace-nowrap">{description}</p>
       </div>
     </div>
   );
