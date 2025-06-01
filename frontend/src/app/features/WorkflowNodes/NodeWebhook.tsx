@@ -1,7 +1,7 @@
 import { Webhook } from 'lucide-react';
 import { NodeBase } from './NodeBase';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { memo } from 'react';
+import { NodeConfigPopover } from './NodeConfigPopover';
 
 interface NodeData {
   // Add webhook specific data fields here
@@ -16,25 +16,23 @@ export interface NodeProps {
 
 export const NodeWebhook = memo(({ id }: NodeProps) => {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <NodeConfigPopover
+      trigger={
         <div>
           <NodeBase
             id={id}
             title="Webhook"
-            description="Trigger events"
+            description="Receive a request"
             icon={<Webhook className="w-8 h-8" />}
-            color="#2563eb"
+            color="#0284C7"
+            badgeNumber={1}
           />
         </div>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Configure Webhook</DialogTitle>
-        </DialogHeader>
-        {/* Add webhook configuration form here */}
-      </DialogContent>
-    </Dialog>
+      }
+      title="Configure Webhook"
+    >
+      {/* Add Webhook configuration form here */}
+    </NodeConfigPopover>
   );
 });
 

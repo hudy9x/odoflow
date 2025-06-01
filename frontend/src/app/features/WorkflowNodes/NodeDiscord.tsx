@@ -1,7 +1,7 @@
 import { MessageSquare } from 'lucide-react';
 import { NodeBase } from './NodeBase';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { memo } from 'react';
+import { NodeConfigPopover } from './NodeConfigPopover';
 
 interface NodeData {
   // Add Discord specific data fields here
@@ -16,8 +16,8 @@ export interface NodeProps {
 
 export const NodeDiscord = memo(({ id }: NodeProps) => {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <NodeConfigPopover
+      trigger={
         <div>
           <NodeBase
             id={id}
@@ -28,14 +28,11 @@ export const NodeDiscord = memo(({ id }: NodeProps) => {
             badgeNumber={1}
           />
         </div>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Configure Discord Message</DialogTitle>
-        </DialogHeader>
-        {/* Add Discord configuration form here */}
-      </DialogContent>
-    </Dialog>
+      }
+      title="Configure Discord Message"
+    >
+      {/* Add Discord configuration form here */}
+    </NodeConfigPopover>
   );
 });
 

@@ -1,7 +1,7 @@
 import { Globe } from 'lucide-react';
 import { NodeBase } from './NodeBase';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { memo } from 'react';
+import { NodeConfigPopover } from './NodeConfigPopover';
 
 interface NodeData {
   // Add HTTP specific data fields here
@@ -17,8 +17,8 @@ export interface NodeProps {
 
 export const NodeHttp = memo(({ id }: NodeProps) => {
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <NodeConfigPopover
+      trigger={
         <div>
           <NodeBase
             id={id}
@@ -29,14 +29,11 @@ export const NodeHttp = memo(({ id }: NodeProps) => {
             badgeNumber={1}
           />
         </div>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Configure HTTP Request</DialogTitle>
-        </DialogHeader>
-        {/* Add HTTP configuration form here */}
-      </DialogContent>
-    </Dialog>
+      }
+      title="Configure HTTP Request"
+    >
+      {/* Add HTTP configuration form here */}
+    </NodeConfigPopover>
   );
 });
 

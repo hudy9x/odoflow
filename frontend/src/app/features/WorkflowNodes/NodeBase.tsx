@@ -25,18 +25,18 @@ export function NodeBase({ id, title, description, icon, onClick, color, noEdges
       {!noEdges && <Handle
         type="target"
         position={Position.Left}
-        className="!bg-muted-foreground"
+        className="!bg-gray-200 !w-6 !h-6 !rounded-full !border-2 !hover:bg-gray-300"
       />}
 
       {/* Output handle */}
       {!noEdges && <Handle
         type="source"
         position={Position.Right}
-        className="!bg-muted-foreground"
+        className="!bg-gray-200 !w-6 !h-6 !rounded-full !border-2 !hover:bg-gray-300"
       />}
 
       {/* Main node content */}
-      <div className={`relative rounded-full p-6 transition-all group-hover:shadow-lg`}
+      <div className={`relative rounded-[40px] border-4 border-white hover:border-gray-200/30 p-6 transition-all duration-200 shadow-lg`}
            style={{ backgroundColor: color }}>
         <div className="text-white w-12 h-12 flex items-center justify-center">
           {icon}
