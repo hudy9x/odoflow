@@ -1,6 +1,7 @@
 import { Handle, Position } from '@xyflow/react';
 import { useWorkflowStore } from "../WorkflowDetail/store";
 import { NodeTypeSelect } from "./NodeTypeSelect";
+import { NodeContextMenu } from "./NodeContextMenu";
 
 interface NodeBaseProps {
   id?: string;
@@ -17,11 +18,9 @@ export function NodeBase({ id, title, description, icon, onClick, color, noEdges
   const { isLeafNode, addConnectedNode } = useWorkflowStore()
   const isLeaf = id ? isLeafNode(id) : false
 
-  return (
-    <div 
-      onClick={onClick}
-      className="group relative cursor-pointer"
-    >
+  const content = (
+    <div className="group relative cursor-pointer" onClick={onClick}>
+
       {/* Input handle */}
       {!noEdges && <Handle
         type="target"
@@ -53,5 +52,11 @@ export function NodeBase({ id, title, description, icon, onClick, color, noEdges
         <p className="text-xs text-muted-foreground whitespace-nowrap">{description}</p>
       </div>
     </div>
-  );
+  )
+
+  return id ? (
+    <NodeContextMenu id={id}>
+      {content}
+    </NodeContextMenu>
+  ) : content;
 }
