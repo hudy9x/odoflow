@@ -8,11 +8,13 @@ import { ArrowLeft } from 'lucide-react'
 import { getWorkflow } from '@/app/services/workflow.service'
 import type { Workflow } from '@/types/workflow'
 import WorkflowNodes from './WorkflowNodes'
+import { useWorkflowStore } from './store'
 
 export default function WorkflowDetail({ id }: { id: string }) {
   const router = useRouter()
   const [workflow, setWorkflow] = useState<Workflow | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const { setWorkflowId, setInitialData } = useWorkflowStore()
 
   useEffect(() => {
     const fetchWorkflow = async () => {
@@ -20,6 +22,31 @@ export default function WorkflowDetail({ id }: { id: string }) {
         const response = await getWorkflow(id)
         if (response.success) {
           setWorkflow(response.workflow)
+          setWorkflowId(id)
+
+          // Transform backend nodes to React Flow format or create initial node
+          const initialNodes = response.workflow.nodes?.length ? 
+            response.workflow.nodes.map(node => ({
+              id: node.id,
+              type: node.type,
+              position: { x: node.positionX, y: node.positionY },
+              data: node.data || {}
+            })) : 
+            [{
+              id: `create-${Math.random().toString(36).substr(2, 9)}`,
+              type: 'create',
+              position: { x: 250, y: 200 },
+              data: {}
+            }]
+
+          // Transform edges to React Flow format
+          const initialEdges = (response.workflow.edges || []).map(edge => ({
+            id: edge.id,
+            source: edge.sourceId,
+            target: edge.targetId
+          }))
+
+          setInitialData(initialNodes, initialEdges)
         } else {
           setError(response.error || 'Failed to load workflow')
         }
@@ -29,7 +56,7 @@ export default function WorkflowDetail({ id }: { id: string }) {
     }
 
     fetchWorkflow()
-  }, [id])
+  }, [id, setWorkflowId, setInitialData])
 
   if (error) {
     return (

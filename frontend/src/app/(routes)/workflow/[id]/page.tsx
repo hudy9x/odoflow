@@ -1,5 +1,13 @@
 import WorkflowDetail from '@/app/features/WorkflowDetail'
 
-export default function WorkflowDetailPage({ params }: { params: { id: string } }) {
-  return <WorkflowDetail id={params.id} />
+interface Props {
+  params: {
+    id: string
+  }
+}
+
+export default async function WorkflowDetailPage({ params }: Props) {
+  // Ensure params are resolved before rendering
+  const { id } = await Promise.resolve(params)
+  return <WorkflowDetail id={id} />
 }

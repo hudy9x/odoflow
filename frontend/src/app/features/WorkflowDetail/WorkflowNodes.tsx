@@ -3,19 +3,14 @@ import {
   ReactFlow,
   Controls,
   Background,
-  useNodesState,
-  useEdgesState,
-  addEdge,
-  Node,
-  Edge,
-  Connection,
   BackgroundVariant,
+  OnNodesChange,
+  Node,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-
+import { useWorkflowStore } from './store';
 import { NodeCreate, NodeWebhook, NodeHttp, NodeDiscord } from '../WorkflowNodes/CustomNodes';
 
-// Define node types for React Flow
 const nodeTypes = {
   create: NodeCreate,
   webhook: NodeWebhook,
@@ -23,44 +18,21 @@ const nodeTypes = {
   discord: NodeDiscord,
 };
 
-// Initial node is just a create node
-const initialNodes: Node[] = [
-  {
-    id: 'create-1',
-    type: 'create',
-    position: { x: 250, y: 200 },
-    data: {},
-  },
-  {
-    id: 'create-2',
-    type: 'webhook',
-    position: { x: 550, y: 200 },
-    data: {},
-  },
-  {
-    id: 'create-3',
-    type: 'http',
-    position: { x: 650, y: 200 },
-    data: {},
-  },
-  {
-    id: 'create-4',
-    type: 'discord',
-    position: { x: 750, y: 200 },
-    data: {},
-  },
-];
-
-const initialEdges: Edge[] = [];
-
 export default function WorkflowNodes() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const { nodes, edges, updateNodes, updateEdges, onConnect } = useWorkflowStore();
 
-  const onConnect = useCallback(
-    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges],
-  );
+  const handleNodesChange: OnNodesChange = useCallback((changes) => {
+    updateNodes(changes);
+  }, [updateNodes]);
+
+  const handleNodeDrag = useCallback((_: React.MouseEvent, node: Node) => {
+    // Update node position in store
+    updateNodes([{
+      id: node.id,
+      type: 'position',
+      position: node.position,
+    }]);
+  }, [updateNodes]);
 
   return (
     <div className="w-full h-[calc(100vh-4rem)]">
@@ -68,9 +40,10 @@ export default function WorkflowNodes() {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        onNodesChange={handleNodesChange}
+        onEdgesChange={updateEdges}
         onConnect={onConnect}
+        onNodeDragStop={handleNodeDrag}
         fitView
       >
         <Controls />
