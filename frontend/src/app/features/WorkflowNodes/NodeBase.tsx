@@ -25,14 +25,14 @@ export function NodeBase({ id, title, description, icon, onClick, color, noEdges
       {!noEdges && <Handle
         type="target"
         position={Position.Left}
-        className="!bg-gray-200 !w-6 !h-6 !rounded-full !border-2 !hover:bg-gray-300"
+        className="!bg-gray-200 !w-6 !h-6 !rounded-full !border-2 !hover:bg-gray-300 !-z-20"
       />}
 
       {/* Output handle */}
       {!noEdges && <Handle
         type="source"
         position={Position.Right}
-        className="!bg-gray-200 !w-6 !h-6 !rounded-full !border-2 !hover:bg-gray-300"
+        className="!bg-gray-200 !w-6 !h-6 !rounded-full !border-2 !hover:bg-gray-300 !-z-20"
       />}
 
       {/* Main node content */}
@@ -42,7 +42,7 @@ export function NodeBase({ id, title, description, icon, onClick, color, noEdges
           {icon}
         </div>
         {isLeaf && id && (
-          <NodeTypeSelect onSelect={(type) => addConnectedNode(id, type)} />
+          <NodeTypeSelect color={color} onSelect={(type) => addConnectedNode(id, type)} />
         )}
       </div>
 
