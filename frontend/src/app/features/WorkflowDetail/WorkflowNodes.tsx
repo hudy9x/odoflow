@@ -47,7 +47,7 @@ export default function WorkflowNodes() {
       >
         {/* <Controls /> */}
         {/* <MiniMap /> */}
-        <Background variant={BackgroundVariant.Cross} gap={12} size={1} />
+        <Background variant={BackgroundVariant.Cross} gap={12} size={1.5} />
       </ReactFlow>
     </div>
   );

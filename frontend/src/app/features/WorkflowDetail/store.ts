@@ -118,6 +118,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     // Create edge connecting source to new node
     const newEdge = {
       id: `${sourceId}-${newNode.id}`,
+      type:'straight',
       source: sourceId,
       target: newNode.id,
       style: defaultEdgeStyle
