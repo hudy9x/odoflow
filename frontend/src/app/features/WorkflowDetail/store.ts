@@ -101,7 +101,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
 
     // Create new node positioned to the right of source node
     const newNode = {
-      id: generateId(),
+      id: generateId('node'),
       type,
       position: {
         x: sourceNode.position.x + 200, // 200px to the right

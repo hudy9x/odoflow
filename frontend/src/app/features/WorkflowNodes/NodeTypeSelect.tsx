@@ -47,7 +47,7 @@ export function NodeTypeSelect({ nodeId, color = '#fff' }: Props) {
           <Plus className="!h-3 !w-3 text-white translate-x-1.5 group-hover/node-type:translate-x-0.5 transition-all" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-48 p-2" align="start">
+      <PopoverContent className="w-72 p-2" align="start">
         <div className="space-y-1">
           {nodeTypes.map((node) => (
             <Button
@@ -61,7 +61,7 @@ export function NodeTypeSelect({ nodeId, color = '#fff' }: Props) {
               }}
             >
               {node.icon}
-              <div className="flex flex-col items-start">
+              <div className="flex justify-between items-center w-full">
                 <span className="text-sm font-medium">{node.title}</span>
                 <span className="text-xs text-muted-foreground">{node.description}</span>
               </div>

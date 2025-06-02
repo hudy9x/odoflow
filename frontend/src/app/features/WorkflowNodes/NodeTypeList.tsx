@@ -19,7 +19,7 @@ export const NodeTypeList = memo(({ onAdd }: NodeTypeListProps) => {
   const handleAddNode = (type: string) => {
     // Create a new node with a unique ID and random position offset
     const newNode = {
-      id: generateId(),
+      id: generateId('node'),
       type,
       position: {
         x: Math.random() * 100 + 300, // Random X between 300-400
