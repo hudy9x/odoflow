@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { Node, Edge, NodeChange, EdgeChange, Connection, addEdge } from '@xyflow/react'
-import { createNode, deleteNode } from '@/app/services/node.service'
+import { createNode, deleteNode, createEdge } from '@/app/services/node.service'
 
 interface WorkflowState {
   workflowId: string | null
@@ -124,11 +124,39 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
 
   // onConnect means user hold a handle and drag to connect to another node
   // so it will create a new edge between 2 nodes
-  onConnect: (connection) => {
+  onConnect: async (connection) => {
     console.log('on connect', connection)
+    const state = get()
+    const workflowId = state.workflowId
+    
+    if (!workflowId) {
+      console.error('No workflow ID available')
+      return
+    }
+
+    // Update UI state immediately
+    const oldEdges = state.edges
     set((state) => ({
       edges: addEdge({ ...connection }, state.edges)
     }))
+
+    try {
+      const response = await createEdge({
+        workflowId,
+        sourceId: connection.source,
+        targetId: connection.target
+      })
+
+      if (!response.success) {
+        // Revert state if API call fails
+        console.error('Failed to create edge:', response.error)
+        set(() => ({ edges: oldEdges }))
+      }
+    } catch (error) {
+      // Revert state on error
+      console.error('Error creating edge:', error)
+      set(() => ({ edges: oldEdges }))
+    }
   },
 
   isLeafNode: (nodeId: string) => {

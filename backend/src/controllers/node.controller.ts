@@ -124,4 +124,81 @@ nodeRouter.delete('/:nodeId', async (c: AuthContext) => {
   }
 })
 
+// Create a new edge
+nodeRouter.post('/edge', async (c: AuthContext) => {
+  try {
+    const body = await c.req.json() as {
+      workflowId: string
+      sourceId: string
+      targetId: string
+    }
+    const userId = c.user!.userId
+
+    // Verify workflow exists and belongs to user
+    const workflow = await prisma.workflow.findUnique({
+      where: { id: body.workflowId }
+    })
+
+    if (!workflow) {
+      return c.json({ success: false, error: 'Workflow not found' }, 404)
+    }
+
+    if (workflow.userId !== userId) {
+      return c.json({ success: false, error: 'Unauthorized' }, 403)
+    }
+
+    const edge = await prisma.workflowEdge.create({
+      data: {
+        workflowId: body.workflowId,
+        sourceId: body.sourceId,
+        targetId: body.targetId
+      }
+    })
+
+    return c.json({ success: true, edge })
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    return c.json({ success: false, error: errorMessage }, 500)
+  }
+})
+
+// Update node's position
+nodeRouter.put('/position', async (c: AuthContext) => {
+  try {
+    const body = await c.req.json() as {
+      workflowId: string
+      nodeId: string
+      positionX: number
+      positionY: number
+    }
+    const userId = c.user!.userId
+
+    // Verify workflow exists and belongs to user
+    const workflow = await prisma.workflow.findUnique({
+      where: { id: body.workflowId }
+    })
+
+    if (!workflow) {
+      return c.json({ success: false, error: 'Workflow not found' }, 404)
+    }
+
+    if (workflow.userId !== userId) {
+      return c.json({ success: false, error: 'Unauthorized' }, 403)
+    }
+
+    const node = await prisma.workflowNode.update({
+      where: { id: body.nodeId },
+      data: {
+        positionX: body.positionX,
+        positionY: body.positionY
+      }
+    })
+
+    return c.json({ success: true, node })
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    return c.json({ success: false, error: errorMessage }, 500)
+  }
+})
+
 export default nodeRouter

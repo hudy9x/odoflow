@@ -30,3 +30,17 @@ export const createNode = async (params: CreateNodeParams): Promise<NodeApiRespo
 export const deleteNode = async (nodeId: string): Promise<DeleteNodeApiResponse> => {
   return del(`/node/${nodeId}`)
 }
+
+type CreateEdgeParams = {
+  workflowId: string
+  sourceId: string
+  targetId: string
+}
+
+type EdgeApiResponse = ApiResponse<{
+  edge: WorkflowEdge
+}>
+
+export const createEdge = async (params: CreateEdgeParams): Promise<EdgeApiResponse> => {
+  return post('/node/edge', params)
+}
