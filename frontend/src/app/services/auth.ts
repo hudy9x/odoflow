@@ -46,5 +46,8 @@ export const login = async (email: string, password: string): Promise<AuthRespon
     throw new Error(data.message || 'Login failed');
   }
 
+  // Save auth data to localStorage
+  localStorage.setItem('auth', JSON.stringify(data));
+
   return data;
 };
