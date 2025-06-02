@@ -1,6 +1,32 @@
 import { create } from 'zustand'
 import { Node, Edge, NodeChange, EdgeChange, Connection, addEdge } from '@xyflow/react'
-import { createNode, deleteNode, createEdge } from '@/app/services/node.service'
+import { createNode, deleteNode, createEdge, updateNodePosition } from '@/app/services/node.service'
+import { debounce } from '@/lib/utils'
+import { toast } from 'sonner'
+
+const debouncedUpdatePosition = debounce(async (workflowId: string | null, nodeId: string, x: number, y: number) => {
+  if (!workflowId) {
+    console.error('No workflow ID available')
+    return
+  }
+
+  try {
+    const response = await updateNodePosition({
+      workflowId,
+      nodeId,
+      positionX: x,
+      positionY: y
+    })
+
+    if (!response.success) {
+      console.error('Failed to update node position:', response.error)
+    }
+
+    toast.success("Node position updated");
+  } catch (error) {
+    console.error('Error updating node position:', error)
+  }
+}, 1000) // 1 second debounce
 
 interface WorkflowState {
   workflowId: string | null
@@ -93,6 +119,8 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
               ...nextNodes[nodeIndex],
               position: change.position
             }
+            // Trigger debounced position update
+            debouncedUpdatePosition(get().workflowId, change.id, change.position.x, change.position.y)
           }
         } else if (change.type === 'remove') {
           const nodeIndex = nextNodes.findIndex((n) => n.id === change.id)
@@ -150,7 +178,10 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
       if (!response.success) {
         // Revert state if API call fails
         console.error('Failed to create edge:', response.error)
+        toast.error('Failed to create connection')
         set(() => ({ edges: oldEdges }))
+      } else {
+        toast.success('Connection created successfully')
       }
     } catch (error) {
       // Revert state on error
@@ -207,9 +238,11 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
           nodes: [...state.nodes, newNode],
           edges: [...state.edges, newEdge]
         }))
+        toast.success('Node added successfully')
       }
     } catch (error) {
       console.error('Failed to create connected node:', error)
+      toast.error('Failed to add node')
     }
   }
 }))

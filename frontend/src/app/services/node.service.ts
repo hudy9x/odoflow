@@ -1,5 +1,5 @@
 import { WorkflowNode, WorkflowEdge } from '@/types/workflow'
-import { post, del, ApiResponse } from './api.service'
+import { post, del, ApiResponse, put } from './api.service'
 
 type NodeApiResponse = ApiResponse<{
   node: WorkflowNode
@@ -43,4 +43,19 @@ type EdgeApiResponse = ApiResponse<{
 
 export const createEdge = async (params: CreateEdgeParams): Promise<EdgeApiResponse> => {
   return post('/node/edge', params)
+}
+
+type UpdateNodePositionParams = {
+  workflowId: string
+  nodeId: string
+  positionX: number
+  positionY: number
+}
+
+type UpdateNodePositionResponse = ApiResponse<{
+  node: WorkflowNode
+}>
+
+export const updateNodePosition = async (params: UpdateNodePositionParams): Promise<UpdateNodePositionResponse> => {
+  return put('/node/position', params)
 }
