@@ -1,39 +1,15 @@
 import { Plus } from 'lucide-react';
 import { NodeBase } from './NodeBase';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog"
-import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { memo, useState } from 'react';
-import { useWorkflowStore } from '../WorkflowDetail/store';
+import { NodeTypeList } from './NodeTypeList';
 
 export const NodeCreate = memo(() => {
-  const { addNode } = useWorkflowStore();
   const [open, setOpen] = useState(false);
 
-  const nodeTypes = [
-    { type: 'webhook', title: 'Webhook', description: 'Custom webhook' },
-    { type: 'http', title: 'HTTP', description: 'Make a request' },
-    { type: 'discord', title: 'Discord', description: 'Send a Message' },
-  ];
-
-  const handleAddNode = (type: string) => {
-    // Create a new node with a unique ID and random position offset from the create node
-    const newNode = {
-      id: `${type}-${Math.random().toString(36).substr(2, 9)}`,
-      type,
-      position: {
-        x: Math.random() * 100 + 300, // Random X between 300-400
-        y: Math.random() * 100 + 100, // Random Y between 100-200
-      },
-      data: {}
-    };
-
-    addNode(newNode);
-    setOpen(false); // Close dialog after adding
-  };
-
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
         <div>
           <NodeBase
             noEdges={true}
@@ -43,28 +19,11 @@ export const NodeCreate = memo(() => {
             color="#4B5563"
           />
         </div>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Select Node Type</DialogTitle>
-          <DialogDescription>
-            Choose a node type to add to your workflow
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          {nodeTypes.map((node) => (
-            <Button
-              key={node.type}
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => handleAddNode(node.type)}
-            >
-              {node.title} - {node.description}
-            </Button>
-          ))}
-        </div>
-      </DialogContent>
-    </Dialog>
+      </PopoverTrigger>
+      <PopoverContent className="p-2" align="start">
+        <NodeTypeList onAdd={() => setOpen(false)} />
+      </PopoverContent>
+    </Popover>
   );
 });
 

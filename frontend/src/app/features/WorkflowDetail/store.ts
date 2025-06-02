@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { Node, Edge, NodeChange, EdgeChange, Connection, addEdge } from '@xyflow/react'
+import { generateId } from '@/lib/utils'
 
 interface WorkflowState {
   workflowId: string | null
@@ -100,7 +101,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
 
     // Create new node positioned to the right of source node
     const newNode = {
-      id: `${type}-${Math.random().toString(36).substr(2, 9)}`,
+      id: generateId(),
       type,
       position: {
         x: sourceNode.position.x + 200, // 200px to the right

@@ -1,9 +1,10 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { Globe, MessageSquare, Plus, Webhook } from "lucide-react"
+import { useWorkflowStore } from "../WorkflowDetail/store"
 
 interface Props {
-  onSelect: (type: string) => void
+  nodeId: string
   color?: string
 }
 
@@ -28,7 +29,11 @@ const nodeTypes = [
   }
 ]
 
-export function NodeTypeSelect({ onSelect, color = '#fff' }: Props) {
+export function NodeTypeSelect({ nodeId, color = '#fff' }: Props) {
+  const { isLeafNode, addConnectedNode } = useWorkflowStore()
+  const isLeaf = isLeafNode(nodeId)
+
+  if (!isLeaf) return null
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -36,10 +41,10 @@ export function NodeTypeSelect({ onSelect, color = '#fff' }: Props) {
           variant="ghost"
           size="icon"
           style={{backgroundColor: color}}
-          className="absolute -right-4 top-1/2 -translate-y-1/2 h-6 w-6 rounded-lg shadow-md -z-10 group opacity-80 hover:opacity-100 hover:darken-40 hover:translate-x-1 cursor-pointer"
+          className="absolute -right-4 top-1/2 -translate-y-1/2 h-6 w-6 rounded-lg shadow-md -z-10 group/node-type opacity-80 hover:opacity-100 hover:darken-40 hover:translate-x-1 cursor-pointer"
           onClick={(e) => e.stopPropagation()}
         >
-          <Plus className="!h-3 !w-3 text-white translate-x-1.5 group-hover:translate-x-0.5 transition-all" />
+          <Plus className="!h-3 !w-3 text-white translate-x-1.5 group-hover/node-type:translate-x-0.5 transition-all" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-48 p-2" align="start">
@@ -52,7 +57,7 @@ export function NodeTypeSelect({ onSelect, color = '#fff' }: Props) {
               className="w-full justify-start gap-2"
               onClick={(e) => {
                 e.stopPropagation()
-                onSelect(node.type)
+                addConnectedNode(nodeId, node.type)
               }}
             >
               {node.icon}

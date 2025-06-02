@@ -9,7 +9,7 @@ import { getWorkflow } from '@/app/services/workflow.service'
 import type { Workflow } from '@/types/workflow'
 import WorkflowNodes from './WorkflowNodes'
 import { useWorkflowStore } from './store'
-import WorkflowToolbar from './WorkflowToolbar'
+import WorkflowToolbar from '@/app/features/WorkflowDetailToolbar'
 
 export default function WorkflowDetail({ id }: { id: string }) {
   const router = useRouter()
