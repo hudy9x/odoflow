@@ -5,6 +5,7 @@ import testRouter from './controllers/test.controller.js'
 import benchmarkRouter from './controllers/benchmark.controller.js'
 import workflowRouter from './controllers/workflow.controller.js'
 import authRouter from './controllers/auth.controller.js'
+import nodeRouter from './controllers/node.controller.js'
 
 export const app = new Hono()
 
@@ -28,6 +29,7 @@ app.route('/api/test', testRouter)
 app.route('/api/benchmark', benchmarkRouter)
 app.route('/api/workflow', workflowRouter)
 app.route('/api/auth', authRouter)
+app.route('/api/node', nodeRouter)
 
 // Start the server only if not in test environment
 if (process.env.NODE_ENV !== 'test') {

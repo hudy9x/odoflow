@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { Node, Edge, NodeChange, EdgeChange, Connection, addEdge } from '@xyflow/react'
-import { generateId } from '@/lib/utils'
+import { createNode, deleteNode } from '@/app/services/node.service'
 
 interface WorkflowState {
   workflowId: string | null
@@ -26,27 +26,64 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
 
   setInitialData: (nodes, edges) => set({ nodes, edges }),
 
-  addNode: (node) => set((state) => {
-    let newNodes = [...state.nodes]
+  addNode: async (node: Node) => {
+    const state = get()
+    if (!state.workflowId) return
 
-    // If this is the only node and it's a create node, remove it
-    if (newNodes.length === 1 && newNodes[0].type === 'create') {
-      newNodes = []
+    try {
+      // Create node in the database
+      const response = await createNode({
+        workflowId: state.workflowId,
+        type: node.type || 'default',
+        name: node.type || 'default', // Using type as name for now
+        positionX: Math.round(node.position.x),
+        positionY: Math.round(node.position.y),
+        data: node.data as Record<string, unknown>
+      })
+
+      if (response.success) {
+        set((state) => {
+          let newNodes = [...state.nodes]
+
+          // If this is the only node and it's a create node, remove it
+          if (newNodes.length === 1 && newNodes[0].type === 'create') {
+            newNodes = []
+          }
+
+          // Add the new node with database ID
+          newNodes.push({
+            ...node,
+            id: response.node.id // Use the database ID
+          })
+
+          return { nodes: newNodes }
+        })
+      }
+    } catch (error) {
+      console.error('Failed to create node:', error)
     }
+  },
 
-    // Add the new node
-    newNodes.push(node)
-
-    return { nodes: newNodes }
-  }),
-
-  removeNode: (nodeId) => set((state) => ({
-    nodes: state.nodes.filter(n => n.id !== nodeId)
-  })),
+  removeNode: async (nodeId: string) => {
+    try {
+      const response = await deleteNode(nodeId)
+      
+      if (response.success) {
+        set((state) => ({
+          nodes: state.nodes.filter(n => n.id !== nodeId),
+          // Also remove any edges connected to this node
+          edges: state.edges.filter(e => e.source !== nodeId && e.target !== nodeId)
+        }))
+      }
+    } catch (error) {
+      console.error('Failed to delete node:', error)
+    }
+  },
 
   updateNodes: (changes) => {
     set((state) => {
       const nextNodes = [...state.nodes]
+      console.log('update nodes', changes)
       changes.forEach((change) => {
         // Handle different types of changes (position, removal, etc)
         if (change.type === 'position' && change.position) {
@@ -64,6 +101,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
           }
         }
       })
+      console.log('update nodes')
       return { nodes: nextNodes }
     })
   },
@@ -79,11 +117,15 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
           }
         }
       })
+      console.log('udpate edges')
       return { edges: nextEdges }
     })
   },
 
+  // onConnect means user hold a handle and drag to connect to another node
+  // so it will create a new edge between 2 nodes
   onConnect: (connection) => {
+    console.log('on connect', connection)
     set((state) => ({
       edges: addEdge({ ...connection }, state.edges)
     }))
@@ -94,32 +136,52 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     return !state.edges.some((edge: Edge) => edge.source === nodeId)
   },
 
-  addConnectedNode: (sourceId, type) => {
+  addConnectedNode: async (sourceId: string, type: string) => {
     const state = get()
+    if (!state.workflowId) return
+
     const sourceNode = state.nodes.find((n: Node) => n.id === sourceId)
     if (!sourceNode) return
 
-    // Create new node positioned to the right of source node
-    const newNode = {
-      id: generateId('node'),
-      type,
-      position: {
-        x: sourceNode.position.x + 200, // 200px to the right
-        y: sourceNode.position.y, // Same Y level
-      },
-      data: {}
-    }
+    try {
+      // Create new node with edge in the database
+      const response = await createNode({
+        workflowId: state.workflowId,
+        type: type || 'default',
+        name: type || 'default',
+        positionX: Math.round(sourceNode.position.x + 200), // 200px to the right
+        positionY: Math.round(sourceNode.position.y), // Same Y level
+        data: {},
+        edge: {
+          sourceId // This will connect back to the source node
+        }
+      })
 
-    // Create edge connecting source to new node
-    const newEdge = {
-      id: `${sourceId}-${newNode.id}`,
-      source: sourceId,
-      target: newNode.id,
-    }
+      if (response.success && response.node) {
+        // Add node and edge to local state
+        const newNode = {
+          id: response.node.id,
+          type,
+          position: {
+            x: sourceNode.position.x + 200,
+            y: sourceNode.position.y,
+          },
+          data: {}
+        }
 
-    set((state) => ({
-      nodes: [...state.nodes, newNode],
-      edges: [...state.edges, newEdge]
-    }))
+        const newEdge = {
+          id: response.edge?.id || `${sourceId}-${newNode.id}`,
+          source: sourceId,
+          target: newNode.id,
+        }
+
+        set((state) => ({
+          nodes: [...state.nodes, newNode],
+          edges: [...state.edges, newEdge]
+        }))
+      }
+    } catch (error) {
+      console.error('Failed to create connected node:', error)
+    }
   }
 }))
