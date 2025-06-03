@@ -8,14 +8,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useWorkflowStore } from './store';
-import { NodeCreate, NodeWebhook, NodeHttp, NodeDiscord } from '../WorkflowNodes/CustomNodes';
-
-const nodeTypes = {
-  create: NodeCreate,
-  webhook: NodeWebhook,
-  http: NodeHttp,
-  discord: NodeDiscord,
-};
+import { nodeTypes } from '../WorkflowNodes';
 
 const defaultEdgeStyle = {
   stroke: '#d2d2d2',
