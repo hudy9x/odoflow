@@ -62,10 +62,10 @@ export default function WorkflowList() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto max-w-4xl px-4">
+    <div className="min-h-screen bg-gray-50 py-[150px]">
+      <div className="container mx-auto max-w-2xl px-4">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-semibold">Workflow</h1>
+          <h1 className="text-2xl font-semibold">Workflows</h1>
           <Button onClick={handleCreateWorkflow}>Add workflow</Button>
         </div>
         

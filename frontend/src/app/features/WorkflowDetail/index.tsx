@@ -10,6 +10,7 @@ import type { Workflow } from '@/types/workflow'
 import WorkflowNodes from './WorkflowNodes'
 import { useWorkflowStore } from './store'
 import WorkflowToolbar from '@/app/features/WorkflowDetailToolbar'
+import WorkflowTitle from './WorkflowTitle'
 
 export default function WorkflowDetail({ id }: { id: string }) {
   const router = useRouter()
@@ -104,14 +105,7 @@ export default function WorkflowDetail({ id }: { id: string }) {
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 w-screen h-screen">
       <div className='fixed top-4 left-4 z-50'>
-      <Button
-        variant="ghost"
-        className="mb-4"
-        onClick={() => router.push('/workflow')}
-      >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Workflows
-      </Button>
+        <WorkflowTitle workflow={workflow} onUpdate={setWorkflow} />
       </div>
      
      <WorkflowNodes/>
