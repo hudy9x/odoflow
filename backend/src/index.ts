@@ -6,6 +6,7 @@ import benchmarkRouter from './controllers/benchmark.controller.js'
 import workflowRouter from './controllers/workflow.controller.js'
 import authRouter from './controllers/auth.controller.js'
 import nodeRouter from './controllers/node.controller.js'
+import webhookRouter from './controllers/webhook.controller.js'
 
 export const app = new Hono()
 
@@ -30,6 +31,7 @@ app.route('/api/benchmark', benchmarkRouter)
 app.route('/api/workflow', workflowRouter)
 app.route('/api/auth', authRouter)
 app.route('/api/node', nodeRouter)
+app.route('/api', webhookRouter) // Webhook routes are mounted at /api/webhooks
 
 // Start the server only if not in test environment
 if (process.env.NODE_ENV !== 'test') {
