@@ -220,13 +220,9 @@ nodeRouter.get('/:nodeId/config', async (c: AuthContext) => {
       return c.json({ success: false, error: 'Unauthorized' }, 403)
     }
 
-    const nodeData = node.data as { webhookId?: string; webhookUrl?: string }
     return c.json({ 
       success: true, 
-      config: {
-        webhookId: nodeData.webhookId,
-        webhookUrl: nodeData.webhookUrl
-      }
+      config: node.data || {}
     })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
@@ -239,10 +235,7 @@ nodeRouter.put('/:nodeId/config', async (c: AuthContext) => {
   try {
     const nodeId = c.req.param('nodeId')
     const userId = c.user!.userId
-    const body = await c.req.json() as {
-      webhookId: string
-      webhookUrl: string
-    }
+    const body = await c.req.json() as Record<string, any>
 
     const node = await prisma.workflowNode.findUnique({
       where: { id: nodeId },
@@ -257,24 +250,20 @@ nodeRouter.put('/:nodeId/config', async (c: AuthContext) => {
       return c.json({ success: false, error: 'Unauthorized' }, 403)
     }
 
-    // Update node data with new webhook config
+    // Update node data with new config
     const updatedNode = await prisma.workflowNode.update({
       where: { id: nodeId },
       data: {
         data: {
           ...node.data as object,
-          webhookId: body.webhookId,
-          webhookUrl: body.webhookUrl
+          ...body
         }
       }
     })
 
     return c.json({ 
       success: true, 
-      config: {
-        webhookId: body.webhookId,
-        webhookUrl: body.webhookUrl
-      }
+      config: updatedNode.data
     })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'

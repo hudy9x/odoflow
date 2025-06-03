@@ -5,24 +5,25 @@ import { NodeWebhookConfigFormContent } from './NodeWebhookConfigFormContent';
 
 interface NodeWebhookConfigFormProps {
   nodeId: string;
-  selectedWebhookId?: string;
 }
 
 export function NodeWebhookConfigForm({
-  nodeId,
-  selectedWebhookId: initialWebhookId
+  nodeId
 }: NodeWebhookConfigFormProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [webhookUrl, setWebhookUrl] = useState<string>();
-  const [selectedWebhookId, setSelectedWebhookId] = useState(initialWebhookId);
+  const [webhookId, setWebhookId] = useState<string>();
 
   useEffect(() => {
     async function loadNodeConfig() {
       try {
         const response = await getNodeConfig(nodeId);
-        if (response.success && response.config) {
-          setSelectedWebhookId(response.config.webhookId);
-          setWebhookUrl(response.config.webhookUrl);
+        console.log('response', response)
+        if (response.success) {
+          const webhookUrl = response.config.webhookUrl as string | undefined;
+          const webhookId = response.config.webhookId as string | undefined;
+          setWebhookUrl(webhookUrl);
+          setWebhookId(webhookId);
         }
       } catch (error) {
         console.error('Error loading node config:', error);
@@ -45,7 +46,7 @@ export function NodeWebhookConfigForm({
   return (
     <NodeWebhookConfigFormContent
       nodeId={nodeId}
-      initialWebhookId={selectedWebhookId}
+      initialWebhookId={webhookId}
       initialWebhookUrl={webhookUrl}
     />
   );

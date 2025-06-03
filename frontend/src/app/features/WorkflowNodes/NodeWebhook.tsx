@@ -14,7 +14,7 @@ export interface NodeProps {
   data: NodeData;
 }
 
-export const NodeWebhook = memo(({ id, data }: NodeProps) => {
+export const NodeWebhook = memo(({ id }: NodeProps) => {
   return (
     <NodeConfigPopover
       trigger={
@@ -33,7 +33,6 @@ export const NodeWebhook = memo(({ id, data }: NodeProps) => {
     >
       <NodeWebhookConfigForm
         nodeId={id}
-        selectedWebhookId={data.webhookId}
       />
     </NodeConfigPopover>
   );

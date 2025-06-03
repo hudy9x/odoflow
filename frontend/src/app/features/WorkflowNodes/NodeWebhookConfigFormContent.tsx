@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { CreateWebhookPopover } from '@/app/features/Webhook/CreateWebhookPopover';
 import { WebhookSelect } from '@/app/features/Webhook/WebhookSelect';
 import { useState } from 'react';
-import { getNodeConfig, updateNodeConfig } from '@/app/services/node.service';
+import { updateNodeConfig } from '@/app/services/node.service';
 import { toast } from 'sonner';
 
 interface NodeWebhookConfigFormContentProps {
@@ -23,21 +23,14 @@ export function NodeWebhookConfigFormContent({
     if (!selectedWebhookId) return;
     
     try {
-      const webhook = await getNodeConfig(nodeId);
-      if (!webhook.success) {
-        console.error('Failed to get webhook URL');
-        return;
-      }
 
       const response = await updateNodeConfig({
         nodeId,
         webhookId: selectedWebhookId,
-        webhookUrl: webhook.config.webhookUrl || ''
+        webhookUrl: webhookUrl || ''
       });
 
       if (response.success) {
-        setSelectedWebhookId(response.config.webhookId);
-        setWebhookUrl(response.config.webhookUrl);
         toast.success('Webhook config saved successfully');
       }
     } catch (error) {
@@ -67,6 +60,7 @@ export function NodeWebhookConfigFormContent({
       </div>
       <div className="flex justify-end">
         <Button
+          className="w-full"
           onClick={handleSave}
           disabled={!selectedWebhookId}
         >

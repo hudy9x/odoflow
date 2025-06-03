@@ -60,30 +60,21 @@ export const updateNodePosition = async (params: UpdateNodePositionParams): Prom
   return put('/node/position', params)
 }
 
+type NodeConfig = Record<string, string | number | boolean | null | undefined>
+
 type UpdateNodeConfigParams = {
   nodeId: string
-  webhookId: string
-  webhookUrl: string
-}
-
-type UpdateNodeConfigResponse = ApiResponse<{
-  config: {
-    webhookId: string
-    webhookUrl: string
-  }
-}>
-
-export const updateNodeConfig = async (params: UpdateNodeConfigParams): Promise<UpdateNodeConfigResponse> => {
-  const { nodeId, ...data } = params
-  return put(`/node/${nodeId}/config`, data)
+  [key: string]: string | number | boolean | null | undefined
 }
 
 type NodeConfigResponse = ApiResponse<{
-  config: {
-    webhookId?: string
-    webhookUrl?: string
-  }
+  config: NodeConfig
 }>
+
+export const updateNodeConfig = async (params: UpdateNodeConfigParams): Promise<NodeConfigResponse> => {
+  const { nodeId, ...data } = params
+  return put(`/node/${nodeId}/config`, data)
+}
 
 export const getNodeConfig = async (nodeId: string): Promise<NodeConfigResponse> => {
   return get(`/node/${nodeId}/config`)
