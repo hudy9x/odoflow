@@ -1,6 +1,6 @@
 import { Handle, Position } from '@xyflow/react';
-import { NodeTypeSelect } from "./NodeTypeSelect";
-import { NodeContextMenu } from "./NodeContextMenu";
+import { NodeTypeSelect } from "../WorkflowConfig/NodeTypeSelect";
+import { NodeContextMenu } from "../WorkflowConfig/NodeContextMenu";
 
 interface NodeBaseProps {
   id?: string;

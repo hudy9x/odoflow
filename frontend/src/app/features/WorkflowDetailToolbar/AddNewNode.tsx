@@ -2,7 +2,7 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { memo, useState } from 'react'
-import { NodeTypeList } from '@/app/features/WorkflowNodes/NodeTypeList'
+import { NodeTypeList } from '@/app/features/WorkflowConfig/NodeTypeList'
 
 const AddNewNode = memo(() => {
   const [open, setOpen] = useState(false)

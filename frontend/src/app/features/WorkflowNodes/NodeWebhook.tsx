@@ -1,7 +1,7 @@
 import { Webhook } from 'lucide-react';
 import { NodeBase } from './NodeBase';
 import { memo } from 'react';
-import { NodeConfigPopover } from './NodeConfigPopover';
+import { NodeConfigPopover } from '../WorkflowConfig/NodeConfigPopover';
 
 interface NodeData {
   // Add webhook specific data fields here

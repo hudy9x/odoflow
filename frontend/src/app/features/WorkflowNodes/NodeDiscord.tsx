@@ -1,7 +1,7 @@
 import { MessageSquare } from 'lucide-react';
 import { NodeBase } from './NodeBase';
 import { memo } from 'react';
-import { NodeConfigPopover } from './NodeConfigPopover';
+import { NodeConfigPopover } from '../WorkflowConfig/NodeConfigPopover';
 
 interface NodeData {
   // Add Discord specific data fields here
