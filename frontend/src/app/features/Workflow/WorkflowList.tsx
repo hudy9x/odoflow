@@ -6,6 +6,9 @@ import { createWorkflow, getWorkflows } from '@/app/services/workflow.service'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Workflow } from '@/types/workflow'
+import { Checkbox } from '@/components/ui/checkbox'
+import { FileText } from 'lucide-react'
+import { format } from 'date-fns'
 
 export default function WorkflowList() {
   const router = useRouter()
@@ -59,43 +62,60 @@ export default function WorkflowList() {
   }
 
   return (
-    <div className="container mx-auto py-6 max-w-4xl">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Workflows</h1>
-        <Button onClick={handleCreateWorkflow}>Create Workflow</Button>
-      </div>
-      
-      {loading ? (
-        <div className="text-center py-8 text-gray-500">Loading workflows...</div>
-      ) : workflows.length === 0 ? (
-        <Card>
-          <CardContent className="py-8 text-center text-gray-500">
-            No workflows found. Click the Create Workflow button to get started.
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-2">
-          {workflows.map((workflow) => (
-            <Card 
-              key={workflow.id}
-              onClick={() => router.push(`/workflow/${workflow.id}`)}
-              className="cursor-pointer hover:bg-gray-50 transition-colors"
-            >
-              <CardContent className="py-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-medium">{workflow.name}</h3>
-                  <span className={`text-sm ${workflow.isActive ? 'text-green-600' : 'text-gray-500'}`}>
-                    {workflow.isActive ? 'Active' : 'Inactive'}
-                  </span>
-                </div>
-                {workflow.description && (
-                  <p className="text-sm text-gray-500 mt-1">{workflow.description}</p>
-                )}
-              </CardContent>
-            </Card>
-          ))}
+    <div className="min-h-screen bg-gray-50 py-[150px]">
+      <div className="container mx-auto max-w-2xl px-4">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-semibold">Workflows</h1>
+          <Button onClick={handleCreateWorkflow}>Add workflow</Button>
         </div>
-      )}
+        
+        {loading ? (
+          <Card>
+            <CardContent className="py-8 text-center text-gray-500">
+              Loading workflows...
+            </CardContent>
+          </Card>
+        ) : workflows.length === 0 ? (
+          <Card>
+            <CardContent className="py-8 text-center text-gray-500">
+              No workflows found. Click the Add task button to get started.
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-2">
+            {workflows.map((workflow) => (
+              <Card 
+                key={workflow.id}
+                className="overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => router.push(`/workflow/${workflow.id}`)}
+              >
+                <CardContent className="px-8 py-2">
+                  <div className="flex items-center gap-4">
+                    <div className="flex-grow space-y-2">
+                      <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                        <FileText className="h-5 w-5 text-blue-500" />
+                        {workflow.name}
+                      </h3>
+                      <p className="text-xs text-gray-500">
+                        Due {format(new Date(workflow.createdAt), 'dd MMM yyyy')}
+                      </p>
+                    </div>
+                    <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                      <Checkbox
+                        checked={workflow.isActive}
+                        onCheckedChange={(checked: boolean) => {
+                          // TODO: Implement status toggle
+                          console.log('Toggle status:', checked)
+                        }}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

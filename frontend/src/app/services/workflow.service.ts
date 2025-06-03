@@ -1,5 +1,5 @@
 import { Workflow } from '@/types/workflow'
-import { get, post, ApiResponse } from './api.service'
+import { get, post, put, ApiResponse } from './api.service'
 
 type WorkflowApiResponse = ApiResponse<{ workflow: Workflow }>
 type WorkflowsApiResponse = ApiResponse<{ workflows: Workflow[] }>
@@ -16,4 +16,8 @@ export const getWorkflows = async (): Promise<WorkflowsApiResponse> => {
 
 export const getWorkflow = async (id: string): Promise<WorkflowApiResponse> => {
   return get(`/workflow/${id}`)
+}
+
+export const updateWorkflow = async (id: string, data: Partial<Workflow>): Promise<WorkflowApiResponse> => {
+  return put(`/workflow/${id}`, data)
 }
