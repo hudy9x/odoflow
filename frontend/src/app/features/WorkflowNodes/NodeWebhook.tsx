@@ -32,6 +32,7 @@ export const NodeWebhook = memo(({ id, data }: NodeProps) => {
       title="Configure Webhook"
     >
       <NodeWebhookConfigForm
+        nodeId={id}
         selectedWebhookId={data.webhookId}
       />
     </NodeConfigPopover>

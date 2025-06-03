@@ -1,5 +1,5 @@
 import { WorkflowNode, WorkflowEdge } from '@/types/workflow'
-import { post, del, ApiResponse, put } from './api.service'
+import { post, del, ApiResponse, put, get } from './api.service'
 
 type NodeApiResponse = ApiResponse<{
   node: WorkflowNode
@@ -58,4 +58,33 @@ type UpdateNodePositionResponse = ApiResponse<{
 
 export const updateNodePosition = async (params: UpdateNodePositionParams): Promise<UpdateNodePositionResponse> => {
   return put('/node/position', params)
+}
+
+type UpdateNodeConfigParams = {
+  nodeId: string
+  webhookId: string
+  webhookUrl: string
+}
+
+type UpdateNodeConfigResponse = ApiResponse<{
+  config: {
+    webhookId: string
+    webhookUrl: string
+  }
+}>
+
+export const updateNodeConfig = async (params: UpdateNodeConfigParams): Promise<UpdateNodeConfigResponse> => {
+  const { nodeId, ...data } = params
+  return put(`/node/${nodeId}/config`, data)
+}
+
+type NodeConfigResponse = ApiResponse<{
+  config: {
+    webhookId?: string
+    webhookUrl?: string
+  }
+}>
+
+export const getNodeConfig = async (nodeId: string): Promise<NodeConfigResponse> => {
+  return get(`/node/${nodeId}/config`)
 }

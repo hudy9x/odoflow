@@ -1,50 +1,52 @@
-import { Button } from '@/components/ui/button';
-import { CreateWebhookPopover } from '@/app/features/Webhook/CreateWebhookPopover';
-import { WebhookSelect } from '@/app/features/Webhook/WebhookSelect';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getNodeConfig } from '@/app/services/node.service';
+import { Loader2 } from 'lucide-react';
+import { NodeWebhookConfigFormContent } from './NodeWebhookConfigFormContent';
 
 interface NodeWebhookConfigFormProps {
+  nodeId: string;
   selectedWebhookId?: string;
 }
 
 export function NodeWebhookConfigForm({
-  selectedWebhookId
+  nodeId,
+  selectedWebhookId: initialWebhookId
 }: NodeWebhookConfigFormProps) {
+  const [isLoading, setIsLoading] = useState(true);
   const [webhookUrl, setWebhookUrl] = useState<string>();
+  const [selectedWebhookId, setSelectedWebhookId] = useState(initialWebhookId);
 
+  useEffect(() => {
+    async function loadNodeConfig() {
+      try {
+        const response = await getNodeConfig(nodeId);
+        if (response.success && response.config) {
+          setSelectedWebhookId(response.config.webhookId);
+          setWebhookUrl(response.config.webhookUrl);
+        }
+      } catch (error) {
+        console.error('Error loading node config:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
 
+    loadNodeConfig();
+  }, [nodeId]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <WebhookSelect
-            value={selectedWebhookId}
-            onValueChange={(id, url) => {
-              setWebhookUrl(url);
-              // Will handle saving later
-              console.log('Selected webhook:', { id, url });
-            }}
-          />
-          <CreateWebhookPopover />
-        </div>
-        {webhookUrl && (
-          <div className="text-sm text-muted-foreground">
-            {webhookUrl}
-          </div>
-        )}
-      </div>
-      <div className="flex justify-end">
-        <Button
-          onClick={() => {
-            // Will handle saving later
-            console.log('Save clicked with webhook:', selectedWebhookId);
-          }}
-          disabled={!selectedWebhookId}
-        >
-          Save
-        </Button>
-      </div>
-    </div>
+    <NodeWebhookConfigFormContent
+      nodeId={nodeId}
+      initialWebhookId={selectedWebhookId}
+      initialWebhookUrl={webhookUrl}
+    />
   );
 }
