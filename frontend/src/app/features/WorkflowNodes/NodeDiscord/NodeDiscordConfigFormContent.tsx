@@ -14,6 +14,7 @@ import {
   EmbedField,
   DiscordEmbed
 } from './types';
+import { NodeConfigPopoverCloseButton } from '../../WorkflowConfig/NodeConfigPopoverCloseButton';
 
 interface NodeDiscordConfigFormContentProps {
   nodeId: string;
@@ -122,7 +123,7 @@ export function NodeDiscordConfigFormContent({
         </div>
         {/* Basic Settings */}
         <div className="space-y-2">
-          <Label>Username Override (Optional)</Label>
+          <Label>Username (Optional)</Label>
           <Input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -131,7 +132,7 @@ export function NodeDiscordConfigFormContent({
         </div>
 
         <div className="space-y-2">
-          <Label>Avatar URL Override (Optional)</Label>
+          <Label>Avatar URL (Optional)</Label>
           <Input
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
@@ -272,8 +273,9 @@ export function NodeDiscordConfigFormContent({
         )}
       </div>
 
-      <div className="flex justify-end">
-        <Button className="w-full" onClick={handleSave}>Save</Button>
+      <div className="grid grid-cols-2 space-x-2">
+        <NodeConfigPopoverCloseButton />
+        <Button onClick={handleSave}>Save</Button>
       </div>
     </div>
   );

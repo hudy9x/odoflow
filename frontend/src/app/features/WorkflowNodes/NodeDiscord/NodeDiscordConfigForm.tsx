@@ -17,7 +17,7 @@ export function NodeDiscordConfigForm({ nodeId }: NodeDiscordConfigFormProps) {
       try {
         const response = await getNodeConfig(nodeId);
         if (response.success) {
-          const { config: responseConfig } = response;
+          const { config: responseConfig } = response.config;
           setConfig({
             webhookUrl: (responseConfig?.webhookUrl as string) || '',
             messageType: (responseConfig?.messageType as MessageType) || MessageType.SIMPLE,
