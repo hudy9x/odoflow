@@ -1,12 +1,13 @@
 import { MessageSquare } from 'lucide-react';
-import { NodeBase } from './NodeBase';
+import { NodeBase } from '../NodeBase';
 import { memo } from 'react';
-import { NodeConfigPopover } from '../WorkflowConfig/NodeConfigPopover';
+import { NodeConfigPopover } from '../../WorkflowConfig/NodeConfigPopover';
+import { NodeDiscordConfigForm } from './NodeDiscordConfigForm';
+import { DiscordNodeConfig } from './types';
 
 interface NodeData {
-  // Add Discord specific data fields here
-  webhookUrl?: string;
-  message?: string;
+  id: string;
+  config?: DiscordNodeConfig;
 }
 
 export interface NodeProps {
@@ -30,8 +31,9 @@ export const NodeDiscord = memo(({ id }: NodeProps) => {
         </div>
       }
       title="Configure Discord Message"
+      width="w-[450px]"
     >
-      {/* Add Discord configuration form here */}
+      <NodeDiscordConfigForm nodeId={id} />
     </NodeConfigPopover>
   );
 });
