@@ -1,5 +1,5 @@
 import { WorkflowNode, WorkflowEdge } from '@/types/workflow'
-import { post, del, ApiResponse, put } from './api.service'
+import { post, del, ApiResponse, put, get } from './api.service'
 
 type NodeApiResponse = ApiResponse<{
   node: WorkflowNode
@@ -58,4 +58,24 @@ type UpdateNodePositionResponse = ApiResponse<{
 
 export const updateNodePosition = async (params: UpdateNodePositionParams): Promise<UpdateNodePositionResponse> => {
   return put('/node/position', params)
+}
+
+type NodeConfig = Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
+
+type UpdateNodeConfigParams = {
+  nodeId: string
+  config: Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
+}
+
+type NodeConfigResponse = ApiResponse<{
+  config: NodeConfig
+}>
+
+export const updateNodeConfig = async (params: UpdateNodeConfigParams): Promise<NodeConfigResponse> => {
+  const { nodeId, ...data } = params
+  return put(`/node/${nodeId}/config`, data)
+}
+
+export const getNodeConfig = async (nodeId: string): Promise<NodeConfigResponse> => {
+  return get(`/node/${nodeId}/config`)
 }

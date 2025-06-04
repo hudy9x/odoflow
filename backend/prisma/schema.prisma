@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  // output   = "../src/generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -25,6 +25,7 @@ model User {
   // Relationships
   workflows    Workflow[]    // One-to-many with Workflow
   workflowRuns WorkflowRun[] // One-to-many with WorkflowRun
+  webhooks     Webhook[]     // One-to-many with Webhook
 }
 
 model Workflow {
@@ -88,6 +89,18 @@ model WorkflowRun {
   workflow    Workflow         @relation(fields: [workflowId], references: [id])
   triggeredBy User?           @relation(fields: [triggeredById], references: [id])
   logs        WorkflowRunLog[] // One-to-many with WorkflowRunLog
+}
+
+model Webhook {
+  id        String   @id @default(uuid())
+  name      String
+  url       String   @unique
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model WorkflowRunLog {

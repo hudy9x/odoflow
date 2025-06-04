@@ -1,12 +1,12 @@
-import { Webhook } from 'lucide-react';
-import { NodeBase } from './NodeBase';
+import { Webhook as WebhookIcon } from 'lucide-react';
+import { NodeBase } from '../NodeBase';
 import { memo } from 'react';
-import { NodeConfigPopover } from '../WorkflowConfig/NodeConfigPopover';
+import { NodeConfigPopover } from '../../WorkflowConfig/NodeConfigPopover';
+import { NodeWebhookConfigForm } from './NodeWebhookConfigForm';
 
 interface NodeData {
-  // Add webhook specific data fields here
+  webhookId?: string;
   url?: string;
-  method?: string;
 }
 
 export interface NodeProps {
@@ -23,7 +23,7 @@ export const NodeWebhook = memo(({ id }: NodeProps) => {
             id={id}
             title="Webhook"
             description="Receive a request"
-            icon={<Webhook className="w-8 h-8" />}
+            icon={<WebhookIcon className="w-8 h-8" />}
             color="#0284C7"
             badgeNumber={1}
           />
@@ -31,7 +31,9 @@ export const NodeWebhook = memo(({ id }: NodeProps) => {
       }
       title="Configure Webhook"
     >
-      {/* Add Webhook configuration form here */}
+      <NodeWebhookConfigForm
+        nodeId={id}
+      />
     </NodeConfigPopover>
   );
 });
