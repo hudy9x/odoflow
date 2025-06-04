@@ -60,11 +60,11 @@ export const updateNodePosition = async (params: UpdateNodePositionParams): Prom
   return put('/node/position', params)
 }
 
-type NodeConfig = Record<string, string | number | boolean | null | undefined>
+type NodeConfig = Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 
 type UpdateNodeConfigParams = {
   nodeId: string
-  [key: string]: string | number | boolean | null | undefined
+  config: Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 type NodeConfigResponse = ApiResponse<{

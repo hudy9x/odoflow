@@ -27,8 +27,10 @@ export function NodeWebhookConfigFormContent({
 
       const response = await updateNodeConfig({
         nodeId,
-        webhookId: selectedWebhookId,
-        webhookUrl: webhookUrl || ''
+        config: {
+          webhookId: selectedWebhookId,
+          webhookUrl: webhookUrl || ''
+        }
       });
 
       if (response.success) {
