@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { updateNodeConfig } from '@/app/services/node.service';
 import { toast } from 'sonner';
 import { PlusCircle, X } from 'lucide-react';
+import { NodeConfigPopoverCloseButton } from '../../WorkflowConfig/NodeConfigPopoverCloseButton';
 
 import { BodyType, ContentType, HttpMethod, KeyValuePair, HttpNodeConfig } from './types';
 
@@ -378,8 +379,9 @@ const handleSave = async () => {
       </div>
      
 
-      <div className="flex justify-end">
-        <Button className='w-full' onClick={handleSave}>Save</Button>
+      <div className="grid grid-cols-2 space-x-2">
+        <NodeConfigPopoverCloseButton />
+        <Button onClick={handleSave}>Save</Button>
       </div>
     </div>
   );
