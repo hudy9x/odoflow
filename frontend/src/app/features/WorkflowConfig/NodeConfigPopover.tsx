@@ -37,7 +37,7 @@ export const NodeConfigPopover = ({ trigger, title, width = 'max-w-[500px]', chi
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <div className="bg-white px-3 py-3 rounded-xl border border-gray-200 shadow-lg">
+          <div className="bg-white px-3 py-3 rounded-lg border border-gray-200 shadow-lg">
             {children}
           </div>
         </div>
