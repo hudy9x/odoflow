@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { CreateWebhookPopover } from '@/app/features/Webhook/CreateWebhookPopover';
 import { WebhookSelect } from '@/app/features/Webhook/WebhookSelect';
+import { WebhookUrlDisplay } from '@/app/features/Webhook/WebhookUrlDisplay';
 import { useState } from 'react';
 import { updateNodeConfig } from '@/app/services/node.service';
 import { toast } from 'sonner';
@@ -40,8 +41,10 @@ export function NodeWebhookConfigFormContent({
   };
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
+    <div className="space-y-2">
+      <div className="space-y-2">
+        <div className=''>
+        <label className="text-sm font-medium block mb-1">Select or create a webhook url</label>
         <div className="flex items-center gap-2">
           <WebhookSelect
             value={selectedWebhookId}
@@ -52,10 +55,10 @@ export function NodeWebhookConfigFormContent({
           />
           <CreateWebhookPopover />
         </div>
+        </div>
+        
         {webhookUrl && (
-          <div className="text-sm text-muted-foreground">
-            {webhookUrl}
-          </div>
+          <WebhookUrlDisplay url={webhookUrl} />
         )}
       </div>
       <div className="flex justify-end">

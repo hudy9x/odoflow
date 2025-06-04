@@ -23,20 +23,22 @@ export const NodeConfigPopover = ({ trigger, title, children }: NodeConfigPopove
       <PopoverTrigger asChild>
         {trigger}
       </PopoverTrigger>
-      <PopoverContent className="w-80">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
+      <PopoverContent className="max-w-[400px] rounded-xl bg-gray-100 p-1 border border-gray-200">
+        <div className="">
+          <div className="flex items-center justify-between px-2 pt-1 pb-2">
             <h4 className="font-medium leading-none">{title}</h4>
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-6 w-6"
+              className="h-6 w-6 cursor-pointer"
               onClick={() => setOpen(false)}
             >
               <X className="h-4 w-4" />
             </Button>
           </div>
-          {children}
+          <div className="bg-white px-3 py-3 rounded-xl border border-gray-200 shadow-lg">
+            {children}
+          </div>
         </div>
       </PopoverContent>
     </Popover>
