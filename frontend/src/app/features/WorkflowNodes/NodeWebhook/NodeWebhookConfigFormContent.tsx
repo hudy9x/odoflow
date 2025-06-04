@@ -5,6 +5,7 @@ import { WebhookUrlDisplay } from '@/app/features/Webhook/WebhookUrlDisplay';
 import { useState } from 'react';
 import { updateNodeConfig } from '@/app/services/node.service';
 import { toast } from 'sonner';
+import { NodeConfigPopoverCloseButton } from '../../WorkflowConfig/NodeConfigPopoverCloseButton';
 
 interface NodeWebhookConfigFormContentProps {
   nodeId: string;
@@ -63,9 +64,9 @@ export function NodeWebhookConfigFormContent({
           <WebhookUrlDisplay url={webhookUrl} />
         )}
       </div>
-      <div className="flex justify-end">
-        <Button
-          className="w-full"
+      <div className="grid grid-cols-2 space-x-2">
+        <NodeConfigPopoverCloseButton />
+        <Button 
           onClick={handleSave}
           disabled={!selectedWebhookId}
         >
