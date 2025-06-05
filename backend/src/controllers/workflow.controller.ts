@@ -1,7 +1,14 @@
 import { Hono } from 'hono'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../generated/prisma/index.js'
+import { TriggerType } from '../generated/prisma/index.js'
 import { authMiddleware } from '../middleware/auth.middleware.js'
 import type { AuthContext } from '../middleware/auth.middleware.js'
+
+type StartingNodeUpdateBody = {
+  startingNodeId: string | null
+  triggerType?: TriggerType | null
+  triggerValue?: string | null
+}
 
 const prisma = new PrismaClient()
 const workflowRouter = new Hono()
@@ -132,6 +139,38 @@ workflowRouter.get('/:id', async (c: AuthContext) => {
     if (workflow.userId !== userId) {
       return c.json({ success: false, error: 'Unauthorized' }, 403)
     }
+
+    return c.json({ success: true, workflow })
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    return c.json({ success: false, error: errorMessage }, 500)
+  }
+})
+
+// Update workflow starting node and trigger info
+workflowRouter.put('/:id/starting-node', async (c: AuthContext) => {
+  try {
+    const id = c.req.param('id')
+    const { startingNodeId, triggerType, triggerValue } = await c.req.json() as StartingNodeUpdateBody
+
+    // First check if workflow exists and belongs to user
+    const existingWorkflow = await prisma.workflow.findUnique({
+      where: { id }
+    })
+
+    if (!existingWorkflow) {
+      return c.json({ success: false, error: 'Workflow not found' }, 404)
+    }
+
+    // Update workflow's starting node and trigger info
+    const workflow = await prisma.workflow.update({
+      where: { id },
+      data: { 
+        startingNodeId,
+        triggerType: triggerType || null,
+        triggerValue: triggerValue || null
+      }
+    })
 
     return c.json({ success: true, workflow })
   } catch (error) {
