@@ -25,7 +25,8 @@ export const NodeDiscord = memo(({ id }: NodeProps) => {
             title="Discord"
             description="Send a Message"
             icon={<MessageSquare className="w-8 h-8" />}
-            color="#7C3AED"
+            color="#5865F2"
+            type="discord"
             badgeNumber={1}
           />
         </div>

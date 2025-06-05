@@ -1,15 +1,11 @@
 export enum TriggerType {
   WEBHOOK = 'WEBHOOK',
-  SCHEDULED = 'SCHEDULED'
-}
-
-export interface ScheduleConfig {
-  type: 'immediately' | 'regular' | 'daily';
-  minutes?: number;
-  time?: string;
+  REGULAR = 'REGULAR',
+  DAILY = 'DAILY'
 }
 
 export interface TriggerConfig {
   type: TriggerType;
-  scheduleConfig?: ScheduleConfig;
+  minutes?: number;
+  time?: string;
 }

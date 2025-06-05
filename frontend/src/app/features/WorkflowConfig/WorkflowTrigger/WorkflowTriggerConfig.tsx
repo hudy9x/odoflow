@@ -6,21 +6,27 @@ import { useWorkflowStore } from '../../WorkflowDetail/store';
 
 interface WorkflowTriggerConfigProps {
   workflowId: string;
+  nodeId: string;
+  nodeType: string;
 }
 
-export function WorkflowTriggerConfig({ workflowId }: WorkflowTriggerConfigProps) {
+export function WorkflowTriggerConfig({ workflowId, nodeId, nodeType }: WorkflowTriggerConfigProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [config, setConfig] = useState<TriggerConfig>();
   const { triggerType, triggerValue } = useWorkflowStore();
 
   useEffect(() => {
     try {
-      let parsedConfig: TriggerConfig = {
+      const parsedConfig: TriggerConfig = {
         type: triggerType || TriggerType.WEBHOOK
       };
 
-      if (triggerType === TriggerType.SCHEDULED && triggerValue) {
-        parsedConfig.scheduleConfig = JSON.parse(triggerValue);
+      if ((triggerType === TriggerType.REGULAR || triggerType === TriggerType.DAILY) && triggerValue) {
+        if (triggerType === TriggerType.REGULAR) {
+          parsedConfig.minutes = parseInt(triggerValue);
+        } else {
+          parsedConfig.time = triggerValue;
+        }
       }
 
       setConfig(parsedConfig);
@@ -38,6 +44,8 @@ export function WorkflowTriggerConfig({ workflowId }: WorkflowTriggerConfigProps
   return (
     <WorkflowTriggerConfigContent
       workflowId={workflowId}
+      nodeId={nodeId}
+      nodeType={nodeType}
       initialConfig={config}
     />
   );

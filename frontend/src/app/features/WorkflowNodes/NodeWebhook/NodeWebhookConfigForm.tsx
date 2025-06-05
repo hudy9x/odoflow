@@ -18,10 +18,11 @@ export function NodeWebhookConfigForm({
     async function loadNodeConfig() {
       try {
         const response = await getNodeConfig(nodeId);
-        console.log('response', response)
+        const config = response.config.config
+        console.log('response', response, config)
         if (response.success) {
-          const webhookUrl = response.config.webhookUrl as string | undefined;
-          const webhookId = response.config.webhookId as string | undefined;
+          const webhookUrl = config.webhookUrl as string | undefined;
+          const webhookId = config.webhookId as string | undefined;
           setWebhookUrl(webhookUrl);
           setWebhookId(webhookId);
         }

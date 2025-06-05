@@ -36,7 +36,8 @@ export const NodeHttp = memo(({ id }: NodeProps) => {
             title="HTTP"
             description="Make a request"
             icon={<Globe className="w-8 h-8" />}
-            color="#059669"
+            color="#0284C7"
+            type="http"
             badgeNumber={1}
           />
         </div>

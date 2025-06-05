@@ -11,7 +11,11 @@ export const NodeConfigPopoverCloseButton: React.FC = () => {
   const { hidePopover } = usePopoverContext();
 
   return (
-    <Button variant="outline" onClick={hidePopover}>
+    <Button variant="outline" onClick={(ev) => {
+      ev.stopPropagation();
+      ev.preventDefault();
+      hidePopover();
+    }}>
       Cancel
     </Button>
   );

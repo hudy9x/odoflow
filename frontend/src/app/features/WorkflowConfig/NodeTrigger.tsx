@@ -5,9 +5,10 @@ import { WorkflowTriggerConfig } from './WorkflowTrigger/WorkflowTriggerConfig';
 
 interface NodeTriggerProps {
   nodeId: string;
+  nodeType: string;
 }
 
-export function NodeTrigger({ nodeId }: NodeTriggerProps) {
+export function NodeTrigger({ nodeId, nodeType }: NodeTriggerProps) {
   const { startingNodeId, workflowId } = useWorkflowStore();
   
   if (nodeId !== startingNodeId || !workflowId) {
@@ -27,7 +28,11 @@ export function NodeTrigger({ nodeId }: NodeTriggerProps) {
       title="Configure Workflow Trigger"
       width="w-[400px]"
     >
-      <WorkflowTriggerConfig workflowId={workflowId} />
+      <WorkflowTriggerConfig
+        workflowId={workflowId}
+        nodeId={nodeId}
+        nodeType={nodeType}
+      />
     </NodeConfigPopover>
   );
 }

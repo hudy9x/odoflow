@@ -16,7 +16,8 @@ datasource db {
 
 enum TriggerType {
   WEBHOOK
-  SCHEDULED
+  REGULAR
+  DAILY
 }
 
 model User {
