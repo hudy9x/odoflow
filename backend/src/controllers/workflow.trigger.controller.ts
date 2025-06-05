@@ -43,8 +43,6 @@ workflowTriggerRouter.post('/workflow-by/:webhookId', async (c) => {
       }
     })
 
-    console.log('workflow:', workflow)
-
     if (!workflow) {
       return c.json({ 
         success: false, 
