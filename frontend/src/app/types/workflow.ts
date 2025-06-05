@@ -1,3 +1,8 @@
+export enum TriggerType {
+  WEBHOOK = 'WEBHOOK',
+  SCHEDULED = 'SCHEDULED'
+}
+
 export interface Workflow {
   id: string;
   name: string;
@@ -6,6 +11,9 @@ export interface Workflow {
   createdAt: string;
   updatedAt: string;
   userId: string;
+  startingNodeId?: string;
+  triggerType?: TriggerType;
+  triggerValue?: string;
   nodes: WorkflowNode[];
   edges: WorkflowEdge[];
 }

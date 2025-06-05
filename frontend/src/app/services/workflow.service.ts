@@ -21,3 +21,19 @@ export const getWorkflow = async (id: string): Promise<WorkflowApiResponse> => {
 export const updateWorkflow = async (id: string, data: Partial<Workflow>): Promise<WorkflowApiResponse> => {
   return put(`/workflow/${id}`, data)
 }
+
+export type TriggerType = 'WEBHOOK' | 'SCHEDULED' | null;
+
+export const updateWorkflowStartingNode = async (params: {
+  workflowId: string;
+  startingNodeId: string | null;
+  triggerType?: TriggerType;
+  triggerValue?: string | null;
+}): Promise<WorkflowApiResponse> => {
+  const { workflowId, startingNodeId, triggerType, triggerValue } = params;
+  return put(`/workflow/${workflowId}/starting-node`, { 
+    startingNodeId,
+    triggerType,
+    triggerValue
+  })
+}
