@@ -1,5 +1,6 @@
 import { Handle, Position } from '@xyflow/react';
-import { NodeTypeSelect } from "../WorkflowConfig/NodeTypeSelect";
+import { NodeTypeSelect } from '../WorkflowConfig/NodeTypeSelect';
+import { NodeTrigger } from '../WorkflowConfig/NodeTrigger';
 import { NodeContextMenu } from "../WorkflowConfig/NodeContextMenu";
 
 interface NodeBaseProps {
@@ -39,6 +40,8 @@ export function NodeBase({ id, title, description, icon, onClick, color, noEdges
         </div>
         {id && <NodeTypeSelect nodeId={id} color={color} />}
       </div>
+      
+      {id && <NodeTrigger nodeId={id} />}
 
       {/* Node label */}
       <div className="mt-2 text-center absolute -bottom-1/2 left-0 w-full">

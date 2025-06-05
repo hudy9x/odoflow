@@ -4,7 +4,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
-import { Pencil, Settings, Trash2 } from "lucide-react"
+import { Flag, Pencil, Settings, Trash2 } from "lucide-react"
 import { useWorkflowStore } from "../WorkflowDetail/store"
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 }
 
 export function NodeContextMenu({ id, children }: Props) {
-  const { removeNode } = useWorkflowStore()
+  const { removeNode, setStartingNodeId } = useWorkflowStore()
 
   return (
     <ContextMenu>
@@ -40,6 +40,13 @@ export function NodeContextMenu({ id, children }: Props) {
         >
           <Settings className="h-4 w-4" />
           <span>Configure</span>
+        </ContextMenuItem>
+        <ContextMenuItem
+          className="flex items-center gap-2 text-sm cursor-pointer"
+          onClick={() => setStartingNodeId(id)}
+        >
+          <Flag className="h-4 w-4" />
+          <span>Set as Starting Node</span>
         </ContextMenuItem>
         <ContextMenuItem
           className="flex items-center gap-2 text-sm cursor-pointer text-red-600 focus:text-red-600"

@@ -26,6 +26,7 @@ export default function WorkflowDetail({ id }: { id: string }) {
           setWorkflow(response.workflow)
           setWorkflowId(id)
 
+          const startingNodeId = response.workflow.startingNodeId || ''
           // Transform backend nodes to React Flow format or create initial node
           const initialNodes = response.workflow.nodes?.length ? 
             response.workflow.nodes.map(node => ({
@@ -48,7 +49,7 @@ export default function WorkflowDetail({ id }: { id: string }) {
             target: edge.targetId
           }))
 
-          setInitialData(initialNodes, initialEdges)
+          setInitialData(initialNodes, initialEdges, startingNodeId)
         } else {
           setError(response.error || 'Failed to load workflow')
         }

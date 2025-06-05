@@ -1,8 +1,8 @@
 ---
-trigger: always_on
+trigger: manual
 ---
 
-everytime you find a THINKING word at the very first line you will:
+Jump in the thinking mode you will do:
 - analyze my question
 - analyze my solution or give me your solution
 - implement your solution in short and easy to understand

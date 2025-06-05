@@ -1,5 +1,6 @@
 import { Workflow } from '@/types/workflow'
 import { get, post, put, ApiResponse } from './api.service'
+import { TriggerType } from '../features/WorkflowConfig/WorkflowTrigger/types'
 
 type WorkflowApiResponse = ApiResponse<{ workflow: Workflow }>
 type WorkflowsApiResponse = ApiResponse<{ workflows: Workflow[] }>
@@ -22,7 +23,7 @@ export const updateWorkflow = async (id: string, data: Partial<Workflow>): Promi
   return put(`/workflow/${id}`, data)
 }
 
-export type TriggerType = 'WEBHOOK' | 'SCHEDULED' | null;
+// TriggerType is now imported from types.ts
 
 export const updateWorkflowStartingNode = async (params: {
   workflowId: string;
