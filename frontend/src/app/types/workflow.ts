@@ -1,6 +1,13 @@
 export enum TriggerType {
   WEBHOOK = 'WEBHOOK',
-  SCHEDULED = 'SCHEDULED'
+  REGULAR = 'REGULAR',
+  DAILY = 'DAILY'
+}
+
+export interface TriggerConfig {
+  type: TriggerType;
+  minutes?: number;
+  time?: string;
 }
 
 export interface Workflow {

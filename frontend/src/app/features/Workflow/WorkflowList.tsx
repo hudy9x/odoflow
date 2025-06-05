@@ -68,7 +68,7 @@ export default function WorkflowList() {
           <h1 className="text-2xl font-semibold">Workflows</h1>
           <Button onClick={handleCreateWorkflow}>Add workflow</Button>
         </div>
-        
+          
         {loading ? (
           <Card>
             <CardContent className="py-8 text-center text-gray-500">

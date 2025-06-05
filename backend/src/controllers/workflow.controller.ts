@@ -147,6 +147,34 @@ workflowRouter.get('/:id', async (c: AuthContext) => {
   }
 })
 
+// Toggle workflow active status
+workflowRouter.put('/:id/active', async (c: AuthContext) => {
+  try {
+    const id = c.req.param('id');
+    const { active } = await c.req.json();
+
+    // First check if workflow exists and belongs to user
+    const existingWorkflow = await prisma.workflow.findUnique({
+      where: { id }
+    });
+
+    if (!existingWorkflow) {
+      return c.json({ success: false, error: 'Workflow not found' }, 404);
+    }
+
+    // Update workflow's active status
+    const workflow = await prisma.workflow.update({
+      where: { id },
+      data: { isActive: active }
+    });
+
+    return c.json({ success: true, workflow });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return c.json({ success: false, error: errorMessage }, 500);
+  }
+});
+
 // Update workflow starting node and trigger info
 workflowRouter.put('/:id/starting-node', async (c: AuthContext) => {
   try {

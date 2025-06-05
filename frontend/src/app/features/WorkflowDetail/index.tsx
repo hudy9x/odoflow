@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { getWorkflow } from '@/app/services/workflow.service'
-import type { Workflow } from '@/types/workflow'
+import { TriggerType, type Workflow } from '@/types/workflow'
 import WorkflowNodes from './WorkflowNodes'
 import { useWorkflowStore } from './store'
 import WorkflowToolbar from '@/app/features/WorkflowDetailToolbar'
@@ -27,6 +27,9 @@ export default function WorkflowDetail({ id }: { id: string }) {
           setWorkflowId(id)
 
           const startingNodeId = response.workflow.startingNodeId || ''
+          const triggerType = response.workflow.triggerType || TriggerType.WEBHOOK
+          const triggerValue = response.workflow.triggerValue || null
+          const isActive = response.workflow.isActive || false
           // Transform backend nodes to React Flow format or create initial node
           const initialNodes = response.workflow.nodes?.length ? 
             response.workflow.nodes.map(node => ({
@@ -49,7 +52,7 @@ export default function WorkflowDetail({ id }: { id: string }) {
             target: edge.targetId
           }))
 
-          setInitialData(initialNodes, initialEdges, startingNodeId)
+          setInitialData(initialNodes, initialEdges, startingNodeId, triggerType, triggerValue, isActive)
         } else {
           setError(response.error || 'Failed to load workflow')
         }

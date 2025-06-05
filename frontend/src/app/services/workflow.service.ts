@@ -25,6 +25,14 @@ export const updateWorkflow = async (id: string, data: Partial<Workflow>): Promi
 
 // TriggerType is now imported from types.ts
 
+export const toggleWorkflowActive = async (params: {
+  workflowId: string;
+  active: boolean;
+}): Promise<WorkflowApiResponse> => {
+  const { workflowId, active } = params;
+  return put(`/workflow/${workflowId}/active`, { active });
+};
+
 export const updateWorkflowStartingNode = async (params: {
   workflowId: string;
   startingNodeId: string | null;

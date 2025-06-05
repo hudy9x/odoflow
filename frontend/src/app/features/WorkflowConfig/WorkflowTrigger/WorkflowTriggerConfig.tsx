@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { TriggerType, type TriggerConfig } from './types';
+import { TriggerType, type TriggerConfig } from '@/app/types/workflow';
 import { WorkflowTriggerConfigContent } from './WorkflowTriggerConfigContent';
 import { Loader2 } from 'lucide-react';
 import { useWorkflowStore } from '../../WorkflowDetail/store';

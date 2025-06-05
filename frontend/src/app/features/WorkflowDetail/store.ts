@@ -4,7 +4,7 @@ import { createNode, deleteNode, createEdge, updateNodePosition } from '@/app/se
 import { updateWorkflowStartingNode } from '@/app/services/workflow.service'
 import { debounce } from '@/lib/utils'
 import { toast } from 'sonner'
-import { TriggerType } from '../WorkflowConfig/WorkflowTrigger/types'
+import { TriggerType } from '@/app/types/workflow'
 
 const debouncedUpdatePosition = debounce(async (workflowId: string | null, nodeId: string, x: number, y: number) => {
   if (!workflowId) {
@@ -37,8 +37,9 @@ interface WorkflowState {
   startingNodeId: string | null
   triggerType: TriggerType | null
   triggerValue: string | null
+  isActive: boolean
   setWorkflowId: (id: string) => void
-  setInitialData: (nodes: Node[], edges: Edge[], startingNodeId: string | null, triggerType: TriggerType | null, triggerValue: string | null) => void
+  setInitialData: (nodes: Node[], edges: Edge[], startingNodeId: string | null, triggerType: TriggerType | null, triggerValue: string | null, isActive: boolean) => void
   addNode: (node: Node) => void
   removeNode: (nodeId: string) => void
   updateNodes: (changes: NodeChange[]) => void
@@ -57,11 +58,12 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   startingNodeId: null,
   triggerType: null,
   triggerValue: null,
+  isActive: false,
 
   setWorkflowId: (id) => set({ workflowId: id }),
 
-  setInitialData: (nodes, edges, startingNodeId, triggerType, triggerValue) => {
-    set({ nodes, edges, startingNodeId, triggerType, triggerValue })
+  setInitialData: (nodes, edges, startingNodeId, triggerType, triggerValue, isActive) => {
+    set({ nodes, edges, startingNodeId, triggerType, triggerValue, isActive })
   },
 
   updateWorkflowTrigger: async ({ workflowId, triggerType, triggerValue }) => {
