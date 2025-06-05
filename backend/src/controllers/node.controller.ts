@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../generated/prisma/index.js'
 import { authMiddleware } from '../middleware/auth.middleware.js'
 import type { AuthContext } from '../middleware/auth.middleware.js'
 

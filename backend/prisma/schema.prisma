@@ -14,6 +14,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TriggerType {
+  WEBHOOK
+  REGULAR
+  DAILY
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
@@ -29,13 +35,16 @@ model User {
 }
 
 model Workflow {
-  id          String   @id @default(uuid())
-  userId      String
-  name        String
-  description String?
-  isActive    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String      @id @default(cuid())
+  userId        String
+  name          String
+  description   String?
+  isActive      Boolean     @default(false)
+  startingNodeId String?
+  triggerType   TriggerType?
+  triggerValue  String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   // Relationships
   user         User           @relation(fields: [userId], references: [id])

@@ -1,8 +1,10 @@
 import { create } from 'zustand'
 import { Node, Edge, NodeChange, EdgeChange, Connection, addEdge } from '@xyflow/react'
 import { createNode, deleteNode, createEdge, updateNodePosition } from '@/app/services/node.service'
+import { updateWorkflowStartingNode } from '@/app/services/workflow.service'
 import { debounce } from '@/lib/utils'
 import { toast } from 'sonner'
+import { TriggerType } from '@/app/types/workflow'
 
 const debouncedUpdatePosition = debounce(async (workflowId: string | null, nodeId: string, x: number, y: number) => {
   if (!workflowId) {
@@ -32,8 +34,12 @@ interface WorkflowState {
   workflowId: string | null
   nodes: Node[]
   edges: Edge[]
+  startingNodeId: string | null
+  triggerType: TriggerType | null
+  triggerValue: string | null
+  isActive: boolean
   setWorkflowId: (id: string) => void
-  setInitialData: (nodes: Node[], edges: Edge[]) => void
+  setInitialData: (nodes: Node[], edges: Edge[], startingNodeId: string | null, triggerType: TriggerType | null, triggerValue: string | null, isActive: boolean) => void
   addNode: (node: Node) => void
   removeNode: (nodeId: string) => void
   updateNodes: (changes: NodeChange[]) => void
@@ -41,30 +47,81 @@ interface WorkflowState {
   onConnect: (connection: Connection) => void
   isLeafNode: (nodeId: string) => boolean
   addConnectedNode: (sourceId: string, type: string) => void
+  setStartingNodeId: (nodeId: string | null) => void
+  updateWorkflowTrigger: (params: { workflowId: string, triggerType: TriggerType, triggerValue?: string }) => Promise<void>
 }
 
 export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   workflowId: null,
   nodes: [],
   edges: [],
+  startingNodeId: null,
+  triggerType: null,
+  triggerValue: null,
+  isActive: false,
 
   setWorkflowId: (id) => set({ workflowId: id }),
 
-  setInitialData: (nodes, edges) => set({ nodes, edges }),
+  setInitialData: (nodes, edges, startingNodeId, triggerType, triggerValue, isActive) => {
+    set({ nodes, edges, startingNodeId, triggerType, triggerValue, isActive })
+  },
 
-  addNode: async (node: Node) => {
+  updateWorkflowTrigger: async ({ workflowId, triggerType, triggerValue }) => {
+    // Update UI state immediately
+    set({ triggerType, triggerValue })
+
+    try {
+      const response = await updateWorkflowStartingNode({
+        workflowId,
+        startingNodeId: get().startingNodeId,
+        triggerType,
+        triggerValue
+      })
+
+      if (!response.success) {
+        throw new Error(response.error)
+      }
+    } catch (error) {
+      console.error('Failed to update workflow trigger:', error)
+      throw error
+    }
+  },
+
+  setStartingNodeId: (nodeId) => {
     const state = get()
     if (!state.workflowId) return
 
+    // Update UI state immediately
+    set({ startingNodeId: nodeId })
+
+    // Fire and forget API update
+    updateWorkflowStartingNode({
+      workflowId: state.workflowId,
+      startingNodeId: nodeId,
+      triggerType: state.triggerType || undefined,
+      triggerValue: state.triggerValue || undefined
+    }).catch((error: Error) => {
+      console.error('Failed to update starting node:', error)
+      toast.error('Failed to set starting node')
+      // Revert state on error
+      set({ startingNodeId: state.startingNodeId })
+    })
+  },
+
+  addNode: async (node: Node) => {
     try {
-      // Create node in the database
+      if (!get().workflowId) {
+        console.error('No workflow ID available')
+        return
+      }
+
       const response = await createNode({
-        workflowId: state.workflowId,
+        workflowId: get().workflowId || '',
         type: node.type || 'default',
-        name: node.type || 'default', // Using type as name for now
+        name: (node.data?.label as string) || node.type || 'Unnamed Node',
         positionX: Math.round(node.position.x),
         positionY: Math.round(node.position.y),
-        data: node.data as Record<string, unknown>
+        data: node.data || {}
       })
 
       if (response.success) {
@@ -77,10 +134,11 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
           }
 
           // Add the new node with database ID
-          newNodes.push({
+          const newNode = {
             ...node,
-            id: response.node.id // Use the database ID
-          })
+            id: response.node.id
+          }
+          newNodes.push(newNode)
 
           return { nodes: newNodes }
         })
@@ -90,20 +148,18 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     }
   },
 
-  removeNode: async (nodeId: string) => {
-    try {
-      const response = await deleteNode(nodeId)
-      
-      if (response.success) {
-        set((state) => ({
-          nodes: state.nodes.filter(n => n.id !== nodeId),
-          // Also remove any edges connected to this node
-          edges: state.edges.filter(e => e.source !== nodeId && e.target !== nodeId)
-        }))
-      }
-    } catch (error) {
+  removeNode: (nodeId: string) => {
+    set((state) => ({
+      nodes: state.nodes.filter(n => n.id !== nodeId),
+      edges: state.edges.filter(e => e.source !== nodeId && e.target !== nodeId),
+      startingNodeId: state.startingNodeId === nodeId ? null : state.startingNodeId
+    }))
+    
+    // Fire and forget delete request
+    deleteNode(nodeId).catch(error => {
+      toast.error('Failed to delete node')
       console.error('Failed to delete node:', error)
-    }
+    })
   },
 
   updateNodes: (changes) => {

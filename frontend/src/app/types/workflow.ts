@@ -1,3 +1,15 @@
+export enum TriggerType {
+  WEBHOOK = 'WEBHOOK',
+  REGULAR = 'REGULAR',
+  DAILY = 'DAILY'
+}
+
+export interface TriggerConfig {
+  type: TriggerType;
+  minutes?: number;
+  time?: string;
+}
+
 export interface Workflow {
   id: string;
   name: string;
@@ -6,6 +18,9 @@ export interface Workflow {
   createdAt: string;
   updatedAt: string;
   userId: string;
+  startingNodeId?: string;
+  triggerType?: TriggerType;
+  triggerValue?: string;
   nodes: WorkflowNode[];
   edges: WorkflowEdge[];
 }

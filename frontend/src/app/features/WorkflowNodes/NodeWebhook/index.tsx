@@ -22,9 +22,10 @@ export const NodeWebhook = memo(({ id }: NodeProps) => {
           <NodeBase
             id={id}
             title="Webhook"
-            description="Receive a request"
+            description="Trigger by webhook"
             icon={<WebhookIcon className="w-8 h-8" />}
-            color="#0284C7"
+            color="#4f46e5"
+            type="webhook"
             badgeNumber={1}
           />
         </div>

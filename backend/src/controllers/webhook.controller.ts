@@ -1,6 +1,5 @@
 import { Hono } from 'hono'
 import { PrismaClient } from '../generated/prisma/index.js'
-import type { Webhook } from '../generated/prisma/index.js'
 import { randomUUID } from 'crypto'
 import { authMiddleware } from '../middleware/auth.middleware.js'
 import type { AuthContext } from '../middleware/auth.middleware.js'

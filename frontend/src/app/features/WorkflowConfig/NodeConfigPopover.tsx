@@ -53,7 +53,9 @@ export const NodeConfigPopover = ({
     // }
   };
 
-  const handleTriggerClick = () => {
+  const handleTriggerClick = (ev: React.MouseEvent) => {
+    ev.stopPropagation();
+    ev.preventDefault();
     setOpen(true);
   };
 
