@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { PrismaClient } from '../generated/prisma/index.js'
 import { TriggerType } from '../generated/prisma/index.js'
 import { WorkflowTraversalService } from '../services/node.traversal.service.js'
+import { TraversalStrategy } from '../services/nodes/traversal/types.js'
 
 const prisma = new PrismaClient()
 const workflowTriggerRouter = new Hono()
@@ -68,13 +69,14 @@ workflowTriggerRouter.post('/workflow-by/:webhookId', async (c) => {
 
     // Traverse and process all nodes in the workflow
     const traversalService = new WorkflowTraversalService();
-    const nodesProcessed = await traversalService.traverse(
-      workflow.startingNodeId!,
-      workflow.nodes,
-      workflow.edges,
-      workflowRun.id,
-      requestBody
-    )
+    await traversalService.traverse({
+      startingNodeId: workflow.startingNodeId!,
+      nodes: workflow.nodes,
+      edges: workflow.edges,
+      workflowRunId: workflowRun.id,
+      initialInputData: requestBody,
+      strategy: TraversalStrategy.ROW_FIRST
+    })
 
      // Create a new workflow run
      prisma.workflowRun.update({

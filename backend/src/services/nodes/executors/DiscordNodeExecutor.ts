@@ -8,7 +8,7 @@ export class DiscordNodeExecutor implements NodeExecutor {
     try {
       const data = node.data as unknown as Record<string, unknown>;
       const config = data.config as unknown as DiscordNodeConfig;
-      console.log('config DiscordNodeExecutor', config)
+      // console.log('config DiscordNodeExecutor', config)
 
       // Parse template strings in config
       const parsedContent = templateParser.parse(config.content);
@@ -22,7 +22,7 @@ export class DiscordNodeExecutor implements NodeExecutor {
       }, {
         headers: { 'Content-Type': 'application/json' }
       });
-      console.log('response', response.status, response.data)
+      // console.log('response', response.status, response.data)
 
       return { 
         success: true, 

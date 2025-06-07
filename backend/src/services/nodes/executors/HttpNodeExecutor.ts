@@ -10,7 +10,7 @@ export class HttpNodeExecutor implements NodeExecutor {
       const config = data.config as unknown as HttpNodeConfig;
       const body = config.body;
       const headers = config.headers || {};
-      console.log('config', config)
+      // console.log('config', config)
       // Parse template strings in config
       const parsedUrl = templateParser.parse(config.url);
       const parsedHeaders = headers ? templateParser.parseObject(headers) : {};
@@ -25,7 +25,7 @@ export class HttpNodeExecutor implements NodeExecutor {
         params: parsedQueryParams
       });
 
-      console.log('response', response.data)
+      // console.log('response', response.data)
       
       return { success: true, output: response.data };
     } catch (error) {
