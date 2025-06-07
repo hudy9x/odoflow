@@ -24,6 +24,48 @@ import type { WorkflowTraversalService } from '../../node.traversal.service.js';
 import { nodeOutput } from '../NodeOutput.js';
 
 export class ColumnFirstStrategy implements ITraversalStrategy {
+  private _processedNodes: Set<string> = new Set();
+
+  public get processedNodesCount(): number {
+    return this._processedNodes.size;
+  }
+
+  private async processNode(
+    node: WorkflowNode,
+    currentNodeOutput: any,
+    workflowRunId: string,
+    edges: WorkflowEdge[],
+    nodes: WorkflowNode[],
+    service: WorkflowTraversalService
+  ): Promise<string[]> {
+    if (!node.shortId) {
+      return [];
+    }
+
+    const nextNodeIds = service.findNextNodes(node.id, edges);
+    const nextNodes: string[] = [];
+
+    for (const nextNodeId of nextNodeIds) {
+      const nextNode = service.getNode(nextNodeId);
+      if (!nextNode?.shortId) {
+        console.log(`⚠️ Next node ${nextNodeId} has no shortId, skipping...`);
+        continue;
+      }
+
+      if (!this._processedNodes.has(nextNodeId)) {
+        service.createNodeRunLog(nextNodeId, nodes, workflowRunId, currentNodeOutput);
+        const result = await service.runNode({ node: nextNode, workflowRunId });
+        if (result.success && nextNode.shortId) {
+          nodeOutput.setOutput(nextNode.shortId, result.output);
+        }
+        nextNodes.push(nextNodeId);
+        this._processedNodes.add(nextNodeId);
+      }
+    }
+
+    return nextNodes;
+  }
+
   async traverse(params: {
     startingNodeId: string,
     nodes: WorkflowNode[],
@@ -33,6 +75,7 @@ export class ColumnFirstStrategy implements ITraversalStrategy {
     service: WorkflowTraversalService
   }): Promise<number> {
     const { startingNodeId, nodes, edges, workflowRunId, initialInputData, service } = params;
+    this._processedNodes = new Set([startingNodeId]);
     await service.processStartingNode(startingNodeId, nodes, workflowRunId, initialInputData);
 
     let currentNodes = [startingNodeId];
@@ -44,12 +87,13 @@ export class ColumnFirstStrategy implements ITraversalStrategy {
         if (!node) continue;
 
         const currentOutput = node.shortId ? nodeOutput.getOutput(node.shortId) : null;
-        const nextNodes = await service.processNode(
+        const nextNodes = await this.processNode(
           node,
           currentOutput,
           workflowRunId,
           edges,
-          nodes
+          nodes,
+          service
         );
         nextLevelNodes.push(...nextNodes);
       }

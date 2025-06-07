@@ -17,32 +17,10 @@
  */
 
 import type { ITraversalStrategy } from './types.js';
-import { nodeOutput } from '../NodeOutput.js';
 import type { WorkflowNode, WorkflowEdge } from '../../../generated/prisma/index.js';
 import type { WorkflowTraversalService } from '../../node.traversal.service.js';
 
-interface NodeWithTimestamp {
-  id: string;
-  createdAt: Date;
-}
-
 export class RowFirstStrategy implements ITraversalStrategy {
-  private sortNodesByCreationTime(nodes: NodeWithTimestamp[]): string[] {
-    return nodes
-      .sort((a, b) => {
-        if (a.createdAt < b.createdAt) return -1;
-        if (a.createdAt > b.createdAt) return 1;
-        return 0;
-      })
-      .map((n: NodeWithTimestamp) => n.id);
-  }
-
-  private getNodesWithTimestamps(nodeIds: string[], nodes: WorkflowNode[]): NodeWithTimestamp[] {
-    return nodeIds
-      .map((id) => nodes.find((n) => n.id === id))
-      .filter((n): n is WorkflowNode => n !== undefined)
-      .map((n) => ({ id: n.id, createdAt: n.createdAt }));
-  }
 
   async traverse(params: {
     startingNodeId: string,

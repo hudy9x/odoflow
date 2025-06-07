@@ -1,4 +1,4 @@
-import { PrismaClient, TriggerType } from '../generated/prisma/index.js'
+import { PrismaClient } from '../generated/prisma/index.js'
 import type { WorkflowNode, WorkflowEdge } from '../generated/prisma/index.js'
 import { NodeExecutorFactory } from './nodes/NodeExecutorFactory.js'
 import type { NodeExecutionResult } from './nodes/types.js'
@@ -20,16 +20,15 @@ type TraversalParams = {
 export class WorkflowTraversalService {
   private prisma: PrismaClient;
   private nodeMap: Map<string, WorkflowNode>;
-  private processedNodes: Set<string>;
   private strategies: Map<TraversalStrategy, ITraversalStrategy>;
 
   constructor() {
     this.prisma = new PrismaClient();
     this.nodeMap = new Map();
-    this.processedNodes = new Set();
+
     
     // Initialize strategies
-    this.strategies = new Map([
+    this.strategies = new Map<TraversalStrategy, ITraversalStrategy>([
       [TraversalStrategy.COLUMN_FIRST, new ColumnFirstStrategy()],
       [TraversalStrategy.ROW_FIRST, new RowFirstStrategy()]
     ]);
@@ -164,47 +163,15 @@ export class WorkflowTraversalService {
     }
   }
 
-  public async processNode(
-    node: WorkflowNode,
-    currentNodeOutput: any,
-    workflowRunId: string,
-    edges: WorkflowEdge[],
-    nodes: WorkflowNode[]
-  ): Promise<string[]> {
-    if (!node.shortId) {
-      return [];
-    }
 
-    const nextNodeIds = this.findNextNodes(node.id, edges);
-    const nextNodes: string[] = [];
-
-    for (const nextNodeId of nextNodeIds) {
-      const nextNode = this.nodeMap.get(nextNodeId);
-      if (!nextNode?.shortId) {
-        console.log(`⚠️ Next node ${nextNodeId} has no shortId, skipping...`);
-        continue;
-      }
-
-      if (!this.processedNodes.has(nextNodeId)) {
-        this.createNodeRunLog(nextNodeId, nodes, workflowRunId, currentNodeOutput);
-        const result = await this.runNode({ node: nextNode, workflowRunId });
-        if (result.success) {
-          nodeOutput.setOutput(nextNode.shortId, result.output);
-        }
-        nextNodes.push(nextNodeId);
-        this.processedNodes.add(nextNodeId);
-      }
-    }
-
-    return nextNodes;
-  }
 
   public getNode(nodeId: string): WorkflowNode | undefined {
     return this.nodeMap.get(nodeId);
   }
 
   public getProcessedNodesCount(): number {
-    return this.processedNodes.size;
+    const strategy = this.strategies.get(TraversalStrategy.COLUMN_FIRST) as ColumnFirstStrategy;
+    return strategy?.processedNodesCount || 0;
   }
 
   public async traverse({
@@ -217,7 +184,7 @@ export class WorkflowTraversalService {
     console.log(`📊 Total nodes: ${nodes.length}, Total edges: ${edges.length}`);
     
     this.initializeWorkflow(nodes);
-    this.processedNodes = new Set([startingNodeId]);
+
 
     const selectedStrategy = this.strategies.get(strategy);
     if (!selectedStrategy) {
@@ -234,7 +201,7 @@ export class WorkflowTraversalService {
     });
 
     console.log(`
-🏁 Workflow traversal complete. Processed ${this.processedNodes.size} nodes total.
+🏁 Workflow traversal complete. Processed ${this.getProcessedNodesCount()} nodes total.
 `);
     return result;
   }
