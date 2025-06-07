@@ -53,8 +53,10 @@ export class ColumnFirstStrategy implements ITraversalStrategy {
       }
 
       if (!this._processedNodes.has(nextNodeId)) {
-        service.createNodeRunLog(nextNodeId, nodes, workflowRunId, currentNodeOutput);
+        const logId = service.createNodeRunLog(nextNodeId, nodes, workflowRunId, currentNodeOutput);
         const result = await service.runNode({ node: nextNode, workflowRunId });
+        // Fire and forget - don't await
+        service.updateNodeLog(logId, result);
         if (result.success && nextNode.shortId) {
           nodeOutput.setOutput(nextNode.shortId, result.output);
         }

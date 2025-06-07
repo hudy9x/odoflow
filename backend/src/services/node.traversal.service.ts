@@ -7,6 +7,7 @@ import type { ITraversalStrategy } from './nodes/traversal/types.js';
 import { TraversalStrategy } from './nodes/traversal/types.js';
 import { ColumnFirstStrategy } from './nodes/traversal/ColumnFirstStrategy.js'
 import { RowFirstStrategy } from './nodes/traversal/RowFirstStrategy.js'
+import { NodeRunLogger } from './nodes/NodeRunLogger.js'
 
 type TraversalParams = {
   startingNodeId: string,
@@ -21,11 +22,12 @@ export class WorkflowTraversalService {
   private prisma: PrismaClient;
   private nodeMap: Map<string, WorkflowNode>;
   private strategies: Map<TraversalStrategy, ITraversalStrategy>;
+  private nodeLogger: NodeRunLogger;
 
   constructor() {
     this.prisma = new PrismaClient();
     this.nodeMap = new Map();
-
+    this.nodeLogger = new NodeRunLogger(this.prisma);
     
     // Initialize strategies
     this.strategies = new Map<TraversalStrategy, ITraversalStrategy>([
@@ -40,24 +42,17 @@ export class WorkflowTraversalService {
       .map(edge => edge.targetId)
   }
 
-  public async createNodeRunLog(nodeId: string, nodes: WorkflowNode[], workflowRunId: string, inputData: any = null) {
-    const node = nodes.find(n => n.id === nodeId)
+  public createNodeRunLog(nodeId: string, nodes: WorkflowNode[], workflowRunId: string, inputData: any = null): string {
+    const node = nodes.find(n => n.id === nodeId);
     if (!node) {
-      console.log(`⚠️ Node not found: ${nodeId}`)
-      return
+      console.log(`⚠️ Node not found: ${nodeId}`);
+      return '';
     }
     
-    await this.prisma.workflowRunLog.create({
-      data: {
-        workflowRunId,
-        nodeId: node.id,
-        nodeType: node.type,
-        nodeName: node.name,
-        status: 'STARTED',
-        inputData: inputData || null
-      }
-    })
-    
+    const logId = this.nodeLogger.generateLogId();
+    // Fire and forget - don't await
+    this.nodeLogger.createLog({ logId, workflowRunId, node, inputData });
+    return logId;
   }
 
   public createNodeMap(nodes: WorkflowNode[]) {
@@ -79,59 +74,11 @@ export class WorkflowTraversalService {
     const executor = NodeExecutorFactory.getExecutor(node.type);
     const result = await executor.execute(node);
     
-    // Update the run log with the execution result
-    const runLog = await this.prisma.workflowRunLog.findFirst({
-      where: {
-        nodeId: node.id,
-        status: 'STARTED',
-        workflowRunId
-      }
-    });
-
-    if (!runLog) {
-      throw new Error(`Run log not found for node ${node.id}`);
-    }
-
-    await this.prisma.workflowRunLog.update({
-      where: {
-        id: runLog.id
-      },
-      data: {
-        status: result.success ? 'COMPLETED' : 'FAILED',
-        outputData: result.output ? JSON.parse(JSON.stringify(result.output)) : null,
-        error: result.error ? JSON.parse(JSON.stringify(result.error)) : null,
-        completedAt: new Date(),
-        durationMs: Date.now() - new Date().getTime()
-      }
-    });
-
     return result;
   } catch (error) {
     console.error(`❌ Error running node ${node.name}:`, error);
-    const runLog = await this.prisma.workflowRunLog.findFirst({
-      where: {
-        nodeId: node.id,
-        status: 'STARTED',
-        workflowRunId
-      }
-    });
-
-    if (!runLog) {
-      throw new Error(`Run log not found for node ${node.id}`);
-    }
-
-    await this.prisma.workflowRunLog.update({
-      where: {
-        id: runLog.id
-      },
-      data: {
-        status: 'FAILED',
-        error: error instanceof Error ? { message: error.message } : { message: 'Unknown error' },
-        completedAt: new Date(),
-        durationMs: Date.now() - new Date().getTime()
-      }
-    });
     return { success: false, error };
+
   }
 }
 
@@ -167,6 +114,11 @@ export class WorkflowTraversalService {
 
   public getNode(nodeId: string): WorkflowNode | undefined {
     return this.nodeMap.get(nodeId);
+  }
+
+  public updateNodeLog(logId: string, result: NodeExecutionResult): void {
+    // Fire and forget - don't await
+    this.nodeLogger.updateLog({ logId, result });
   }
 
   public getProcessedNodesCount(): number {

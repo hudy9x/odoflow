@@ -44,12 +44,15 @@ export class RowFirstStrategy implements ITraversalStrategy {
         const targetNode = nodes.find(node => node.id === edge.targetId)
         if (!targetNode) continue
 
-        service.createNodeRunLog(targetNode.id, nodes, workflowRunId, null);
+        const logId = service.createNodeRunLog(targetNode.id, nodes, workflowRunId, null);
 
         const result = await service.runNode({
           node: targetNode,
           workflowRunId
-        })
+        });
+        
+        // Fire and forget - don't await
+        service.updateNodeLog(logId, result)
 
         if (!result.success) {
           console.log(`Failed to run node ${targetNode.id}: ${result.error}`)
