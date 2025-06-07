@@ -8,6 +8,7 @@ import { DiscordNodeConfig } from './types';
 interface NodeData {
   id: string;
   config?: DiscordNodeConfig;
+  shortId?: string;
 }
 
 export interface NodeProps {
@@ -15,7 +16,7 @@ export interface NodeProps {
   data: NodeData;
 }
 
-export const NodeDiscord = memo(({ id }: NodeProps) => {
+export const NodeDiscord = memo(({ id, data }: NodeProps) => {
   return (
     <NodeConfigPopover
       trigger={
@@ -28,6 +29,7 @@ export const NodeDiscord = memo(({ id }: NodeProps) => {
             color="#5865F2"
             type="discord"
             badgeNumber={1}
+            shortId={data.shortId}
           />
         </div>
       }

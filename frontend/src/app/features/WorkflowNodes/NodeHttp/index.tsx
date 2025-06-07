@@ -18,6 +18,7 @@ interface NodeData {
     };
     formData?: Record<string, string>;
   };
+  shortId?: string;
 }
 
 export interface NodeProps {
@@ -25,7 +26,7 @@ export interface NodeProps {
   data: NodeData;
 }
 
-export const NodeHttp = memo(({ id }: NodeProps) => {
+export const NodeHttp = memo(({ id, data }: NodeProps) => {
   return (
     <NodeConfigPopover
       width='w-[400px]'
@@ -39,6 +40,7 @@ export const NodeHttp = memo(({ id }: NodeProps) => {
             color="#0284C7"
             type="http"
             badgeNumber={1}
+            shortId={data.shortId}
           />
         </div>
       }

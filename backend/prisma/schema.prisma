@@ -55,6 +55,7 @@ model Workflow {
 
 model WorkflowNode {
   id         String   @id @default(uuid())
+  shortId    String?  // Format: {type_prefix}_{nanoid(3)} e.g. "http_abc"
   workflowId String
   type       String   // e.g., "webhookTrigger", "apiCall"
   name       String
@@ -63,6 +64,8 @@ model WorkflowNode {
   data       Json     // PostgreSQL JSONB for flexible configuration
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@unique([workflowId, shortId])
 
   // Relationships
   workflow      Workflow       @relation(fields: [workflowId], references: [id])

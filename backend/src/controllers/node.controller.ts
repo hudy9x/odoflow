@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { PrismaClient } from '../generated/prisma/index.js'
+import { generateUniqueShortId } from '../utils/shortId.js'
 import { authMiddleware } from '../middleware/auth.middleware.js'
 import type { AuthContext } from '../middleware/auth.middleware.js'
 
@@ -44,6 +45,7 @@ nodeRouter.post('/', async (c: AuthContext) => {
     // Start a transaction since we might need to create both node and edge
     const result = await prisma.$transaction(async (tx) => {
       // Create the node
+      const shortId = await generateUniqueShortId(body.workflowId, body.type);
       const node = await tx.workflowNode.create({
         data: {
           workflowId: body.workflowId,
@@ -51,7 +53,8 @@ nodeRouter.post('/', async (c: AuthContext) => {
           name: body.name,
           positionX: body.positionX,
           positionY: body.positionY,
-          data: body.data
+          data: body.data,
+          shortId
         }
       })
 

@@ -36,7 +36,10 @@ export default function WorkflowDetail({ id }: { id: string }) {
               id: node.id,
               type: node.type,
               position: { x: node.positionX, y: node.positionY },
-              data: node.data || {}
+              data: {
+                ...node.data,
+                shortId: node.shortId
+              }
             })) : 
             [{
               id: `create-${Math.random().toString(36).substr(2, 9)}`,

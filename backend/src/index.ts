@@ -7,6 +7,8 @@ import workflowRouter from './controllers/workflow.controller.js'
 import authRouter from './controllers/auth.controller.js'
 import nodeRouter from './controllers/node.controller.js'
 import webhookRouter from './controllers/webhook.controller.js'
+import workflowTriggerRouter from './controllers/workflow.trigger.controller.js'
+import migrationRouter from './controllers/migration.controller.js'
 
 export const app = new Hono()
 
@@ -32,6 +34,8 @@ app.route('/api/workflow', workflowRouter)
 app.route('/api/auth', authRouter)
 app.route('/api/node', nodeRouter)
 app.route('/api', webhookRouter) // Webhook routes are mounted at /api/webhooks
+app.route('/api/trigger', workflowTriggerRouter) // Workflow trigger routes
+app.route('/api', migrationRouter) // Migration routes
 
 // Start the server only if not in test environment
 if (process.env.NODE_ENV !== 'test') {
