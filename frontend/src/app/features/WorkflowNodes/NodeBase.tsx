@@ -13,9 +13,10 @@ interface NodeBaseProps {
   color: string;
   noEdges?: boolean;
   type?: string;
+  shortId?: string;
 }
 
-export function NodeBase({ id, title, description, icon, onClick, color, noEdges, type }: NodeBaseProps) {
+export function NodeBase({ id, title, description, icon, onClick, color, noEdges, type, shortId }: NodeBaseProps) {
   const content = (
     <div className="group relative cursor-pointer" onClick={onClick}>
 
@@ -45,9 +46,10 @@ export function NodeBase({ id, title, description, icon, onClick, color, noEdges
       {id && <NodeTrigger nodeId={id} nodeType={type || ''} />}
 
       {/* Node label */}
-      <div className="mt-2 text-center absolute -bottom-1/2 left-0 w-full">
+      <div className="mt-2 text-center absolute -bottom-[70px] left-0 w-full">
         <h3 className="font-medium text-sm">{title}</h3>
         <p className="text-xs text-muted-foreground whitespace-nowrap">{description}</p>
+        {shortId && <p className="text-xs text-muted-foreground whitespace-nowrap mt-1 font-mono">{shortId}</p>}
       </div>
     </div>
   )

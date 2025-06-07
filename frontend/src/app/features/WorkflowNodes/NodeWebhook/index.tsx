@@ -7,6 +7,7 @@ import { NodeWebhookConfigForm } from './NodeWebhookConfigForm';
 interface NodeData {
   webhookId?: string;
   url?: string;
+  shortId?: string;
 }
 
 export interface NodeProps {
@@ -14,7 +15,7 @@ export interface NodeProps {
   data: NodeData;
 }
 
-export const NodeWebhook = memo(({ id }: NodeProps) => {
+export const NodeWebhook = memo(({ id, data }: NodeProps) => {
   return (
     <NodeConfigPopover
       trigger={
@@ -27,6 +28,7 @@ export const NodeWebhook = memo(({ id }: NodeProps) => {
             color="#4f46e5"
             type="webhook"
             badgeNumber={1}
+            shortId={data.shortId}
           />
         </div>
       }

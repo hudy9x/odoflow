@@ -1,10 +1,13 @@
-import { nodeOutput } from './NodeOutput.js';
+import { NodeOutput } from './NodeOutput.js';
 
 export class TemplateParser {
   private static instance: TemplateParser;
   private readonly TEMPLATE_PATTERN = /\{\{([^.}]+)\.([^}]+)\}\}/g;
+  private readonly nodeOutput: NodeOutput;
 
-  private constructor() {}
+  private constructor() {
+    this.nodeOutput = NodeOutput.getInstance();
+  }
 
   static getInstance(): TemplateParser {
     if (!TemplateParser.instance) {
@@ -13,12 +16,23 @@ export class TemplateParser {
     return TemplateParser.instance;
   }
 
+  /**
+   * Parse a template string, replacing {{shortId.field}} with actual values
+   * Example: {{http_abc.response}} will be replaced with the 'response' field
+   * from the output of the node with shortId 'http_abc'
+   */
   parse(template: string | undefined): string {
     if (!template) return '';
     
-    return template.replace(this.TEMPLATE_PATTERN, (match, nodeId, field) => {
-      const nodeData = nodeOutput.getOutput(nodeId);
-      return nodeData?.[field]?.toString() ?? match;
+    return template.replace(this.TEMPLATE_PATTERN, (match, shortId, field) => {
+      try {
+        const nodeData = this.nodeOutput.getOutput(shortId);
+        return nodeData?.[field]?.toString() ?? match;
+      } catch (error) {
+        // If shortId is not found, return the original template
+        console.warn(`Template parse warning: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        return match;
+      }
     });
   }
 

@@ -50,14 +50,14 @@ export class WorkflowTraversalService {
     nodes.forEach(node => this.nodeMap.set(node.id, node))
   }
 
-  private async runNode(
-    node: WorkflowNode | undefined,
-    inputData: any = null,
-    workflowRunId: string
-  ): Promise<NodeExecutionResult> {
-  if (!node) {
-    return { success: false, error: 'Node not found' };
-  }
+  private async runNode(params: {
+    node: WorkflowNode;
+    workflowRunId: string;
+  }): Promise<NodeExecutionResult> {
+    const { node, workflowRunId } = params;
+    if (!node) {
+      return { success: false, error: 'Node not found' };
+    }
 
   try {
     console.log(`🔄 Running node: ${node.name} (${node.type})`);
@@ -120,6 +120,76 @@ export class WorkflowTraversalService {
   }
 }
 
+  private initializeWorkflow(nodes: WorkflowNode[]) {
+    this.createNodeMap(nodes);
+    nodeOutput.clear();
+    
+    // Map node IDs to shortIds for the entire workflow
+    this.nodeMap.forEach((node) => {
+      if (node.shortId) {
+        nodeOutput.mapId(node.shortId, node.id);
+      }
+    });
+  }
+
+  private async processStartingNode(
+    startingNodeId: string,
+    nodes: WorkflowNode[],
+    workflowRunId: string,
+    initialInputData: any
+  ) {
+    console.log(`🎬 Processing starting node: ${startingNodeId}`);
+    await this.createNodeRunLog(startingNodeId, nodes, workflowRunId, initialInputData);
+    
+    const startNode = this.nodeMap.get(startingNodeId);
+    if (startNode?.type === 'webhook' && startNode.shortId) {
+      console.log('Setting webhook node initial output:', initialInputData);
+      nodeOutput.setOutput(startNode.shortId, initialInputData);
+    } else {
+      console.log('Starting node is not webhook, no initial output set');
+    }
+  }
+
+  private async processNode(
+    node: WorkflowNode,
+    currentNodeOutput: any,
+    workflowRunId: string,
+    edges: WorkflowEdge[],
+    nodes: WorkflowNode[]
+  ): Promise<string[]> {
+    if (!node.shortId) {
+      console.log(`⚠️ Node ${node.id} has no shortId, skipping...`);
+      return [];
+    }
+
+    const nextNodeIds = this.findNextNodes(node.id, edges);
+    console.log(`🔍 Found ${nextNodeIds.length} next nodes for node ${node.shortId}`);
+    const nextNodes: string[] = [];
+
+    for (const nextNodeId of nextNodeIds) {
+      const nextNode = this.nodeMap.get(nextNodeId);
+      if (!nextNode?.shortId) {
+        console.log(`⚠️ Next node ${nextNodeId} has no shortId, skipping...`);
+        continue;
+      }
+
+      if (!this.processedNodes.has(nextNodeId)) {
+        console.log(`⏭️ Processing next node: ${nextNode.shortId}`);
+        await this.createNodeRunLog(nextNodeId, nodes, workflowRunId, currentNodeOutput);
+        const result = await this.runNode({ node: nextNode, workflowRunId });
+        if (result.success) {
+          nodeOutput.setOutput(nextNode.shortId, result.output);
+        }
+        nextNodes.push(nextNodeId);
+        this.processedNodes.add(nextNodeId);
+      } else {
+        console.log(`⏩ Skipping already processed node: ${nextNode.shortId}`);
+      }
+    }
+
+    return nextNodes;
+  }
+
   public async traverse(
     startingNodeId: string,
     nodes: WorkflowNode[],
@@ -127,63 +197,43 @@ export class WorkflowTraversalService {
     workflowRunId: string,
     initialInputData: any = null
   ): Promise<number> {
-  console.log('🚀 Starting workflow traversal ===========================================');
-  console.log(`📊 Total nodes: ${nodes.length}, Total edges: ${edges.length}`);
-  this.createNodeMap(nodes);
-  nodeOutput.clear();
-  this.processedNodes = new Set([startingNodeId]);
+    console.log('🚀 Starting workflow traversal ===========================================');
+    console.log(`📊 Total nodes: ${nodes.length}, Total edges: ${edges.length}`);
+    
+    this.initializeWorkflow(nodes);
+    this.processedNodes = new Set([startingNodeId]);
+    
+    await this.processStartingNode(startingNodeId, nodes, workflowRunId, initialInputData);
 
-  // Create run log for starting node
-  console.log(`🎬 Processing starting node: ${startingNodeId}`);
-  await this.createNodeRunLog(startingNodeId, nodes, workflowRunId, initialInputData);
-  
-  const startNode = this.nodeMap.get(startingNodeId);
-  if (startNode?.type === 'webhook') {
-    console.log('first node output', initialInputData)
-    nodeOutput.setOutput(startingNodeId, initialInputData);
-  } else {
-    console.log('DO NOTING, start node is not webhook')
-    // const startResult = await runNode(startNode, initialInputData, workflowRunId);
-    // if (startResult.success) {
-    //   nodeOutputs.set(startingNodeId, startResult.output);
-    // }  
-  }
-
-  // Process subsequent nodes
-  let currentNodes = [startingNodeId];
-  while (currentNodes.length > 0) {
-    const nextNodes: string[] = [];
-    console.log(`
+    // Process subsequent nodes level by level
+    let currentNodes = [startingNodeId];
+    while (currentNodes.length > 0) {
+      console.log(`
 👉 Processing level with ${currentNodes.length} nodes`);
-    
-    for (const nodeId of currentNodes) {
-      const nextNodeIds = this.findNextNodes(nodeId, edges);
-      console.log(`🔍 Found ${nextNodeIds.length} next nodes for node ${nodeId}`);
-      const currentNodeOutput = nodeOutput.getOutput(nodeId);
       
-      for (const nextNodeId of nextNodeIds) {
-        if (!this.processedNodes.has(nextNodeId)) {
-          console.log(`⏭️ Processing next node: ${nextNodeId}`);
-          await this.createNodeRunLog(nextNodeId, nodes, workflowRunId, currentNodeOutput);
-          const result = await this.runNode(this.nodeMap.get(nextNodeId), currentNodeOutput, workflowRunId);
-          if (result.success) {
-            nodeOutput.setOutput(nextNodeId, result.output);
-          }
-          nextNodes.push(nextNodeId);
-          this.processedNodes.add(nextNodeId);
-        } else {
-          console.log(`⏩ Skipping already processed node: ${nextNodeId}`);
-        }
-      }
-    }
-    
-    currentNodes = nextNodes;
-    console.log(`✨ Level complete. Next level has ${nextNodes.length} nodes`);
-  }
+      const nextLevelNodes: string[] = [];
+      for (const nodeId of currentNodes) {
+        const node = this.nodeMap.get(nodeId);
+        if (!node) continue;
 
-  console.log(`
+        const currentOutput = node.shortId ? nodeOutput.getOutput(node.shortId) : null;
+        const nextNodes = await this.processNode(
+          node,
+          currentOutput,
+          workflowRunId,
+          edges,
+          nodes
+        );
+        nextLevelNodes.push(...nextNodes);
+      }
+      
+      currentNodes = nextLevelNodes;
+      console.log(`✨ Level complete. Next level has ${nextLevelNodes.length} nodes`);
+    }
+
+    console.log(`
 🏁 Workflow traversal complete. Processed ${this.processedNodes.size} nodes total.
 `);
-  return this.processedNodes.size; // Return number of nodes processed
+    return this.processedNodes.size;
   }
 }
