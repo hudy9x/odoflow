@@ -19,7 +19,7 @@ export function NodeTrigger({ nodeId, nodeType }: NodeTriggerProps) {
     <NodeConfigPopover
       trigger={
         <div 
-          className="absolute -bottom-2 -left-6 bg-primary text-primary-foreground rounded-full border-4 border-white p-1 cursor-pointer"
+          className="absolute -bottom-2 -left-6 bg-primary text-primary-foreground rounded-full border-4 border-white p-1 cursor-pointer shadow-md hover:shadow-xl hover:scale-110 transition-all"
           title="Configure Trigger"
         >
           <Zap className="h-8 w-8 p-2" />
