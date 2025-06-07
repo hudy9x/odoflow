@@ -2,51 +2,59 @@ import { PrismaClient, TriggerType } from '../generated/prisma/index.js'
 import type { WorkflowNode, WorkflowEdge } from '../generated/prisma/index.js'
 import { NodeExecutorFactory } from './nodes/NodeExecutorFactory.js'
 import type { NodeExecutionResult } from './nodes/types.js'
+import { nodeOutput } from './nodes/NodeOutput.js'
 
-const prisma = new PrismaClient()
+export class WorkflowTraversalService {
+  private prisma: PrismaClient;
+  private nodeMap: Map<string, WorkflowNode>;
+  private processedNodes: Set<string>;
 
-// Function to find next nodes
-const findNextNodes = (currentNodeId: string, edges: WorkflowEdge[]): string[] => {
-  return edges
-    .filter(edge => edge.sourceId === currentNodeId)
-    .map(edge => edge.targetId)
-}
+  constructor() {
+    this.prisma = new PrismaClient();
+    this.nodeMap = new Map();
 
-// Function to create run log for a node
-const createNodeRunLog = async (nodeId: string, nodes: WorkflowNode[], workflowRunId: string, inputData: any = null) => {
-  const node = nodes.find(n => n.id === nodeId)
-  if (!node) {
-    console.log(`⚠️ Node not found: ${nodeId}`)
-    return
+    this.processedNodes = new Set();
   }
 
-  console.log(`📝 Creating run log for node: ${node.name} (${node.type})`)
-  
-  await prisma.workflowRunLog.create({
-    data: {
-      workflowRunId,
-      nodeId: node.id,
-      nodeType: node.type,
-      nodeName: node.name,
-      status: 'STARTED',
-      inputData: inputData || null
+  private findNextNodes(currentNodeId: string, edges: WorkflowEdge[]): string[] {
+    return edges
+      .filter(edge => edge.sourceId === currentNodeId)
+      .map(edge => edge.targetId)
+  }
+
+  private async createNodeRunLog(nodeId: string, nodes: WorkflowNode[], workflowRunId: string, inputData: any = null) {
+    const node = nodes.find(n => n.id === nodeId)
+    if (!node) {
+      console.log(`⚠️ Node not found: ${nodeId}`)
+      return
     }
-  })
-  
-  console.log(`✅ Run log created for node: ${node.name}`)
-}
 
-function createNodeMap(nodes: WorkflowNode[]) {
-  const nodeMap = new Map<string, WorkflowNode>()
-  nodes.forEach(node => nodeMap.set(node.id, node))
-  return nodeMap
-}
+    console.log(`📝 Creating run log for node: ${node.name} (${node.type})`)
+    
+    await this.prisma.workflowRunLog.create({
+      data: {
+        workflowRunId,
+        nodeId: node.id,
+        nodeType: node.type,
+        nodeName: node.name,
+        status: 'STARTED',
+        inputData: inputData || null
+      }
+    })
+    
+    console.log(`✅ Run log created for node: ${node.name}`)
+  }
 
-async function runNode(
-  node: WorkflowNode | undefined,
-  inputData: any = null,
-  workflowRunId: string
-): Promise<NodeExecutionResult> {
+  private createNodeMap(nodes: WorkflowNode[]) {
+    this.nodeMap = new Map<string, WorkflowNode>()
+    nodes.forEach(node => this.nodeMap.set(node.id, node))
+  }
+
+  private async runNode(
+    node: WorkflowNode | undefined,
+    inputData: any = null,
+    workflowRunId: string
+  ): Promise<NodeExecutionResult> {
   if (!node) {
     return { success: false, error: 'Node not found' };
   }
@@ -54,10 +62,10 @@ async function runNode(
   try {
     console.log(`🔄 Running node: ${node.name} (${node.type})`);
     const executor = NodeExecutorFactory.getExecutor(node.type);
-    const result = await executor.execute(node, inputData);
+    const result = await executor.execute(node);
     
     // Update the run log with the execution result
-    const runLog = await prisma.workflowRunLog.findFirst({
+    const runLog = await this.prisma.workflowRunLog.findFirst({
       where: {
         nodeId: node.id,
         status: 'STARTED',
@@ -69,7 +77,7 @@ async function runNode(
       throw new Error(`Run log not found for node ${node.id}`);
     }
 
-    await prisma.workflowRunLog.update({
+    await this.prisma.workflowRunLog.update({
       where: {
         id: runLog.id
       },
@@ -85,7 +93,7 @@ async function runNode(
     return result;
   } catch (error) {
     console.error(`❌ Error running node ${node.name}:`, error);
-    const runLog = await prisma.workflowRunLog.findFirst({
+    const runLog = await this.prisma.workflowRunLog.findFirst({
       where: {
         nodeId: node.id,
         status: 'STARTED',
@@ -97,7 +105,7 @@ async function runNode(
       throw new Error(`Run log not found for node ${node.id}`);
     }
 
-    await prisma.workflowRunLog.update({
+    await this.prisma.workflowRunLog.update({
       where: {
         id: runLog.id
       },
@@ -112,27 +120,27 @@ async function runNode(
   }
 }
 
-// Main traversal function
-export const traverseWorkflowNodes = async (
-  startingNodeId: string,
-  nodes: WorkflowNode[],
-  edges: WorkflowEdge[],
-  workflowRunId: string,
-  initialInputData: any = null
-) => {
+  public async traverse(
+    startingNodeId: string,
+    nodes: WorkflowNode[],
+    edges: WorkflowEdge[],
+    workflowRunId: string,
+    initialInputData: any = null
+  ): Promise<number> {
   console.log('🚀 Starting workflow traversal ===========================================');
   console.log(`📊 Total nodes: ${nodes.length}, Total edges: ${edges.length}`);
-  const nodeMap = createNodeMap(nodes);
-  const nodeOutputs = new Map<string, any>();
+  this.createNodeMap(nodes);
+  nodeOutput.clear();
+  this.processedNodes = new Set([startingNodeId]);
 
   // Create run log for starting node
   console.log(`🎬 Processing starting node: ${startingNodeId}`);
-  await createNodeRunLog(startingNodeId, nodes, workflowRunId, initialInputData);
+  await this.createNodeRunLog(startingNodeId, nodes, workflowRunId, initialInputData);
   
-  const startNode = nodeMap.get(startingNodeId);
+  const startNode = this.nodeMap.get(startingNodeId);
   if (startNode?.type === 'webhook') {
     console.log('first node output', initialInputData)
-    nodeOutputs.set(startingNodeId, initialInputData);
+    nodeOutput.setOutput(startingNodeId, initialInputData);
   } else {
     console.log('DO NOTING, start node is not webhook')
     // const startResult = await runNode(startNode, initialInputData, workflowRunId);
@@ -143,28 +151,26 @@ export const traverseWorkflowNodes = async (
 
   // Process subsequent nodes
   let currentNodes = [startingNodeId];
-  const processedNodes = new Set([startingNodeId]);
-
   while (currentNodes.length > 0) {
     const nextNodes: string[] = [];
     console.log(`
 👉 Processing level with ${currentNodes.length} nodes`);
     
     for (const nodeId of currentNodes) {
-      const nextNodeIds = findNextNodes(nodeId, edges);
+      const nextNodeIds = this.findNextNodes(nodeId, edges);
       console.log(`🔍 Found ${nextNodeIds.length} next nodes for node ${nodeId}`);
-      const currentNodeOutput = nodeOutputs.get(nodeId);
+      const currentNodeOutput = nodeOutput.getOutput(nodeId);
       
       for (const nextNodeId of nextNodeIds) {
-        if (!processedNodes.has(nextNodeId)) {
+        if (!this.processedNodes.has(nextNodeId)) {
           console.log(`⏭️ Processing next node: ${nextNodeId}`);
-          await createNodeRunLog(nextNodeId, nodes, workflowRunId, currentNodeOutput);
-          const result = await runNode(nodeMap.get(nextNodeId), currentNodeOutput, workflowRunId);
+          await this.createNodeRunLog(nextNodeId, nodes, workflowRunId, currentNodeOutput);
+          const result = await this.runNode(this.nodeMap.get(nextNodeId), currentNodeOutput, workflowRunId);
           if (result.success) {
-            nodeOutputs.set(nextNodeId, result.output);
+            nodeOutput.setOutput(nextNodeId, result.output);
           }
           nextNodes.push(nextNodeId);
-          processedNodes.add(nextNodeId);
+          this.processedNodes.add(nextNodeId);
         } else {
           console.log(`⏩ Skipping already processed node: ${nextNodeId}`);
         }
@@ -176,7 +182,8 @@ export const traverseWorkflowNodes = async (
   }
 
   console.log(`
-🏁 Workflow traversal complete. Processed ${processedNodes.size} nodes total.
+🏁 Workflow traversal complete. Processed ${this.processedNodes.size} nodes total.
 `);
-  return processedNodes.size; // Return number of nodes processed
+  return this.processedNodes.size; // Return number of nodes processed
+  }
 }

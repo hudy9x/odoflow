@@ -1,7 +1,7 @@
 import type { WorkflowNode } from '../../generated/prisma/index.js'
 
 export interface NodeExecutor {
-  execute(node: WorkflowNode, inputData: any): Promise<NodeExecutionResult>;
+  execute(node: WorkflowNode): Promise<NodeExecutionResult>;
 }
 
 export interface NodeExecutionResult {
@@ -14,12 +14,21 @@ export interface HttpNodeConfig {
   url: string;
   method: string;
   headers?: Record<string, string>;
-  body?: any;
+  body?: {
+    contentType: string,
+    requestContent: string
+  },
+  bodyType?: string,
+  queryParams?: Record<string, string>
 }
 
 export interface DiscordNodeConfig {
-  webhookUrl: string;
-  message: any;
+  tts: boolean,
+  content: string,
+  username: string,
+  avatarUrl: string,
+  webhookUrl: string,
+  messageType: string
 }
 
 export interface WebhookNodeConfig {
