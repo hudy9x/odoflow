@@ -28,8 +28,6 @@ export class WorkflowTraversalService {
       console.log(`⚠️ Node not found: ${nodeId}`)
       return
     }
-
-    console.log(`📝 Creating run log for node: ${node.name} (${node.type})`)
     
     await this.prisma.workflowRunLog.create({
       data: {
@@ -42,7 +40,6 @@ export class WorkflowTraversalService {
       }
     })
     
-    console.log(`✅ Run log created for node: ${node.name}`)
   }
 
   private createNodeMap(nodes: WorkflowNode[]) {
@@ -60,7 +57,7 @@ export class WorkflowTraversalService {
     }
 
   try {
-    console.log(`🔄 Running node: ${node.name} (${node.type})`);
+    console.log(` Running node: ${node.name} (${node.type}) ////////////////////////////`);
     const executor = NodeExecutorFactory.getExecutor(node.type);
     const result = await executor.execute(node);
     
@@ -139,14 +136,11 @@ export class WorkflowTraversalService {
     initialInputData: any
   ) {
     console.log(`🎬 Processing starting node: ${startingNodeId}`);
-    await this.createNodeRunLog(startingNodeId, nodes, workflowRunId, initialInputData);
+    this.createNodeRunLog(startingNodeId, nodes, workflowRunId, initialInputData);
     
     const startNode = this.nodeMap.get(startingNodeId);
     if (startNode?.type === 'webhook' && startNode.shortId) {
-      console.log('Setting webhook node initial output:', initialInputData);
       nodeOutput.setOutput(startNode.shortId, initialInputData);
-    } else {
-      console.log('Starting node is not webhook, no initial output set');
     }
   }
 
@@ -158,12 +152,10 @@ export class WorkflowTraversalService {
     nodes: WorkflowNode[]
   ): Promise<string[]> {
     if (!node.shortId) {
-      console.log(`⚠️ Node ${node.id} has no shortId, skipping...`);
       return [];
     }
 
     const nextNodeIds = this.findNextNodes(node.id, edges);
-    console.log(`🔍 Found ${nextNodeIds.length} next nodes for node ${node.shortId}`);
     const nextNodes: string[] = [];
 
     for (const nextNodeId of nextNodeIds) {
@@ -174,16 +166,13 @@ export class WorkflowTraversalService {
       }
 
       if (!this.processedNodes.has(nextNodeId)) {
-        console.log(`⏭️ Processing next node: ${nextNode.shortId}`);
-        await this.createNodeRunLog(nextNodeId, nodes, workflowRunId, currentNodeOutput);
+        this.createNodeRunLog(nextNodeId, nodes, workflowRunId, currentNodeOutput);
         const result = await this.runNode({ node: nextNode, workflowRunId });
         if (result.success) {
           nodeOutput.setOutput(nextNode.shortId, result.output);
         }
         nextNodes.push(nextNodeId);
         this.processedNodes.add(nextNodeId);
-      } else {
-        console.log(`⏩ Skipping already processed node: ${nextNode.shortId}`);
       }
     }
 
@@ -208,8 +197,6 @@ export class WorkflowTraversalService {
     // Process subsequent nodes level by level
     let currentNodes = [startingNodeId];
     while (currentNodes.length > 0) {
-      console.log(`
-👉 Processing level with ${currentNodes.length} nodes`);
       
       const nextLevelNodes: string[] = [];
       for (const nodeId of currentNodes) {
@@ -228,7 +215,6 @@ export class WorkflowTraversalService {
       }
       
       currentNodes = nextLevelNodes;
-      console.log(`✨ Level complete. Next level has ${nextLevelNodes.length} nodes`);
     }
 
     console.log(`
