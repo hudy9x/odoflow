@@ -76,6 +76,17 @@ workflowTriggerRouter.post('/workflow-by/:webhookId', async (c) => {
       requestBody
     )
 
+     // Create a new workflow run
+     prisma.workflowRun.update({
+      where: {
+        id: workflowRun.id
+      },
+      data: {
+        status: 'COMPLETED',
+        completedAt: new Date()
+      }
+    })
+
     return c.json({ 
       success: true, 
       workflowRunId: workflowRun.id,
