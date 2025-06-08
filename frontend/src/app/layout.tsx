@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OdoFlow",
+  title: "odoflow",
   description: "Workflow Automation Platform",
 };
 
