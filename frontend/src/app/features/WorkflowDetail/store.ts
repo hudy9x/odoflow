@@ -136,7 +136,8 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
           // Add the new node with database ID
           const newNode = {
             ...node,
-            id: response.node.id
+            id: response.node.id,
+            shortId: response.node.shortId
           }
           newNodes.push(newNode)
 

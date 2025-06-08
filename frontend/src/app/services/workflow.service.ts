@@ -1,6 +1,6 @@
 import { Workflow } from '@/types/workflow'
 import { get, post, put, ApiResponse } from './api.service'
-import { TriggerType } from '../features/WorkflowConfig/WorkflowTrigger/types'
+import { TriggerType } from '@/types/workflow'
 
 type WorkflowApiResponse = ApiResponse<{ workflow: Workflow }>
 type WorkflowsApiResponse = ApiResponse<{ workflows: Workflow[] }>

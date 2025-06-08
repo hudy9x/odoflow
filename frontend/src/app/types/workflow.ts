@@ -33,6 +33,7 @@ export interface WorkflowNode {
   positionX: number;
   positionY: number;
   data: NodeData[keyof NodeData]; // Type-safe node configuration
+  shortId?: string; // Optional for backward compatibility
   createdAt: string;
   updatedAt: string;
   outgoingEdges?: WorkflowEdge[];
