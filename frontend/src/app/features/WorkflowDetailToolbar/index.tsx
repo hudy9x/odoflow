@@ -1,6 +1,7 @@
 import SaveWorkflow from './SaveWorkflow'
 import AddNewNode from './AddNewNode'
 import ToggleWorkflowActive from './ToggleWorkflowActive'
+import StatusButton from './StatusButton'
 
 export default function WorkflowToolbar() {
 
@@ -11,6 +12,8 @@ export default function WorkflowToolbar() {
       <div className="h-6 w-px bg-gray-200" />
       <SaveWorkflow />
       <AddNewNode />
+      <div className="h-6 w-px bg-gray-200" />
+      <StatusButton />
     </div>
   )
 }
