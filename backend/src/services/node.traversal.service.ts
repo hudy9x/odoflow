@@ -8,6 +8,9 @@ import { TraversalStrategy } from './nodes/traversal/types.js';
 import { ColumnFirstStrategy } from './nodes/traversal/ColumnFirstStrategy.js'
 import { RowFirstStrategy } from './nodes/traversal/RowFirstStrategy.js'
 import { NodeRunLogger } from './nodes/NodeRunLogger.js'
+import { RedisService } from './redis.service.js';
+
+const redisService = RedisService.getInstance();
 
 type TraversalParams = {
   startingNodeId: string,
@@ -101,12 +104,19 @@ export class WorkflowTraversalService {
     initialInputData: any
   ) {
     
-    this.createNodeRunLog(startingNodeId, nodes, workflowRunId, initialInputData);
+    // this.createNodeRunLog(startingNodeId, nodes, workflowRunId, initialInputData);
     
     const startNode = this.nodeMap.get(startingNodeId);
     console.log(`🎬 Processing starting node: ${startNode?.shortId}`);
     if (startNode?.type === 'webhook' && startNode.shortId) {
       nodeOutput.setOutput(startNode.shortId, initialInputData);
+      redisService.publish('node-run-log', {
+        workflowRunId,
+        nodeId: startingNodeId,
+        status: 'COMPLETED',
+        outputData: initialInputData,
+        timestamp: Date.now()
+      });
     }
   }
 

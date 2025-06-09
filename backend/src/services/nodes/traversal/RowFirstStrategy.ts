@@ -69,7 +69,7 @@ export class RowFirstStrategy implements ITraversalStrategy {
 
     redisService.publish('node-run-log', {
       workflowRunId,
-      status: 'COMPLETED',
+      status: 'ALL_COMPLETED',
       timestamp: Date.now()
     });
 
