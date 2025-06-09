@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "odoflow",
   description: "Workflow Automation Platform",
+  icons: {
+    icon: '/logo/favicon.ico',
+  },
 };
 
 export default function RootLayout({
