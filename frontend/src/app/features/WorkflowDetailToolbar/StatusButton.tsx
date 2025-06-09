@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { statusWsService, type StatusMessage } from "@/app/services/status.ws.service"
 import { useNodeDebugStore } from "../WorkflowNodeDebug/store"
+import { Play, Square } from "lucide-react"
 
 export default function StatusButton() {
   const [isConnected, setIsConnected] = useState(false)
@@ -51,11 +52,12 @@ export default function StatusButton() {
 
   return (
     <Button
-      variant={isConnected ? "secondary" : "default"}
+      variant={"link"}
+      size={"icon"}
       onClick={handleToggle}
       className="ml-2"
     >
-      {isConnected ? "Disconnect Status" : "Connect Status"}
+      {isConnected ? <Square className="h-4 w-4" /> : <Play className="h-4 w-4" />}
     </Button>
   )
 }
