@@ -73,7 +73,7 @@ export function NodeBase({ id, title, description, icon, onClick, color, noEdges
         {shortId && <p className="text-xs text-muted-foreground whitespace-nowrap mt-1 font-mono">{shortId}</p>}
       </div>
 
-      {id && <NodeStatus nodeId={id} shortId={shortId}/> }
+      {id && shortId && <NodeStatus nodeId={id} shortId={shortId}/> }
     </div>
   )
 

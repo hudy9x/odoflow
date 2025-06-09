@@ -29,7 +29,7 @@ export interface NodeConfigPopoverProps {
 export const NodeConfigPopover = ({
   trigger,
   title,
-  width = 'max-w-[500px]',
+  width = 'w-[380px] max-w-[500px]',
   children
 }: NodeConfigPopoverProps) => {
   const [open, setOpen] = useState(false);

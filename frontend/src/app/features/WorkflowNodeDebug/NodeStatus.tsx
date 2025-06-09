@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { X } from 'lucide-react'
 
-export default function NodeStatus({nodeId, shortId}: {nodeId: string, shortId?: string}) {
+export default function NodeStatus({nodeId, shortId}: {nodeId: string, shortId: string}) {
     const nodes = useNodeDebugStore(state => state.nodes)
     const [open, setOpen] = useState(false);
     
@@ -38,7 +38,7 @@ export default function NodeStatus({nodeId, shortId}: {nodeId: string, shortId?:
           />
         </PopoverTrigger>
         {isCompleted && (
-<PopoverContent className={`max-w-[500px] rounded-xl bg-gray-100/40 backdrop-blur-lg p-1 border border-gray-200`}>
+<PopoverContent className={`w-[350px] rounded-xl bg-gray-100/40 backdrop-blur-lg p-1 border border-gray-200`}>
           <div className="">
             <div className="flex items-center justify-between px-2 pt-1 pb-2">
               <h4 className="font-medium leading-none">Response data: <code>{shortId}</code></h4>
@@ -52,7 +52,7 @@ export default function NodeStatus({nodeId, shortId}: {nodeId: string, shortId?:
               </Button>
             </div>
             <div className="bg-white px-3 py-3 rounded-lg border border-gray-200 shadow-lg">
-              <NodeOutputData outputData={node.outputData} />
+              <NodeOutputData shortId={shortId} outputData={node.outputData} />
             </div>
           </div>
         </PopoverContent>
