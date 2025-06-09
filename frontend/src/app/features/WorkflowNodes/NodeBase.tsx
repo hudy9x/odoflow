@@ -70,7 +70,7 @@ export function NodeBase({ id, title, description, icon, onClick, color, noEdges
       <div className="mt-2 text-center absolute -bottom-[70px] left-0 w-full">
         <h3 className="font-medium text-sm">{title}</h3>
         <p className="text-xs text-muted-foreground whitespace-nowrap">{description}</p>
-        {shortId && <p className="text-xs text-muted-foreground whitespace-nowrap mt-1 font-mono">{shortId}</p>}
+        {shortId && <p className="text-xs text-muted-foreground whitespace-nowrap mt-1 font-mono">#{shortId}</p>}
       </div>
 
       {id && shortId && <NodeStatus nodeId={id} shortId={shortId}/> }
