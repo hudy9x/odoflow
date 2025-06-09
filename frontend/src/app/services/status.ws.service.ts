@@ -5,6 +5,8 @@
 export interface StatusMessage {
   status: string;
   tick: number;
+  channel: string;
+  message: string;
 }
 
 export class StatusWebSocketService {

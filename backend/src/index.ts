@@ -11,6 +11,7 @@ import workflowTriggerRouter from './controllers/workflow.trigger.controller.js'
 import migrationRouter from './controllers/migration.controller.js'
 // import statusWsController from './controllers/websocket.controller.js'
 import { createNodeWebSocket } from '@hono/node-ws'
+import { RedisService } from './services/redis.service.js'
 
 export const app = new Hono()
 const { injectWebSocket, upgradeWebSocket } = createNodeWebSocket({ app })
@@ -41,18 +42,33 @@ app.route('/api', webhookRouter) // Webhook routes are mounted at /api/webhooks
 app.route('/api/trigger', workflowTriggerRouter) // Workflow trigger routes
 app.route('/api', migrationRouter) // Migration routes
 
+
+const redisService = RedisService.getInstance();
+
+
+
 app.get('/ws', upgradeWebSocket((c) => {
   // https://hono.dev/helpers/websocket
   return {
     onOpen(ev, ws) {
       console.log('Connection opened')
-
-      const intervalId = setInterval(() => {
+      redisService.subscribe('node-run-log', (channel: string, message: string) => {
+        console.log(`Received message from Redis channel ${channel}: ${message}`);
         ws.send(JSON.stringify({
           status: 'OK',
-          tick: Date.now()
+          tick: Date.now(),
+          channel,
+          message
         }))
-      }, 1000)
+      });
+
+
+      // const intervalId = setInterval(() => {
+      //   ws.send(JSON.stringify({
+      //     status: 'OK',
+      //     tick: Date.now()
+      //   }))
+      // }, 1000)
     },
     onMessage(event, ws) {
       console.log(`Message from client: ${event.data}`)

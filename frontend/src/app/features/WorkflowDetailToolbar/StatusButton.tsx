@@ -4,9 +4,11 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { statusWsService, type StatusMessage } from "@/app/services/status.ws.service"
+import { useNodeDebugStore } from "../WorkflowNodeDebug/store"
 
 export default function StatusButton() {
   const [isConnected, setIsConnected] = useState(false)
+  const setNodeStatus = useNodeDebugStore(state => state.set)
 
   useEffect(() => {
     // Cleanup on unmount
@@ -24,7 +26,17 @@ export default function StatusButton() {
       toast.info("Status WebSocket disconnected")
     } else {
       statusWsService.connect((msg: StatusMessage) => {
-        toast.info(`Status: ${msg.status} (Tick: ${msg.tick})`)
+        // console.log(msg.channel, msg.message)
+        const {channel, message} = msg
+        if (channel === 'node-run-log') {
+          const payload = JSON.parse(message) as {nodeId: string, status: string, timestamp: number, outputData: Record<string, unknown>, workflowRunId: string}
+          console.log(payload)
+          setNodeStatus(payload.nodeId, {
+            status: payload.status,
+            outputData: payload.outputData || {}
+          })
+        }
+        toast.info(`Status: ${msg.status} (Tick: ${msg.tick}) (${msg.channel}: ${msg.message})`)
       })
       setIsConnected(true)
       toast.success("Status WebSocket connected")

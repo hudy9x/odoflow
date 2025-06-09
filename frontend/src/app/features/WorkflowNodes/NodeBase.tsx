@@ -2,6 +2,7 @@ import { Handle, Position } from '@xyflow/react';
 import { NodeTypeSelect } from '../WorkflowConfig/NodeTypeSelect';
 import { NodeTrigger } from '../WorkflowConfig/NodeTrigger';
 import { NodeContextMenu } from "../WorkflowConfig/NodeContextMenu";
+import NodeStatus from '../WorkflowNodeDebug/NodeStatus';
 
 interface NodeBaseProps {
   id?: string;
@@ -51,6 +52,8 @@ export function NodeBase({ id, title, description, icon, onClick, color, noEdges
         <p className="text-xs text-muted-foreground whitespace-nowrap">{description}</p>
         {shortId && <p className="text-xs text-muted-foreground whitespace-nowrap mt-1 font-mono">{shortId}</p>}
       </div>
+
+      {id && <NodeStatus nodeId={id}/> }
     </div>
   )
 
