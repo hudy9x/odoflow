@@ -1,7 +1,7 @@
 import { useWorkflowStore } from '../WorkflowDetail/store';
 import { toggleWorkflowActive } from '@/app/services/workflow.service';
 import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+// import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
 export default function ToggleWorkflowActive() {
@@ -53,7 +53,7 @@ export default function ToggleWorkflowActive() {
         checked={isActive}
         onCheckedChange={handleToggle}
       />
-      <Label htmlFor="workflow-active">Active</Label>
+      {/* <Label htmlFor="workflow-active">Active</Label> */}
     </div>
   );
 }

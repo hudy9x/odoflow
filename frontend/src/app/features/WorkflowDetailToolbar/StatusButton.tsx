@@ -5,11 +5,18 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { statusWsService, type StatusMessage } from "@/app/services/status.ws.service"
 import { useNodeDebugStore } from "../WorkflowNodeDebug/store"
+import { useWorkflowStore } from "../WorkflowDetail/store"
 import { Play, Square } from "lucide-react"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export default function StatusButton() {
   const [isConnected, setIsConnected] = useState(false)
   const setNodeStatus = useNodeDebugStore(state => state.set)
+  const isWorkflowActive = useWorkflowStore(state => state.isActive)
 
   useEffect(() => {
     // Cleanup on unmount
@@ -21,6 +28,11 @@ export default function StatusButton() {
   }, [])
 
   const handleToggle = () => {
+    if (!isWorkflowActive && !isConnected) {
+      toast.warning("Cannot run test mode on inactive workflow. Please activate the workflow first.")
+      return
+    }
+
     if (isConnected) {
       statusWsService.disconnect()
       setIsConnected(false)
@@ -51,13 +63,20 @@ export default function StatusButton() {
   }
 
   return (
-    <Button
-      variant={"link"}
-      size={"icon"}
-      onClick={handleToggle}
-      className="ml-2"
-    >
-      {isConnected ? <Square className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant={"link"}
+          size={"icon"}
+          onClick={handleToggle}
+          className="ml-2"
+        >
+          {isConnected ? <Square className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{isConnected ? 'Stop test mode' : 'Run test mode'}</p>
+      </TooltipContent>
+    </Tooltip>
   )
 }
