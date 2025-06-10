@@ -39,16 +39,22 @@ export function NodeBase({ id, title, description, icon, onClick, color, noEdges
       />}
 
       {/* Main node content */}
-      {popoverContent ? (
+      {popoverContent && id ? (
         <NodeConfigPopover
           trigger={
-            <div className={`relative rounded-[40px] border-4 border-white hover:border-gray-200/30 p-6 transition-all duration-200 shadow-lg cursor-pointer`}
-                 style={{ backgroundColor: color }}>
-              <div className="text-white w-12 h-12 flex items-center justify-center">
-                {icon}
-              </div>
-              {id && <NodeTypeSelect nodeId={id} color={color} />}
+            <div>
+              <NodeContextMenu id={id}>
+                <div className={`relative rounded-[40px] border-4 border-white hover:border-gray-200/30 p-6 transition-all duration-200 shadow-lg cursor-pointer`}
+                              style={{ backgroundColor: color }}>
+                            <div className="text-white w-12 h-12 flex items-center justify-center">
+                              {icon}
+                            </div>
+                            {id && <NodeTypeSelect nodeId={id} color={color} />}
+                          </div>
+              </NodeContextMenu>
+
             </div>
+            
           }
           title={popoverTitle || title}
         >
@@ -77,9 +83,11 @@ export function NodeBase({ id, title, description, icon, onClick, color, noEdges
     </div>
   )
 
-  return id ? (
-    <NodeContextMenu id={id}>
-      {content}
-    </NodeContextMenu>
-  ) : content;
+  // return id ? (
+  //   <NodeContextMenu id={id}>
+  //     { content}
+  //   </NodeContextMenu>
+  // ) : content;
+
+  return content
 }
