@@ -1,0 +1,70 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# How to Create a New Node in Odoflow
+
+## Step 1: Create Node Component
+1. Create a new file in `frontend/src/app/features/WorkflowNodes/` named `Node{YourType}.tsx`
+2. Your component should:
+   - Use the `NodeBase` component
+   - Be wrapped with `memo` for performance
+   - Include a `NodeConfigPopover` if configuration is needed
+
+## Step 2: Register Node Type
+Add your node to `index.tsx` in two places:
+1. Import your node:
+   ```typescript
+   import { Node{YourType} } from './Node{YourType}';
+   ```
+2. Add to nodeTypes object:
+   ```typescript
+   export const nodeTypes = {
+     // ... existing types
+     yourtype: Node{YourType},
+   };
+   ```
+
+## Node Structure
+- **NodeBase**: Base component for all nodes with:
+  - Input/Output handles for connections
+  - Standard styling and layout
+  - Icon display
+  - Title and description
+  - Context menu integration
+
+## Required Props
+```typescript
+interface NodeBaseProps {
+  id?: string;           // Node identifier
+  title: string;         // Node title
+  description: string;   // Node description
+  icon: React.ReactNode; // Node icon (usually from lucide-react)
+  color: string;         // Background color
+  noEdges?: boolean;     // Whether to show connection handles
+}
+```
+
+## Example Node Implementation
+```typescript
+import { YourIcon } from 'lucide-react';
+import { NodeBase } from './NodeBase';
+import { memo } from 'react';
+import { NodeConfigPopover } from '../WorkflowConfig/NodeConfigPopover';
+
+export const Node{YourType} = memo(() => {
+  return (
+    <NodeConfigPopover>
+      <NodeBase
+        title="Your Node"
+        description="Node description"
+        icon={<YourIcon className="w-8 h-8" />}
+        color="#hexcolor"
+      />
+    </NodeConfigPopover>
+  );
+});
+
+Node{YourType}.displayName = 'Node{YourType}';
+```

@@ -22,6 +22,10 @@ import type { ITraversalStrategy } from './types.js';
 import type { WorkflowNode, WorkflowEdge } from '../../../generated/prisma/index.js';
 import type { WorkflowTraversalService } from '../../node.traversal.service.js';
 import { nodeOutput } from '../NodeOutput.js';
+import { RedisService } from '../../../services/redis.service.js';
+
+const redisService = RedisService.getInstance();
+
 
 export class ColumnFirstStrategy implements ITraversalStrategy {
   private _processedNodes: Set<string> = new Set();
@@ -102,6 +106,13 @@ export class ColumnFirstStrategy implements ITraversalStrategy {
       
       currentNodes = nextLevelNodes;
     }
+
+    redisService.publish('node-run-log', {
+      workflowRunId,
+      status: 'COMPLETED',
+      timestamp: Date.now()
+    });
+
 
     return service.getProcessedNodesCount();
   }

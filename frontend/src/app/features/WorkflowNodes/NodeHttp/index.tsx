@@ -1,7 +1,6 @@
 import { Globe } from 'lucide-react';
 import { NodeBase } from '../NodeBase';
 import { memo } from 'react';
-import { NodeConfigPopover } from '../../WorkflowConfig/NodeConfigPopover';
 import { NodeHttpConfigForm } from './NodeHttpConfigForm';
 
 interface NodeData {
@@ -28,26 +27,18 @@ export interface NodeProps {
 
 export const NodeHttp = memo(({ id, data }: NodeProps) => {
   return (
-    <NodeConfigPopover
-      width='w-[400px]'
-      trigger={
-        <div>
-          <NodeBase
-            id={id}
-            title="HTTP"
-            description="Make a request"
-            icon={<Globe className="w-8 h-8" />}
-            color="#0284C7"
-            type="http"
-            badgeNumber={1}
-            shortId={data.shortId}
-          />
-        </div>
-      }
-      title="Configure HTTP Request"
-    >
-      <NodeHttpConfigForm nodeId={id} />
-    </NodeConfigPopover>
+    <NodeBase
+      id={id}
+      title="HTTP"
+      description="Make a request"
+      icon={<Globe className="w-8 h-8" />}
+      color="#0284C7"
+      type="http"
+      badgeNumber={1}
+      shortId={data.shortId}
+      popoverContent={<NodeHttpConfigForm nodeId={id} />}
+      popoverTitle="Configure HTTP Request"
+    />
   );
 });
 

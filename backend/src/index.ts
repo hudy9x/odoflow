@@ -9,8 +9,13 @@ import nodeRouter from './controllers/node.controller.js'
 import webhookRouter from './controllers/webhook.controller.js'
 import workflowTriggerRouter from './controllers/workflow.trigger.controller.js'
 import migrationRouter from './controllers/migration.controller.js'
+// import statusWsController from './controllers/websocket.controller.js'
+import { createNodeWebSocket } from '@hono/node-ws'
+import { RedisService } from './services/redis.service.js'
 
 export const app = new Hono()
+const { injectWebSocket, upgradeWebSocket } = createNodeWebSocket({ app })
+
 
 // Add CORS middleware
 app.use('*', cors({
@@ -37,13 +42,53 @@ app.route('/api', webhookRouter) // Webhook routes are mounted at /api/webhooks
 app.route('/api/trigger', workflowTriggerRouter) // Workflow trigger routes
 app.route('/api', migrationRouter) // Migration routes
 
+
+const redisService = RedisService.getInstance();
+
+
+
+app.get('/ws', upgradeWebSocket((c) => {
+  // https://hono.dev/helpers/websocket
+  return {
+    onOpen(ev, ws) {
+      console.log('Connection opened')
+      redisService.subscribe('node-run-log', (channel: string, message: string) => {
+        console.log(`Received message from Redis channel ${channel}: ${message}`);
+        ws.send(JSON.stringify({
+          status: 'OK',
+          tick: Date.now(),
+          channel,
+          message
+        }))
+      });
+
+
+      // const intervalId = setInterval(() => {
+      //   ws.send(JSON.stringify({
+      //     status: 'OK',
+      //     tick: Date.now()
+      //   }))
+      // }, 1000)
+    },
+    onMessage(event, ws) {
+      console.log(`Message from client: ${event.data}`)
+      ws.send('Hello from server!')
+    },
+    onClose: () => {
+      console.log('Connection closed')
+    },
+  }
+})) // WebSocket status endpoint
+
 // Start the server only if not in test environment
-if (process.env.NODE_ENV !== 'test') {
+// if (process.env.NODE_ENV !== 'test') {
   const port = 3003
-  serve({
+  const server = serve({
     fetch: app.fetch,
     port: port
   }, (info) => {
     console.log(`Server is running on http://localhost:${info.port}`)
   })
-}
+
+  injectWebSocket(server)
+// }
