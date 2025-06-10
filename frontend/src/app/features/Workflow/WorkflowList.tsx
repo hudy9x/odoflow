@@ -22,6 +22,7 @@ export default function WorkflowList() {
       setError(null)
       const { success, workflows, error } = await getWorkflows()
       if (success) {
+        console.log('workflows', workflows)
         setWorkflows(workflows)
       } else {
         setError(error || 'Failed to load workflows')

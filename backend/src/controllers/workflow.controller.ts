@@ -99,17 +99,31 @@ workflowRouter.delete('/:id', async (c: AuthContext) => {
   }
 })
 
-// Get all workflows
+// Get all workflows with their unique node types
 workflowRouter.get('/', async (c: AuthContext) => {
   try {
     const userId = c.user!.userId // Get userId from auth context
 
     const workflows = await prisma.workflow.findMany({
       where: { userId },
-      orderBy: { updatedAt: 'desc' }
+      orderBy: { updatedAt: 'desc' },
+      include: {
+        nodes: {
+          select: {
+            type: true
+          },
+          distinct: ['type']
+        }
+      }
     })
 
-    return c.json({ success: true, workflows })
+    // Transform the response to include unique node types as an array
+    const workflowsWithNodes = workflows.map(workflow => ({
+      ...workflow,
+      uniqueNodeTypes: workflow.nodes.map(node => node.type)
+    }))
+
+    return c.json({ success: true, workflows: workflowsWithNodes })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     return c.json({ success: false, error: errorMessage }, 500)
