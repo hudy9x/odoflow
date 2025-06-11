@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Workflow } from '@/types/workflow'
 import { Checkbox } from '@/components/ui/checkbox'
-import { FileText } from 'lucide-react'
+import { nodeIconMap, defaultNodeIconMeta } from '../WorkflowNodes/NodeIcons'
 import { format } from 'date-fns'
 
 export default function WorkflowList() {
@@ -22,7 +22,6 @@ export default function WorkflowList() {
       setError(null)
       const { success, workflows, error } = await getWorkflows()
       if (success) {
-        console.log('workflows', workflows)
         setWorkflows(workflows)
       } else {
         setError(error || 'Failed to load workflows')
@@ -83,32 +82,51 @@ export default function WorkflowList() {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {workflows.map((workflow) => (
               <Card 
                 key={workflow.id}
                 className="overflow-hidden cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => router.push(`/workflow/${workflow.id}`)}
               >
-                <CardContent className="px-8 py-2">
-                  <div className="flex items-center gap-4">
-                    <div className="flex-grow space-y-2">
-                      <h3 className="font-medium text-gray-900 flex items-center gap-2">
-                        <FileText className="h-5 w-5 text-blue-500" />
-                        {workflow.name}
-                      </h3>
-                      <p className="text-xs text-gray-500">
-                        Due {format(new Date(workflow.createdAt), 'dd MMM yyyy')}
+                <CardContent className="">
+                  <div className="space-y-4">
+                    {/* Node Icons */}
+                    <div className="flex gap-2">
+                      {Array.from(new Set(workflow.nodes.map(node => node.type))).map((type) => {
+                        const { icon: IconComponent, bg, color } = nodeIconMap[type] || defaultNodeIconMeta;
+                        return (
+                          <div
+                            key={type}
+                            style={{ backgroundColor: bg }}
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center`}
+                          >
+                            <IconComponent className={`h-4 w-4`} style={{stroke: color}} />
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Title */}
+                    <div>
+                      <h3 className="font-medium text-gray-900">{workflow.name}</h3>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Created {format(new Date(workflow.createdAt), 'dd MMM yyyy')}
                       </p>
                     </div>
-                    <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                      <Checkbox
-                        checked={workflow.isActive}
-                        onCheckedChange={(checked: boolean) => {
-                          // TODO: Implement status toggle
-                          console.log('Toggle status:', checked)
-                        }}
-                      />
+
+                    {/* Status Toggle */}
+                    <div className="flex items-center justify-between pt-2 border-t">
+                      <span className="text-sm text-gray-500">Status</span>
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <Checkbox
+                          checked={workflow.isActive}
+                          onCheckedChange={(checked: boolean) => {
+                            // TODO: Implement status toggle
+                            console.log('Toggle status:', checked)
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </CardContent>
