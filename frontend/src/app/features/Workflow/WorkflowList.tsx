@@ -58,7 +58,7 @@ export default function WorkflowList() {
       <Card className="mx-auto max-w-4xl mt-8">
         <CardContent className="pt-6">
           <div className="text-red-500">{error}</div>
-          <Button onClick={fetchWorkflows} className="mt-4">Retry</Button>
+          <Button onClick={() => fetchWorkflows(tab)} className="mt-4">Retry</Button>
         </CardContent>
       </Card>
     )

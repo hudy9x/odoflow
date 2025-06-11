@@ -103,9 +103,23 @@ workflowRouter.delete('/:id', async (c: AuthContext) => {
 workflowRouter.get('/', async (c: AuthContext) => {
   try {
     const userId = c.user!.userId // Get userId from auth context
+    const filter = c.req.query('filter') as 'recently' | 'active' | 'inactive' | 'all' | undefined;
+
+    let where: any = { userId };
+    if (filter === 'active') {
+      where.isActive = true;
+    } else if (filter === 'inactive') {
+      where.isActive = false;
+    } else if (filter === 'recently') {
+      // 7 days ago from now
+      const now = new Date();
+      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      where.createdAt = { gte: sevenDaysAgo };
+    }
+    // 'all' or undefined: no extra filter
 
     const workflows = await prisma.workflow.findMany({
-      where: { userId },
+      where,
       orderBy: { updatedAt: 'desc' },
       include: {
         nodes: {
