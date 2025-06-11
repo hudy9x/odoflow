@@ -10,7 +10,6 @@ interface WorkflowListItemProps {
 }
 
 export function WorkflowListItem({ workflow, onClick }: WorkflowListItemProps) {
-  const isActiveClass = workflow.isActive ? 'bg-gray-100' : 'bg-gray-100';
 
   function renderNodeIcons() {
     const uniqueTypes = Array.from(new Set(workflow.nodes.map(node => node.type)));
@@ -52,10 +51,10 @@ export function WorkflowListItem({ workflow, onClick }: WorkflowListItemProps) {
   return (
     <Card
       key={workflow.id}
-      className={`overflow-hidden cursor-pointer ${isActiveClass} p-1 transition-colors`}
+      className={`overflow-hidden cursor-pointer bg-gray-100 hover:bg-white p-1 hover:shadow-2xl active:shadow active:shadow-zinc-100 hover:shadow-zinc-400 transition-all duration-150`}
       onClick={onClick}
     >
-      <CardContent className="rounded-md p-4 bg-gray-50 shadow-md hover:shadow-lg hover:shadow-gray-300 transition-all duration-200">
+      <CardContent className="rounded-md p-4 bg-gray-50 hover:bg-gradient-to-br hover:from-gray-50 hover:to-zinc-100 shadow-md hover:shadow-zinc-300 transition-all duration-200">
         <div className="space-y-4">
           {/* Node Icons */}
           <div className="flex gap-1 hover:gap-2 transition-all duration-200">
