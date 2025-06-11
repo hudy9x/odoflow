@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Workflow } from '@/types/workflow'
 import { WorkflowListItem } from './WorkflowListItem'
+import { CreateWorkflowCard } from './CreateWorkflowCard'
 
 export default function WorkflowList() {
   const router = useRouter()
@@ -61,10 +62,9 @@ export default function WorkflowList() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-[150px]">
-      <div className="container mx-auto max-w-2xl px-4">
+      <div className="container mx-auto max-w-4xl px-4">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold">Workflows</h1>
-          <Button onClick={handleCreateWorkflow}>Add workflow</Button>
         </div>
           
         {loading ? (
@@ -80,15 +80,21 @@ export default function WorkflowList() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-            {workflows.map((workflow) => (
-  <WorkflowListItem
-    key={workflow.id}
-    workflow={workflow}
-    onClick={() => router.push(`/workflow/${workflow.id}`)}
-  />
-))}
+          <>
+          <div className="mb-4 grid grid-cols-3 gap-4">
+            <CreateWorkflowCard onClick={handleCreateWorkflow} />
           </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {workflows.map((workflow) => (
+              <WorkflowListItem
+                key={workflow.id}
+                workflow={workflow}
+                onClick={() => router.push(`/workflow/${workflow.id}`)}
+              />
+            ))}
+          </div>
+          </>
+          
         )}
       </div>
     </div>
