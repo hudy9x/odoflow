@@ -73,7 +73,10 @@ export default function WorkflowList() {
               Loading workflows...
             </CardContent>
           </Card>
-        ) : workflows.length === 0 ? (
+        ) : null } 
+        
+        
+        {workflows.length === 0 ? (
           <Card>
             <CardContent className="py-8 text-center text-gray-500">
               No workflows found. Click the Add task button to get started.
