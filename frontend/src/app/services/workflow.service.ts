@@ -11,8 +11,9 @@ export const createWorkflow = async (): Promise<WorkflowApiResponse> => {
   })
 }
 
-export const getWorkflows = async (): Promise<WorkflowsApiResponse> => {
-  return get('/workflow')
+export const getWorkflows = async (filter?: 'recently' | 'active' | 'inactive' | 'all'): Promise<WorkflowsApiResponse> => {
+  const query = filter ? `?filter=${encodeURIComponent(filter)}` : '';
+  return get(`/workflow${query}`);
 }
 
 export const getWorkflow = async (id: string): Promise<WorkflowApiResponse> => {

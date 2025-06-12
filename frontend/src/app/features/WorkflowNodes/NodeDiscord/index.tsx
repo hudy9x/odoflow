@@ -1,8 +1,8 @@
-import { MessageSquare } from 'lucide-react';
 import { NodeBase } from '../NodeBase';
 import { memo } from 'react';
 import { NodeDiscordConfigForm } from './NodeDiscordConfigForm';
 import { DiscordNodeConfig } from './types';
+import { nodeIconMap } from '../NodeIcons';
 
 interface NodeData {
   id: string;
@@ -14,6 +14,7 @@ export interface NodeProps {
   id: string;
   data: NodeData;
 }
+const DiscordIcon = nodeIconMap.discord.icon;
 
 export const NodeDiscord = memo(({ id, data }: NodeProps) => {
   return (
@@ -21,8 +22,8 @@ export const NodeDiscord = memo(({ id, data }: NodeProps) => {
       id={id}
       title="Discord"
       description="Send a Message"
-      icon={<MessageSquare className="w-8 h-8" />}
-      color="#5865F2"
+      icon={<DiscordIcon className="w-8 h-8" />}
+      color={nodeIconMap.discord.bg}
       type="discord"
       badgeNumber={1}
       shortId={data.shortId}
