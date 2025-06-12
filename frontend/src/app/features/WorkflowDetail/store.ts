@@ -194,6 +194,10 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   updateEdges: (changes) => {
     set((state) => {
       const nextEdges = [...state.edges]
+
+      console.log('changes', changes)
+      console.log('state.edges', state.edges)
+
       changes.forEach((change) => {
         if (change.type === 'remove') {
           const edgeIndex = nextEdges.findIndex((e) => e.id === change.id)
@@ -210,12 +214,22 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   // onConnect means user hold a handle and drag to connect to another node
   // so it will create a new edge between 2 nodes
   onConnect: async (connection) => {
-    console.log('on connect', connection)
     const state = get()
     const workflowId = state.workflowId
     
     if (!workflowId) {
       console.error('No workflow ID available')
+      return
+    }
+
+    console.log('on connect', connection, state.edges)
+
+    const existingConnection = state.edges.find(edge => {
+      return edge.target === connection.target
+    })
+
+    if (existingConnection) {
+      toast.warning('You cannot create a connection to an existing one')
       return
     }
 
