@@ -9,6 +9,7 @@ import { Workflow } from '@/types/workflow'
 import { WorkflowListItem } from './WorkflowListItem'
 import { CreateWorkflowCard } from './CreateWorkflowCard'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { BackgroundGradient } from './BackgroundGradient'
 
 function WorkflowLoading({loading}: {loading:boolean}) {
   if (!loading) return null
@@ -28,6 +29,7 @@ function WorkflowLoading({loading}: {loading:boolean}) {
 export default function WorkflowList() {
   const router = useRouter()
   const [workflows, setWorkflows] = useState<Workflow[]>([])
+  const [noWorkflows, setNoWorkflows] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [tab, setTab] = useState<'recently' | 'active' | 'inactive' | 'all'>('recently');
@@ -39,13 +41,16 @@ export default function WorkflowList() {
       const { success, workflows, error } = await getWorkflows(filter)
       if (success) {
         setWorkflows(workflows)
+        setNoWorkflows(workflows.length === 0)
       } else {
         setError(error || 'Failed to load workflows')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
-      setLoading(false)
+      setTimeout(() => {
+        setLoading(false)
+      }, 250);
     }
   }
 
@@ -79,13 +84,16 @@ export default function WorkflowList() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-[150px]">
-      <div className="container mx-auto max-w-4xl px-4">
+    <div className="min-h-screen bg-gray-50 py-[150px] relative">
+
+      <BackgroundGradient />
+
+      <div className="container mx-auto max-w-4xl px-4 z-10 relative">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold">Workflows</h1>
         </div>
         
-        {workflows.length === 0 && !loading ? (
+        {noWorkflows ? (
           <Card>
             <CardContent className="py-8 text-center text-gray-500">
               No workflows found. Click the Add task button to get started.

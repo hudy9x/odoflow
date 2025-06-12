@@ -58,6 +58,12 @@ nodeRouter.post('/', async (c: AuthContext) => {
         }
       })
 
+      // Update workflow to trigger updatedAt (async)
+      await tx.workflow.update({
+        where: { id: body.workflowId },
+        data: { updatedAt: new Date() }
+      })
+
       // If edge information is provided, create the edge
       let createdEdge = null
       if (body.edge) {
@@ -118,6 +124,12 @@ nodeRouter.delete('/:nodeId', async (c: AuthContext) => {
       await tx.workflowNode.delete({
         where: { id: nodeId }
       })
+
+      // Update workflow to trigger updatedAt (async)
+      await tx.workflow.update({
+        where: { id: node.workflowId },
+        data: { updatedAt: new Date() }
+      })
     })
 
     return c.json({ success: true, message: 'Node and associated edges deleted successfully' })
@@ -158,6 +170,12 @@ nodeRouter.post('/edge', async (c: AuthContext) => {
       }
     })
 
+    // Update workflow to trigger updatedAt (async)
+    await prisma.workflow.update({
+      where: { id: body.workflowId },
+      data: { updatedAt: new Date() }
+    })
+
     return c.json({ success: true, edge })
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
@@ -196,6 +214,14 @@ nodeRouter.put('/position', async (c: AuthContext) => {
         positionY: body.positionY
       }
     })
+
+    // Update workflow to trigger updatedAt (async)
+    await prisma.workflow.update({
+      where: { id: body.workflowId },
+      data: { updatedAt: new Date() }
+    })
+
+    console.log('node updated', body.workflowId)
 
     return c.json({ success: true, node })
   } catch (error) {
@@ -262,6 +288,12 @@ nodeRouter.put('/:nodeId/config', async (c: AuthContext) => {
           ...body
         }
       }
+    })
+
+    // Update workflow to trigger updatedAt (async)
+    await prisma.workflow.update({
+      where: { id: node.workflowId },
+      data: { updatedAt: new Date() }
     })
 
     return c.json({ 

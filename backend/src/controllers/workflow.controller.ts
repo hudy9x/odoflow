@@ -114,7 +114,8 @@ workflowRouter.get('/', async (c: AuthContext) => {
       // 7 days ago from now
       const now = new Date();
       const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      where.createdAt = { gte: sevenDaysAgo };
+      console.log('sevenDaysAgo', sevenDaysAgo)
+      where.updatedAt = { gte: sevenDaysAgo };
     }
     // 'all' or undefined: no extra filter
 
