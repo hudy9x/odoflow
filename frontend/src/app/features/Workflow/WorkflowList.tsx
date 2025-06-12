@@ -10,6 +10,20 @@ import { WorkflowListItem } from './WorkflowListItem'
 import { CreateWorkflowCard } from './CreateWorkflowCard'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
+function WorkflowLoading({loading}: {loading:boolean}) {
+  if (!loading) return null
+  
+  return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {[1, 2, 3].map((i) => (
+    <Card key={i} className="animate-pulse">
+      <CardContent className="py-8">
+        <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+      </CardContent>
+    </Card>
+  ))}
+</div>
+}
 
 export default function WorkflowList() {
   const router = useRouter()
@@ -70,23 +84,15 @@ export default function WorkflowList() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold">Workflows</h1>
         </div>
-          
-        {loading ? (
-          <Card>
-            <CardContent className="py-8 text-center text-gray-500">
-              Loading workflows...
-            </CardContent>
-          </Card>
-        ) : null } 
         
-        
-        {workflows.length === 0 ? (
+        {workflows.length === 0 && !loading ? (
           <Card>
             <CardContent className="py-8 text-center text-gray-500">
               No workflows found. Click the Add task button to get started.
             </CardContent>
           </Card>
-        ) : (
+        ) : null }
+        
           <>
             <div className="mb-12 grid grid-cols-3 gap-4">
               <CreateWorkflowCard onClick={handleCreateWorkflow} />
@@ -101,8 +107,9 @@ export default function WorkflowList() {
               </TabsList>
             </Tabs>
 
+            <WorkflowLoading loading={loading} />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {workflows.map((workflow) => (
+              {workflows.length > 0 && !loading && workflows.map((workflow) => (
                 <WorkflowListItem
                   key={workflow.id}
                   workflow={workflow}
@@ -111,7 +118,6 @@ export default function WorkflowList() {
               ))}
             </div>
           </>
-        )}
       </div>
     </div>
   )
