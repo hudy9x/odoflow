@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function AddFilter({ edgeId }: { edgeId: string }){
+    console.log('edgeId', edgeId)
     return <Button
     onClick={() => {
       console.log('add filter');

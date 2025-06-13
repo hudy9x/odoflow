@@ -13,6 +13,8 @@ export default function EdgeFilter({ edgeId }: { edgeId: string }) {
         <ListFilter className="h-7 w-7 cursor-pointer hover:bg-gray-300 bg-gray-200 border-4 border-white shadow-lg rounded-full p-1 text-gray-500" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48">
+
+        Nothing here
         {/* <DropdownMenuItem
           className="flex items-center gap-2"
           onClick={() => {}}
