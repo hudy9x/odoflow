@@ -1,18 +1,23 @@
-import React, { useId } from 'react';
-import { ListFilter } from "lucide-react";
+import React, { useEffect, useId } from 'react';
 import {
   BaseEdge,
   EdgeLabelRenderer,
   getBezierPath,
   type EdgeProps,
 } from '@xyflow/react';
+
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import EdgeFilter from './EdgeFilter';
+import AddFilter from './AddFilter';
+
+
 import './style.css'
-import { DeleteEdgeMenuItem } from './DeleteEdgeMenuItem';
+import { DeleteEdge } from './DeleteEdge';
 
 export default function CustomEdge({
   id,
@@ -27,6 +32,7 @@ export default function CustomEdge({
 }: EdgeProps) {
   const _id = useId();
   const randomId = `workflow-edge-id-${_id}`
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
@@ -38,6 +44,32 @@ export default function CustomEdge({
   });
 
 
+  const handleContextMenu = (event: MouseEvent) => {
+    event.preventDefault()
+    console.log('context menu')
+    setIsOpen(true)
+  }
+
+  useEffect(() => {
+    const path = document.getElementById(randomId)
+    const svg = path?.closest('svg')
+    
+    if (svg) {
+      svg.addEventListener('contextmenu', handleContextMenu)
+    }
+
+    return () => {
+      if (svg) {
+        svg.removeEventListener('contextmenu', handleContextMenu)
+      }
+    }
+    
+  }, [randomId])
+
+  const styleDiv = {
+    transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+    pointerEvents: 'none' as const,
+  }
 
   return (
     <>
@@ -45,28 +77,22 @@ export default function CustomEdge({
       <EdgeLabelRenderer>
         <div
           className="button-edge__label nodrag nopan"
-          style={{
-            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-            pointerEvents: 'none',
-          }}
+          style={styleDiv}
         >
-          <div style={{ pointerEvents: 'all' }}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <ListFilter className="h-7 w-7 cursor-pointer hover:bg-gray-300 bg-gray-200 border-4 border-white shadow-lg rounded-full p-1 text-gray-500" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-48">
-                {/* <DropdownMenuItem
-                  className="flex items-center gap-2"
-                  onClick={() => {}}
-                >
-                  <Plus className="h-4 w-4" />
-                  <span>Add Filter</span>
-                </DropdownMenuItem> */}
-                <DeleteEdgeMenuItem edgeId={id} />
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <EdgeFilter edgeId={id} />
+
+          <Popover open={isOpen} onOpenChange={setIsOpen}>
+            <PopoverTrigger asChild>
+              <div className="w-1 h-1 overflow-hidden invisible">
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-48 p-1">
+              <div className="flex flex-col gap-1">
+                <AddFilter edgeId={id} />
+                <DeleteEdge edgeId={id} />
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </EdgeLabelRenderer>
     </>
