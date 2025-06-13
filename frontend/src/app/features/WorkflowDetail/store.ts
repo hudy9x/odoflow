@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { Node, Edge, NodeChange, EdgeChange, Connection, addEdge } from '@xyflow/react'
-import { createNode, deleteNode, createEdge, updateNodePosition } from '@/app/services/node.service'
+import { createNode, deleteNode, createEdge, updateNodePosition, deleteEdge } from '@/app/services/node.service'
 import { updateWorkflowStartingNode } from '@/app/services/workflow.service'
 import { debounce } from '@/lib/utils'
 import { toast } from 'sonner'
@@ -166,7 +166,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   updateNodes: (changes) => {
     set((state) => {
       const nextNodes = [...state.nodes]
-      console.log('update nodes', changes)
+
       changes.forEach((change) => {
         // Handle different types of changes (position, removal, etc)
         if (change.type === 'position' && change.position) {
@@ -186,7 +186,6 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
           }
         }
       })
-      console.log('update nodes')
       return { nodes: nextNodes }
     })
   },
@@ -198,14 +197,29 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
       console.log('changes', changes)
       console.log('state.edges', state.edges)
 
+      let removedEdgeId = ''
       changes.forEach((change) => {
         if (change.type === 'remove') {
           const edgeIndex = nextEdges.findIndex((e) => e.id === change.id)
           if (edgeIndex !== -1) {
             nextEdges.splice(edgeIndex, 1)
+            removedEdgeId = change.id
           }
         }
       })
+
+      if (removedEdgeId) {
+        deleteEdge(removedEdgeId).then(() => {
+          console.log('Edge deleted successfully')
+          toast.success('Edge deleted successfully')
+        }).catch((error) => {
+          console.error('Error deleting edge:', error)
+          toast.error('Failed to delete edge')
+        })
+      }
+
+
+
       console.log('udpate edges')
       return { edges: nextEdges }
     })
@@ -236,7 +250,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     // Update UI state immediately
     const oldEdges = state.edges
     set((state) => ({
-      edges: addEdge({ ...connection }, state.edges)
+      edges: addEdge({ ...connection, type: 'customedge' }, state.edges)
     }))
 
     try {
@@ -303,6 +317,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
           id: response.edge?.id || `${sourceId}-${newNode.id}`,
           source: sourceId,
           target: newNode.id,
+          type: 'customedge'
         }
 
         set((state) => ({

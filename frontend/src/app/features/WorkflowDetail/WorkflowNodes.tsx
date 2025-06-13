@@ -9,6 +9,7 @@ import {
 import '@xyflow/react/dist/style.css';
 import { useWorkflowStore } from './store';
 import { nodeTypes } from '../WorkflowNodes';
+import { edgeTypes } from '../WorkflowEdge';
 
 const defaultEdgeStyle = {
   stroke: '#d2d2d2',
@@ -38,6 +39,7 @@ export default function WorkflowNodes() {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodesChange={handleNodesChange}
         onEdgesChange={updateEdges}
         onConnect={onConnect}
