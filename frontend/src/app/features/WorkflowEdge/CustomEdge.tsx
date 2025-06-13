@@ -1,4 +1,4 @@
-import React, { useId } from 'react';
+import React, { useEffect, useId } from 'react';
 import { ListFilter } from "lucide-react";
 import {
   BaseEdge,
@@ -38,6 +38,26 @@ export default function CustomEdge({
   });
 
 
+  const handleContextMenu = (event: MouseEvent) => {
+    event.preventDefault()
+    console.log('context menu')
+  }
+
+  useEffect(() => {
+    const path = document.getElementById(randomId)
+    const svg = path?.closest('svg')
+    
+    if (svg) {
+      svg.addEventListener('contextmenu', handleContextMenu)
+    }
+
+    return () => {
+      if (svg) {
+        svg.removeEventListener('contextmenu', handleContextMenu)
+      }
+    }
+    
+  }, [randomId])
 
   return (
     <>
@@ -67,6 +87,9 @@ export default function CustomEdge({
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+        </div>
+        <div>
+          
         </div>
       </EdgeLabelRenderer>
     </>
