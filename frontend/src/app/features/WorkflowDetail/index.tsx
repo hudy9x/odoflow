@@ -52,7 +52,8 @@ export default function WorkflowDetail({ id }: { id: string }) {
           const initialEdges = (response.workflow.edges || []).map(edge => ({
             id: edge.id,
             source: edge.sourceId,
-            target: edge.targetId
+            target: edge.targetId,
+            type: 'customedge'
           }))
 
           setInitialData(initialNodes, initialEdges, startingNodeId, triggerType, triggerValue, isActive)

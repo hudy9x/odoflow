@@ -79,3 +79,11 @@ export const updateNodeConfig = async (params: UpdateNodeConfigParams): Promise<
 export const getNodeConfig = async (nodeId: string): Promise<NodeConfigResponse> => {
   return get(`/node/${nodeId}/config`)
 }
+
+type DeleteEdgeResponse = ApiResponse<{
+  message: string
+}>
+
+export const deleteEdge = async (edgeId: string): Promise<DeleteEdgeResponse> => {
+  return del(`/node/edge/${edgeId}`)
+}

@@ -306,4 +306,45 @@ nodeRouter.put('/:nodeId/config', async (c: AuthContext) => {
   }
 })
 
+// Delete an edge by ID
+nodeRouter.delete('/edge/:edgeId', async (c: AuthContext) => {
+  try {
+    const edgeId = c.req.param('edgeId')
+    const userId = c.user!.userId
+
+    // First get the edge to check workflow ownership
+    const edge = await prisma.workflowEdge.findUnique({
+      where: { id: edgeId },
+      include: { workflow: true }
+    })
+
+    if (!edge) {
+      return c.json({ success: false, error: 'Edge not found' }, 404)
+    }
+
+    // Check if workflow belongs to user
+    if (edge.workflow.userId !== userId) {
+      return c.json({ success: false, error: 'Unauthorized' }, 403)
+    }
+
+    // Delete the edge
+    await prisma.$transaction(async (tx) => {
+      await tx.workflowEdge.delete({
+        where: { id: edgeId }
+      })
+
+      // Update workflow to trigger updatedAt
+      await tx.workflow.update({
+        where: { id: edge.workflowId },
+        data: { updatedAt: new Date() }
+      })
+    })
+
+    return c.json({ success: true, message: 'Edge deleted successfully' })
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    return c.json({ success: false, error: errorMessage }, 500)
+  }
+})
+
 export default nodeRouter
