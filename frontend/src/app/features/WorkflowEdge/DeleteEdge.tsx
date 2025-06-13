@@ -1,12 +1,12 @@
 import { Unlink } from "lucide-react";
-import { DropdownMenuItem } from "../../../components/ui/dropdown-menu";
 import { useWorkflowStore } from '../WorkflowDetail/store';
+import { Button } from "../../../components/ui/button";
 
-interface DeleteEdgeMenuItemProps {
+interface DeleteEdgeProps {
   edgeId: string;
 }
 
-export function DeleteEdgeMenuItem({ edgeId }: DeleteEdgeMenuItemProps) {
+export function DeleteEdge({ edgeId }: DeleteEdgeProps) {
   const { updateEdges } = useWorkflowStore();
   
   const handleDeleteEdge = () => {
@@ -14,12 +14,14 @@ export function DeleteEdgeMenuItem({ edgeId }: DeleteEdgeMenuItemProps) {
   };
 
   return (
-    <DropdownMenuItem
-      className="flex items-center gap-2 text-red-600"
+    <Button
       onClick={handleDeleteEdge}
+      variant="ghost"
+      size="sm"
+      className="w-full justify-start text-red-600"
     >
       <Unlink className="h-4 w-4" />
-      <span>Unlink</span>
-    </DropdownMenuItem>
+      Unlink
+    </Button>
   );
 }
