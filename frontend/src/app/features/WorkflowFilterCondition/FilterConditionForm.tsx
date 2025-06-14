@@ -2,20 +2,20 @@ import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-  } from "../../../components/ui/popover";
-  import { Button } from "../../../components/ui/button";
-  import { ListFilter, X, Plus, Trash2, Equal, Search, SearchX, AlignLeft, AlignRight, ChevronRight, ChevronLeft, Ban, CircleDot, SlashSquare } from "lucide-react";
-  import { Label } from "../../../components/ui/label";
-  import { Input } from "../../../components/ui/input";
-  import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "../../../components/ui/select";
+  } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { ListFilter, X, Plus, Trash2, Equal, Search, SearchX, AlignLeft, AlignRight, ChevronRight, ChevronLeft, Ban, CircleDot, SlashSquare } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
   
-  import { useState } from "react";
+import { useState } from "react";
 import { WorkflowNodeFilter } from "@/app/services/node.filter.service";
 import { useFilterStore } from "./store";
 import FilterConditionPreview from "./FilterConditionPreview";
@@ -114,7 +114,7 @@ export default function FilterConditionForm({ filterData }: FilterConditionFormP
     <div className="flex justify-center" style={{ pointerEvents: 'all' }}>
       <Popover open={visible} onOpenChange={onSetVisible}>
         <PopoverTrigger asChild>
-          <ListFilter className="h-7 w-7 cursor-pointer hover:bg-gray-300 bg-gray-200 border-4 border-white shadow-lg rounded-full p-1 text-gray-500" />
+          <ListFilter className="h-5 w-5 cursor-pointer hover:bg-gray-300 bg-gray-200 border-2 border-white shadow-lg rounded-full p-0.5 text-gray-500" />
         </PopoverTrigger>
         <PopoverContent side="right" className="w-[400px] rounded-xl bg-gray-100/40 backdrop-blur-lg p-1 border border-gray-200 relative">
           <div>

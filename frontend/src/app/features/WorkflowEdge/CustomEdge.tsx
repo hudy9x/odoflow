@@ -78,7 +78,7 @@ export default function CustomEdge({
       <BaseEdge path={edgePath} id={randomId} className='workflow-edge' markerEnd={markerEnd} style={style}  />
       <EdgeLabelRenderer>
         <div
-          className="button-edge__label nodrag nopan flex flex-col justify-center gap-1"
+          className="button-edge__label nodrag nopan flex flex-col justify-center items-center gap-1"
           style={styleDiv}
         >
           
@@ -90,7 +90,7 @@ export default function CustomEdge({
               <div className="w-1 h-1 overflow-hidden invisible">
               </div>
             </PopoverTrigger>
-            <PopoverContent className="w-48 p-1">
+            <PopoverContent side="bottom" align='center' className="w-48 p-1">
               <div className="flex flex-col gap-1">
                 <AddFilter edgeId={id} />
                 <DeleteFilter edgeId={id} />
