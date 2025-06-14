@@ -194,9 +194,6 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     set((state) => {
       const nextEdges = [...state.edges]
 
-      console.log('changes', changes)
-      console.log('state.edges', state.edges)
-
       let removedEdgeId = ''
       changes.forEach((change) => {
         if (change.type === 'remove') {

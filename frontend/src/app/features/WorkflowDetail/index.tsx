@@ -11,6 +11,7 @@ import WorkflowNodes from './WorkflowNodes'
 import { useWorkflowStore } from './store'
 import WorkflowToolbar from '@/app/features/WorkflowDetailToolbar'
 import WorkflowTitle from './WorkflowTitle'
+import { LoadFilterCondition } from '../WorkflowFilterCondition/LoadFilterCondition'
 
 export default function WorkflowDetail({ id }: { id: string }) {
   const router = useRouter()
@@ -118,6 +119,7 @@ export default function WorkflowDetail({ id }: { id: string }) {
      
      <WorkflowNodes/>
      <WorkflowToolbar/>
+     <LoadFilterCondition workflowId={id} />
     </div>
   )
 }

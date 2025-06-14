@@ -18,9 +18,9 @@ export function NodeWebhookConfigForm({
     async function loadNodeConfig() {
       try {
         const response = await getNodeConfig(nodeId);
-        const config = response.config.config
+        const config = response?.config?.config
         console.log('response', response, config)
-        if (response.success) {
+        if (response.success && config) {
           const webhookUrl = config.webhookUrl as string | undefined;
           const webhookId = config.webhookId as string | undefined;
           setWebhookUrl(webhookUrl);

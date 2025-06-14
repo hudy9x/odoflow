@@ -12,12 +12,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import EdgeFilter from './EdgeFilter';
-import AddFilter from './AddFilter';
-
+import AddFilter from '@/app/features/WorkflowFilterCondition/AddFilter';
 
 import './style.css'
 import { DeleteEdge } from './DeleteEdge';
+import WorkflowFilterCondition from '../WorkflowFilterCondition';
+import EdgeLabel from '../WorkflowFilterCondition/EdgeLabel';
+import DeleteFilter from '../WorkflowFilterCondition/DeleteFilter';
 
 export default function CustomEdge({
   id,
@@ -43,7 +44,6 @@ export default function CustomEdge({
     targetPosition,
   });
 
-
   const handleContextMenu = (event: MouseEvent) => {
     event.preventDefault()
     console.log('context menu')
@@ -56,11 +56,13 @@ export default function CustomEdge({
     
     if (svg) {
       svg.addEventListener('contextmenu', handleContextMenu)
+      svg.addEventListener('click', handleContextMenu)
     }
 
     return () => {
       if (svg) {
         svg.removeEventListener('contextmenu', handleContextMenu)
+        svg.removeEventListener('click', handleContextMenu)
       }
     }
     
@@ -76,10 +78,12 @@ export default function CustomEdge({
       <BaseEdge path={edgePath} id={randomId} className='workflow-edge' markerEnd={markerEnd} style={style}  />
       <EdgeLabelRenderer>
         <div
-          className="button-edge__label nodrag nopan"
+          className="button-edge__label nodrag nopan flex flex-col justify-center gap-1"
           style={styleDiv}
         >
-          <EdgeFilter edgeId={id} />
+          
+          <EdgeLabel edgeId={id} onClick={() => setIsOpen(true)} />
+          <WorkflowFilterCondition edgeId={id} />
 
           <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
@@ -89,6 +93,7 @@ export default function CustomEdge({
             <PopoverContent className="w-48 p-1">
               <div className="flex flex-col gap-1">
                 <AddFilter edgeId={id} />
+                <DeleteFilter edgeId={id} />
                 <DeleteEdge edgeId={id} />
               </div>
             </PopoverContent>
