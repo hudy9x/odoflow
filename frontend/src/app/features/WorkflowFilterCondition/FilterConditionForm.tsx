@@ -194,42 +194,42 @@ export default function FilterConditionForm({ filterData }: FilterConditionFormP
                                 <SelectValue placeholder="Text operators" />
                               </SelectTrigger>
                               <SelectContent>
-                              <SelectItem value="equals" className="flex items-center gap-2">
-                                  <Equal className="h-4 w-4" /> Equal to
-                              </SelectItem>
-                              <SelectItem value="notEquals" className="flex items-center gap-2">
-                                  <SlashSquare className="h-4 w-4" /> Not equal to
-                              </SelectItem>
-                              <SelectItem value="contains" className="flex items-center gap-2">
-                                  <Search className="h-4 w-4" /> Contains
-                              </SelectItem>
-                              <SelectItem value="notContains" className="flex items-center gap-2">
-                                  <SearchX className="h-4 w-4" /> Does not contain
-                              </SelectItem>
-                              <SelectItem value="startsWith" className="flex items-center gap-2">
-                                  <AlignLeft className="h-4 w-4" /> Starts with
-                              </SelectItem>
-                              <SelectItem value="endsWith" className="flex items-center gap-2">
-                                  <AlignRight className="h-4 w-4" /> Ends with
-                              </SelectItem>
-                              <SelectItem value="greaterThan" className="flex items-center gap-2">
-                                  <ChevronRight className="h-4 w-4" /> Greater than
-                              </SelectItem>
-                              <SelectItem value="greaterThanOrEqual" className="flex items-center gap-2">
-                                  <ChevronRight className="h-4 w-4 font-bold" /> Greater than or equal
-                              </SelectItem>
-                              <SelectItem value="lessThan" className="flex items-center gap-2">
-                                  <ChevronLeft className="h-4 w-4" /> Less than
-                              </SelectItem>
-                              <SelectItem value="lessThanOrEqual" className="flex items-center gap-2">
-                                  <ChevronLeft className="h-4 w-4 font-bold" /> Less than or equal
-                              </SelectItem>
-                              <SelectItem value="empty" className="flex items-center gap-2">
-                                  <Ban className="h-4 w-4" /> Is empty
-                              </SelectItem>
-                              <SelectItem value="notEmpty" className="flex items-center gap-2">
-                                  <CircleDot className="h-4 w-4" /> Is not empty
-                              </SelectItem>
+                                <SelectItem value="equals" className="flex items-center gap-2">
+                                    <Equal className="h-4 w-4" /> Equal to
+                                </SelectItem>
+                                <SelectItem value="notEquals" className="flex items-center gap-2">
+                                    <SlashSquare className="h-4 w-4" /> Not equal to
+                                </SelectItem>
+                                <SelectItem value="contains" className="flex items-center gap-2">
+                                    <Search className="h-4 w-4" /> Contains
+                                </SelectItem>
+                                <SelectItem value="notContains" className="flex items-center gap-2">
+                                    <SearchX className="h-4 w-4" /> Does not contain
+                                </SelectItem>
+                                <SelectItem value="startsWith" className="flex items-center gap-2">
+                                    <AlignLeft className="h-4 w-4" /> Starts with
+                                </SelectItem>
+                                <SelectItem value="endsWith" className="flex items-center gap-2">
+                                    <AlignRight className="h-4 w-4" /> Ends with
+                                </SelectItem>
+                                <SelectItem value="greaterThan" className="flex items-center gap-2">
+                                    <ChevronRight className="h-4 w-4" /> Greater than
+                                </SelectItem>
+                                <SelectItem value="greaterThanOrEqual" className="flex items-center gap-2">
+                                    <ChevronRight className="h-4 w-4 font-bold" /> Greater than or equal
+                                </SelectItem>
+                                <SelectItem value="lessThan" className="flex items-center gap-2">
+                                    <ChevronLeft className="h-4 w-4" /> Less than
+                                </SelectItem>
+                                <SelectItem value="lessThanOrEqual" className="flex items-center gap-2">
+                                    <ChevronLeft className="h-4 w-4 font-bold" /> Less than or equal
+                                </SelectItem>
+                                <SelectItem value="empty" className="flex items-center gap-2">
+                                    <Ban className="h-4 w-4" /> Is empty
+                                </SelectItem>
+                                <SelectItem value="notEmpty" className="flex items-center gap-2">
+                                    <CircleDot className="h-4 w-4" /> Is not empty
+                                </SelectItem>
                               </SelectContent>
                           </Select>
                           <Input 

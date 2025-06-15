@@ -1,8 +1,31 @@
 
+import { Equal, SlashSquare, AlignLeft, AlignRight, ChevronRight, ChevronLeft, Ban, CircleDot } from 'lucide-react';
+
 interface FilterCondition {
     field: string;
     operator: string;
     value: string;
+}
+
+const operatorIcons = {
+    equals: Equal,
+    notEquals: SlashSquare,
+    contains: "contains",
+    notContains: "not contains",
+    startsWith: AlignLeft,
+    endsWith: AlignRight,
+    greaterThan: ChevronRight,
+    greaterThanOrEqual: "≥",
+    lessThan: ChevronLeft,
+    lessThanOrEqual: "≤",
+    empty: Ban,
+    notEmpty: CircleDot
+};
+
+function renderOperator(operator: string) {
+    const Icon = operatorIcons[operator as keyof typeof operatorIcons];
+    if (typeof Icon === 'string') return Icon
+    return Icon ? <Icon className="h-3 w-3" /> : operator;
 }
 
 export default function FilterConditionPreview({ conditions }: { conditions: FilterCondition[][] }) {
@@ -20,7 +43,9 @@ export default function FilterConditionPreview({ conditions }: { conditions: Fil
                   )}
                   <div className="flex items-center gap-2">
                     <span className="font-medium text-blue-300 text-shadow-2xs">{condition.field}</span>
-                    <span className="text-zinc-200 text-shadow-2xs">{condition.operator}</span>
+                    <span className="text-zinc-200 text-shadow-2xs">
+                      {renderOperator(condition.operator)}
+                    </span>
                     <span className="font-medium text-green-400  text-shadow-2xs">{condition.value}</span>
                   </div>
                 </div>
