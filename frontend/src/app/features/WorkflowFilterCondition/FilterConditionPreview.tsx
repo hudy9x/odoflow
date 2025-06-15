@@ -9,25 +9,25 @@ export default function FilterConditionPreview({ conditions }: { conditions: Fil
     if (!conditions.length) return null;
 
     return (
-      <div className="space-y-2 bg-zinc-800 px-2 py-1 rounded-md">
+      <div className="space-y-1 max-h-[200px] overflow-y-auto bg-zinc-800 px-1 py-1 rounded-lg">
         {conditions.map((group, groupIndex) => (
-          <div key={groupIndex} className="flex flex-wrap items-center gap-2">
-            <div className="flex flex-wrap items-center gap-2  px-2 py-1 rounded-md text-xs">
+          <div key={groupIndex} className="flex flex-wrap items-center gap-1">
+            <div className="flex flex-wrap items-center gap-2  px-1 py-1 rounded-md text-xs bg-zinc-600">
               {group.map((condition, condIndex) => (
                 <div key={`${condition.field}-${condIndex}`} className="flex flex-wrap items-center gap-2">
                   {condIndex > 0 && (
-                    <span className="text-zinc-100 text-xs font-medium">AND</span>
+                    <span className="text-zinc-100 bg-zinc-900 px-1 py-0.5 rounded-sm text-[10px] font-medium">AND</span>
                   )}
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-blue-300">{condition.field}</span>
-                    <span className="text-zinc-200">{condition.operator}</span>
-                    <span className="font-medium text-green-400">{condition.value}</span>
+                    <span className="font-medium text-blue-300 text-shadow-2xs">{condition.field}</span>
+                    <span className="text-zinc-200 text-shadow-2xs">{condition.operator}</span>
+                    <span className="font-medium text-green-400  text-shadow-2xs">{condition.value}</span>
                   </div>
                 </div>
               ))}
             </div>
             {groupIndex < conditions.length - 1 && (
-              <span className="text-zinc-200 text-xs font-medium">OR</span>
+              <span className="text-zinc-200 px-2 text-xs font-medium">OR</span>
             )}
           </div>
         ))}
