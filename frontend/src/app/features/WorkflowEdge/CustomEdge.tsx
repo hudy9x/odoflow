@@ -19,6 +19,7 @@ import { DeleteEdge } from './DeleteEdge';
 import WorkflowFilterCondition from '../WorkflowFilterCondition';
 import EdgeLabel from '../WorkflowFilterCondition/EdgeLabel';
 import DeleteFilter from '../WorkflowFilterCondition/DeleteFilter';
+import EdgeStatus from '../WorkflowNodeDebug/EdgeStatus';
 
 export default function CustomEdge({
   id,
@@ -84,6 +85,7 @@ export default function CustomEdge({
           
           <EdgeLabel edgeId={id} onClick={() => setIsOpen(true)} />
           <WorkflowFilterCondition edgeId={id} />
+          <EdgeStatus edgeId={id} />
 
           <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>

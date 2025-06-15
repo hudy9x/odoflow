@@ -51,7 +51,10 @@ export class RowFirstStrategy implements ITraversalStrategy {
         if (!targetNode) continue
 
         // Process filter conditions if they exist
-        if (!this.matchCondition(targetNode)) {
+        const isMatchCondition = this.matchCondition(targetNode)
+        
+        this.notifyConditionResult(targetNode, isMatchCondition, edge.id);
+        if (!isMatchCondition) {
           continue;
         }
 
@@ -102,5 +105,17 @@ export class RowFirstStrategy implements ITraversalStrategy {
       return false;
     }
     return true;
+  }
+
+  notifyConditionResult(targetNode: WorkflowNodeWithFilter, isConditionMet: boolean, edgeId: string){
+    redisService.publish('node-run-log', {
+      edgeId,
+      workflowRunId: targetNode.workflowId,
+      nodeId: targetNode.id,
+      status: isConditionMet ? 'COMPLETED' : 'FAILED',
+      outputData: null,
+      error: null,
+      timestamp: Date.now()
+    });
   }
 }
