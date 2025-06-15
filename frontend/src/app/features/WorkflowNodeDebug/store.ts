@@ -3,6 +3,7 @@ import { create } from 'zustand'
 interface NodeDebugData {
   status: string
   outputData: Record<string, unknown>
+  error?: string
 }
 
 interface NodeDebugStore {

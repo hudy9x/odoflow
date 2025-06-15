@@ -48,7 +48,7 @@ export class NodeRunLogger {
       data: {
         status: params.result.success ? 'COMPLETED' : 'FAILED',
         outputData: params.result.output ? JSON.parse(JSON.stringify(params.result.output)) : null,
-        error: params.result.error ? JSON.parse(JSON.stringify(params.result.error)) : null,
+        error: params.result.error ? params.result.error : null,
         completedAt: new Date(),
         durationMs: Date.now() - new Date().getTime()
       }
@@ -59,6 +59,7 @@ export class NodeRunLogger {
         nodeId: log.nodeId,
         status: params.result.success ? 'COMPLETED' : 'FAILED',
         outputData: params.result.output ? JSON.parse(JSON.stringify(params.result.output)) : null,
+        error: params.result.error ? params.result.error : null,
         timestamp: Date.now()
       });
     }
