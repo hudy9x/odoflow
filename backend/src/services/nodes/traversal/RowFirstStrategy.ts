@@ -17,7 +17,9 @@
  */
 
 import type { ITraversalStrategy } from './types.js';
-import type { WorkflowNode, WorkflowEdge } from '../../../generated/prisma/index.js';
+import type { WorkflowNode, WorkflowEdge, WorkflowNodeFilter } from '../../../generated/prisma/index.js';
+
+type WorkflowNodeWithFilter = WorkflowNode & { filter?: WorkflowNodeFilter | null };
 import type { WorkflowTraversalService } from '../../node.traversal.service.js';
 import { RedisService } from '../../../services/redis.service.js';
 
@@ -27,7 +29,7 @@ export class RowFirstStrategy implements ITraversalStrategy {
 
   async traverse(params: {
     startingNodeId: string,
-    nodes: WorkflowNode[],
+    nodes: WorkflowNodeWithFilter[],
     edges: WorkflowEdge[],
     workflowRunId: string,
     initialInputData: any,
@@ -46,6 +48,12 @@ export class RowFirstStrategy implements ITraversalStrategy {
       for (const edge of foundEdges) {
         const targetNode = nodes.find(node => node.id === edge.targetId)
         if (!targetNode) continue
+
+        if (targetNode.filter) {
+          console.log(`Node ${targetNode.id} filter conditions:`, targetNode.filter.conditions)
+        }
+
+        
 
         const logId = service.createNodeRunLog(targetNode.id, nodes, workflowRunId, null);
 
