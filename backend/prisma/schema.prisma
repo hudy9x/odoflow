@@ -72,7 +72,7 @@ model WorkflowNode {
   workflow      Workflow       @relation(fields: [workflowId], references: [id])
   outgoingEdges WorkflowEdge[] @relation("SourceNode") // One-to-many (as source)
   incomingEdges WorkflowEdge[] @relation("TargetNode") // One-to-many (as target)
-  incomingFilters WorkflowNodeFilter[] @relation("NodeIncomingFilters")
+  filter WorkflowNodeFilter? @relation("NodeIncomingFilters")
 }
 
 model WorkflowEdge {
@@ -93,7 +93,7 @@ model WorkflowNodeFilter {
   id            String   @id @default(uuid())
   workflowId    String
   sourceNodeId  String
-  targetNodeId  String
+  targetNodeId  String   @unique
   label         String?  // Optional label for the filter
   conditions    Json     // Will store FilterCondition[][] as JSON
   createdAt     DateTime @default(now())
@@ -101,7 +101,7 @@ model WorkflowNodeFilter {
 
   // Relationships
   workflow    Workflow     @relation(fields: [workflowId], references: [id])
-  targetNode  WorkflowNode @relation("NodeIncomingFilters", fields: [targetNodeId], references: [id])
+  targetNode  WorkflowNode @relation("NodeIncomingFilters", fields: [targetNodeId], references: [id], onDelete: Cascade)
 
   @@index([sourceNodeId])
   @@index([targetNodeId])

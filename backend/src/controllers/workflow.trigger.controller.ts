@@ -39,10 +39,16 @@ workflowTriggerRouter.post('/workflow-by/:webhookId', async (c) => {
         isActive: true
       },
       include: {
-        nodes: true,
+        nodes: {
+          include: {
+            filter: true
+          }
+        },
         edges: true
       }
     })
+
+    console.log('work', workflow?.nodes)
 
     if (!workflow) {
       return c.json({ 
