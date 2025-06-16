@@ -10,6 +10,7 @@ import { Combobox } from '@/components/ui/combobox';
 import { Trash2 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { NodeConfigPopoverCloseButton } from '../../WorkflowConfig/NodeConfigPopoverCloseButton';
+import { KeyValuePair, jsonToKeyValuePairs, keyValuePairsToJson, createId } from './utils';
 
 interface Props {
   nodeId: string;
@@ -22,39 +23,25 @@ export const NodeResponseConfigFormContent = memo(function NodeResponseConfigFor
   const [statusCode, setStatusCode] = useState(initialConfig?.statusCode || '');
   const [headers, setHeaders] = useState(initialConfig?.headers || []);
   const [responseData, setResponseData] = useState(initialConfig?.responseData || sampleJson);
-  const [isKeyValueMode, setIsKeyValueMode] = useState(false);
-  const [keyValuePairs, setKeyValuePairs] = useState<Array<{ id: string; key: string; value: string }>>([]);
+  const [isKeyValueMode, setIsKeyValueMode] = useState(true);
+  const [keyValuePairs, setKeyValuePairs] = useState<KeyValuePair[]>(() => (
+    jsonToKeyValuePairs(initialConfig?.responseData || sampleJson)
+  ));
 
-  // Parse response data into key-value pairs when switching to key-value mode
   const switchToKeyValueMode = () => {
-    try {
-      const parsed = JSON.parse(responseData);
-      const pairs = Object.entries(parsed).map(([key, value]) => ({
-        id: `${Date.now()}-${Math.random()}`,
-        key,
-        value: typeof value === 'string' ? value : JSON.stringify(value)
-      }));
+    const pairs = jsonToKeyValuePairs(responseData);
+    if (pairs.length > 0) {
       setKeyValuePairs(pairs);
       setIsKeyValueMode(true);
-    } catch {
+    } else {
       toast.error('Invalid JSON data');
     }
   };
 
-  // Convert key-value pairs to JSON string when switching to JSON mode
   const switchToJsonMode = () => {
     try {
-      const obj = keyValuePairs.reduce((acc, { key, value }) => {
-        try {
-          // Try to parse the value as JSON
-          acc[key] = JSON.parse(value);
-        } catch {
-          // If parsing fails, use the raw string
-          acc[key] = value;
-        }
-        return acc;
-      }, {} as Record<string, unknown>);
-      setResponseData(JSON.stringify(obj, null, 2));
+      const jsonString = keyValuePairsToJson(keyValuePairs);
+      setResponseData(jsonString);
       setIsKeyValueMode(false);
     } catch {
       toast.error('Failed to convert to JSON');
@@ -64,7 +51,7 @@ export const NodeResponseConfigFormContent = memo(function NodeResponseConfigFor
   const addKeyValuePair = () => {
     setKeyValuePairs([
       ...keyValuePairs,
-      { id: `${Date.now()}-${Math.random()}`, key: '', value: '' }
+      { id: createId(), key: '', value: '' }
     ]);
   };
 
@@ -81,7 +68,7 @@ export const NodeResponseConfigFormContent = memo(function NodeResponseConfigFor
   const addHeader = () => {
     setHeaders([
       ...headers,
-      { id: `${Date.now()}-${Math.random()}`, key: '', value: '' }
+      { id: createId(), key: '', value: '' }
     ]);
   };
 
