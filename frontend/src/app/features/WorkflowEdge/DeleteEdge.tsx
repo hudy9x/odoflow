@@ -7,7 +7,7 @@ interface DeleteEdgeProps {
 }
 
 export function DeleteEdge({ edgeId }: DeleteEdgeProps) {
-  const { updateEdges } = useWorkflowStore();
+  const updateEdges = useWorkflowStore(state => state.updateEdges);
   
   const handleDeleteEdge = () => {
     updateEdges([{ id: edgeId, type: 'remove' }]);

@@ -114,14 +114,15 @@ function JsonViewer({ data, path = "", isRoot = true, shortId }: JsonViewerProps
 interface NodeOutputDataProps {
   shortId: string;
   outputData: Record<string, unknown>;
+  error?: string;
 }
 
-export function NodeOutputData({ shortId, outputData }: NodeOutputDataProps) {
+export function NodeOutputData({ shortId, outputData, error }: NodeOutputDataProps) {
   return (
     <div className="space-y-2">
       <h4 className="font-medium">Output Data</h4>
       <div className="bg-zinc-900 text-gray-100 p-2 rounded-md text-xs overflow-auto max-h-[300px] font-mono">
-        <JsonViewer data={outputData} shortId={shortId} />
+        {error ? <p className="text-gray-200">{error}</p> : <JsonViewer data={outputData} shortId={shortId} />}
       </div>
     </div>
   );

@@ -17,9 +17,12 @@
  */
 
 import type { ITraversalStrategy } from './types.js';
-import type { WorkflowNode, WorkflowEdge } from '../../../generated/prisma/index.js';
+import type { WorkflowNode, WorkflowEdge, WorkflowNodeFilter } from '../../../generated/prisma/index.js';
+
+type WorkflowNodeWithFilter = WorkflowNode & { filter?: WorkflowNodeFilter | null };
 import type { WorkflowTraversalService } from '../../node.traversal.service.js';
 import { RedisService } from '../../../services/redis.service.js';
+import { filterProcessor } from '../filter/FilterProcessor.js';
 
 const redisService = RedisService.getInstance();
 
@@ -27,7 +30,7 @@ export class RowFirstStrategy implements ITraversalStrategy {
 
   async traverse(params: {
     startingNodeId: string,
-    nodes: WorkflowNode[],
+    nodes: WorkflowNodeWithFilter[],
     edges: WorkflowEdge[],
     workflowRunId: string,
     initialInputData: any,
@@ -47,6 +50,14 @@ export class RowFirstStrategy implements ITraversalStrategy {
         const targetNode = nodes.find(node => node.id === edge.targetId)
         if (!targetNode) continue
 
+        // Process filter conditions if they exist
+        const isMatchCondition = this.matchCondition(targetNode)
+        
+        this.notifyConditionResult(targetNode, isMatchCondition, edge.id);
+        if (!isMatchCondition) {
+          continue;
+        }
+
         const logId = service.createNodeRunLog(targetNode.id, nodes, workflowRunId, null);
 
         const result = await service.runNode({
@@ -58,7 +69,7 @@ export class RowFirstStrategy implements ITraversalStrategy {
         service.updateNodeLog(logId, result)
 
         if (!result.success) {
-          console.log(`Failed to run node ${targetNode.id}: ${result.error}`)
+          console.log(`Failed to run node ${targetNode.id} (${targetNode.shortId}): ${result.error}`)
         }
 
         await recursiveLooop(edge.targetId)
@@ -74,5 +85,37 @@ export class RowFirstStrategy implements ITraversalStrategy {
     });
 
     return service.getProcessedNodesCount();
+  }
+
+  matchCondition(targetNode: WorkflowNodeWithFilter){
+    const conditions = targetNode.filter?.conditions as any [][];
+    if (!conditions || conditions.length === 0) return true;
+    
+    console.log(`Node ${targetNode.id} filter conditions:`, conditions);
+      
+    // Process filter conditions using TemplateParser
+    const isConditionMet = filterProcessor.process(
+      conditions
+    );
+
+    console.log(`Node ${targetNode.id} filter conditions met:`, isConditionMet);
+
+    if (!isConditionMet) {
+      console.log(`Node ${targetNode.id} filtered out - conditions not met`);
+      return false;
+    }
+    return true;
+  }
+
+  notifyConditionResult(targetNode: WorkflowNodeWithFilter, isConditionMet: boolean, edgeId: string){
+    redisService.publish('node-run-log', {
+      edgeId,
+      workflowRunId: targetNode.workflowId,
+      nodeId: targetNode.id,
+      status: isConditionMet ? 'COMPLETED' : 'FAILED',
+      outputData: null,
+      error: null,
+      timestamp: Date.now()
+    });
   }
 }

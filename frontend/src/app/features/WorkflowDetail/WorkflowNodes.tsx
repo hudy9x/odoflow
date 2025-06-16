@@ -33,6 +33,8 @@ export default function WorkflowNodes() {
     }]);
   }, [updateNodes]);
 
+  console.log('rendr node')
+
   return (
     <div className="w-full h-full">
       <ReactFlow
@@ -52,7 +54,7 @@ export default function WorkflowNodes() {
       >
         {/* <Controls /> */}
         {/* <MiniMap /> */}
-        <Background variant={BackgroundVariant.Cross} gap={12} size={1.5} />
+        <Background bgColor="#f3f3f4" variant={BackgroundVariant.Cross} gap={12} size={1.5} />
       </ReactFlow>
     </div>
   );

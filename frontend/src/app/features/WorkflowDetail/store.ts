@@ -194,8 +194,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     set((state) => {
       const nextEdges = [...state.edges]
 
-      console.log('changes', changes)
-      console.log('state.edges', state.edges)
+      console.trace('update edges', changes)
 
       let removedEdgeId = ''
       changes.forEach((change) => {
@@ -217,8 +216,6 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
           toast.error('Failed to delete edge')
         })
       }
-
-
 
       console.log('udpate edges')
       return { edges: nextEdges }

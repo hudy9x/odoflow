@@ -42,17 +42,28 @@ export default function StatusButton() {
         // console.log(msg.channel, msg.message)
         const {channel, message} = msg
         if (channel === 'node-run-log') {
-          const payload = JSON.parse(message) as {nodeId: string, status: string, timestamp: number, outputData: Record<string, unknown>, workflowRunId: string}
-          console.log(payload)
+          const payload = JSON.parse(message) as {nodeId: string, edgeId?: string, status: string, timestamp: number, outputData: Record<string, unknown>, workflowRunId: string, error?: string}
+
           if (payload.status === 'ALL_COMPLETED') {
             toast.success("Workflow completed")
             // statusWsService.disconnect()
             // setIsConnected(false)
           }
 
+          if (payload.edgeId) {
+            console.log(`Edge ${payload.edgeId} status: ${payload.status}`)
+            setNodeStatus(`edge-${payload.edgeId}`, {
+              status: payload.status,
+              outputData: {},
+              error: undefined
+            })
+            return
+          }
+
           setNodeStatus(payload.nodeId, {
             status: payload.status,
-            outputData: payload.outputData || {}
+            outputData: payload.outputData || {},
+            error: payload.error || undefined
           })
         }
         // toast.info(`Status: ${msg.status} (Tick: ${msg.tick}) (${msg.channel}: ${msg.message})`)

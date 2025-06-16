@@ -9,6 +9,7 @@ import nodeRouter from './controllers/node.controller.js'
 import webhookRouter from './controllers/webhook.controller.js'
 import workflowTriggerRouter from './controllers/workflow.trigger.controller.js'
 import migrationRouter from './controllers/migration.controller.js'
+import nodeFilterController from './controllers/node.filter.controller.js'
 // import statusWsController from './controllers/websocket.controller.js'
 import { createNodeWebSocket } from '@hono/node-ws'
 import { RedisService } from './services/redis.service.js'
@@ -41,6 +42,7 @@ app.route('/api/node', nodeRouter)
 app.route('/api', webhookRouter) // Webhook routes are mounted at /api/webhooks
 app.route('/api/trigger', workflowTriggerRouter) // Workflow trigger routes
 app.route('/api', migrationRouter) // Migration routes
+app.route('/api/node-filters', nodeFilterController)
 
 
 const redisService = RedisService.getInstance();

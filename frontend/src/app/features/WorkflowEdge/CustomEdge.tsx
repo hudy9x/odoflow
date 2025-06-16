@@ -1,4 +1,4 @@
-import React, { useEffect, useId } from 'react';
+import React, { useEffect, useCallback, useId } from 'react';
 import {
   BaseEdge,
   EdgeLabelRenderer,
@@ -12,12 +12,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import EdgeFilter from './EdgeFilter';
-import AddFilter from './AddFilter';
-
+import AddFilter from '@/app/features/WorkflowFilterCondition/AddFilter';
 
 import './style.css'
 import { DeleteEdge } from './DeleteEdge';
+import WorkflowFilterCondition from '../WorkflowFilterCondition';
+import EdgeLabel from '../WorkflowFilterCondition/EdgeLabel';
+import DeleteFilter from '../WorkflowFilterCondition/DeleteFilter';
+import EdgeStatus from '../WorkflowNodeDebug/EdgeStatus';
 
 export default function CustomEdge({
   id,
@@ -43,12 +45,15 @@ export default function CustomEdge({
     targetPosition,
   });
 
-
   const handleContextMenu = (event: MouseEvent) => {
     event.preventDefault()
     console.log('context menu')
     setIsOpen(true)
   }
+
+  const openContextMenu = useCallback(() => {
+    setIsOpen(true)
+  }, [])
 
   useEffect(() => {
     const path = document.getElementById(randomId)
@@ -56,11 +61,13 @@ export default function CustomEdge({
     
     if (svg) {
       svg.addEventListener('contextmenu', handleContextMenu)
+      svg.addEventListener('click', handleContextMenu)
     }
 
     return () => {
       if (svg) {
         svg.removeEventListener('contextmenu', handleContextMenu)
+        svg.removeEventListener('click', handleContextMenu)
       }
     }
     
@@ -71,24 +78,30 @@ export default function CustomEdge({
     pointerEvents: 'none' as const,
   }
 
+  console.log('customEdge render')
+
   return (
     <>
       <BaseEdge path={edgePath} id={randomId} className='workflow-edge' markerEnd={markerEnd} style={style}  />
       <EdgeLabelRenderer>
         <div
-          className="button-edge__label nodrag nopan"
+          className="button-edge__label nodrag nopan flex flex-col justify-center items-center gap-1"
           style={styleDiv}
         >
-          <EdgeFilter edgeId={id} />
+          
+          <EdgeLabel edgeId={id} onClick={openContextMenu} />
+          <WorkflowFilterCondition edgeId={id} />
+          <EdgeStatus edgeId={id} />
 
           <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
               <div className="w-1 h-1 overflow-hidden invisible">
               </div>
             </PopoverTrigger>
-            <PopoverContent className="w-48 p-1">
+            <PopoverContent side="bottom" align='center' className="w-48 p-1">
               <div className="flex flex-col gap-1">
                 <AddFilter edgeId={id} />
+                <DeleteFilter edgeId={id} />
                 <DeleteEdge edgeId={id} />
               </div>
             </PopoverContent>
