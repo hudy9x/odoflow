@@ -23,6 +23,7 @@ type WorkflowNodeWithFilter = WorkflowNode & { filter?: WorkflowNodeFilter | nul
 import type { WorkflowTraversalService } from '../../node.traversal.service.js';
 import { RedisService } from '../../../services/redis.service.js';
 import { filterProcessor } from '../filter/FilterProcessor.js';
+import { nodeOutput } from '../NodeOutput.js';
 
 const redisService = RedisService.getInstance();
 
@@ -69,6 +70,10 @@ export class RowFirstStrategy implements ITraversalStrategy {
           node: targetNode,
           workflowRunId
         });
+
+        if (result.success && targetNode.shortId) {
+          nodeOutput.setOutput(targetNode.shortId, result.output);
+        }
         
         // Fire and forget - don't await
         service.updateNodeLog(logId, result)
