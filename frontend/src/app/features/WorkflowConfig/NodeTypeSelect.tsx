@@ -1,6 +1,6 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { Globe, MessageSquare, Plus, Webhook } from "lucide-react"
+import { Plus } from "lucide-react"
 import { useWorkflowStore } from "../WorkflowDetail/store"
 
 interface Props {
@@ -8,26 +8,14 @@ interface Props {
   color?: string
 }
 
-const nodeTypes = [
-  { 
-    type: 'webhook',
-    title: 'Webhook',
-    description: 'Trigger events',
-    icon: <Webhook className="w-4 h-4" />,
-  },
-  {
-    type: 'http',
-    title: 'HTTP Request',
-    description: 'Make a request',
-    icon: <Globe className="w-4 h-4" />,
-  },
-  {
-    type: 'discord',
-    title: 'Discord',
-    description: 'Send a Message',
-    icon: <MessageSquare className="w-4 h-4" />,
-  }
-]
+import { nodeTypeConfig } from "../WorkflowNodes"
+
+interface NodeType {
+  type: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+}
 
 export function NodeTypeSelect({ nodeId, color = '#fff' }: Props) {
   const { isLeafNode, addConnectedNode } = useWorkflowStore()
@@ -49,7 +37,7 @@ export function NodeTypeSelect({ nodeId, color = '#fff' }: Props) {
       </PopoverTrigger>
       <PopoverContent className="w-72 p-2" align="start">
         <div className="space-y-1">
-          {nodeTypes.map((node) => (
+          {nodeTypeConfig.map((node: NodeType) => (
             <Button
               key={node.type}
               variant="ghost"
