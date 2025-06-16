@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -11,9 +11,9 @@ import WorkflowNodes from './WorkflowNodes'
 import { useWorkflowStore } from './store'
 import WorkflowToolbar from '@/app/features/WorkflowDetailToolbar'
 import WorkflowTitle from './WorkflowTitle'
-import { LoadFilterCondition } from '../WorkflowFilterCondition/LoadFilterCondition'
+import LoadFilterCondition from '../WorkflowFilterCondition/LoadFilterCondition'
 
-export default function WorkflowDetail({ id }: { id: string }) {
+function WorkflowDetail({ id }: { id: string }) {
   const router = useRouter()
   const [workflow, setWorkflow] = useState<Workflow | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -21,6 +21,7 @@ export default function WorkflowDetail({ id }: { id: string }) {
 
   useEffect(() => {
     const fetchWorkflow = async () => {
+      console.log('WorkflowDetail.fetchWorkflow')
       try {
         const response = await getWorkflow(id)
         if (response.success) {
@@ -123,3 +124,4 @@ export default function WorkflowDetail({ id }: { id: string }) {
     </div>
   )
 }
+export default memo(WorkflowDetail)

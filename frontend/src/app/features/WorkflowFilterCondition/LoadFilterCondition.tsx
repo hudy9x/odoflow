@@ -1,11 +1,11 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, memo } from 'react';
 import { useFilterStore } from './store';
 
 interface LoadFilterConditionProps {
   workflowId?: string;
 }
 
-export const LoadFilterCondition: FC<LoadFilterConditionProps> = ({ workflowId }) => {
+const LoadFilterCondition: FC<LoadFilterConditionProps> = ({ workflowId }) => {
   const { fetchFilters } = useFilterStore();
 
   useEffect(() => {
@@ -16,3 +16,5 @@ export const LoadFilterCondition: FC<LoadFilterConditionProps> = ({ workflowId }
 
   return null
 };
+
+export default memo(LoadFilterCondition)
