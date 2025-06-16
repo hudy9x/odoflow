@@ -141,7 +141,7 @@ export class WorkflowTraversalService {
     nodes, edges, workflowRunId, 
     initialInputData = null, 
     strategy = TraversalStrategy.COLUMN_FIRST
-  }: TraversalParams): Promise<number> {
+  }: TraversalParams): Promise<number | { statusCode: number; headers: Record<string, string>; body: unknown }> {
     console.log('🚀 Starting workflow traversal ===========================================');
     console.log(`📊 Total nodes: ${nodes.length}, Total edges: ${edges.length}`);
     
@@ -165,6 +165,10 @@ export class WorkflowTraversalService {
     console.log(`
 🏁 Workflow traversal complete. Processed ${this.getProcessedNodesCount()} nodes total.
 `);
-    return result;
+    // If result is from a response node, return it directly
+    if (result && typeof result === 'object' && 'customResponse' in result) {
+      return result;
+    }
+    return result as number;
   }
 }

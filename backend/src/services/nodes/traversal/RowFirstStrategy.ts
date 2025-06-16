@@ -23,6 +23,7 @@ type WorkflowNodeWithFilter = WorkflowNode & { filter?: WorkflowNodeFilter | nul
 import type { WorkflowTraversalService } from '../../node.traversal.service.js';
 import { RedisService } from '../../../services/redis.service.js';
 import { filterProcessor } from '../filter/FilterProcessor.js';
+import { nodeOutput } from '../NodeOutput.js';
 
 const redisService = RedisService.getInstance();
 
@@ -35,14 +36,19 @@ export class RowFirstStrategy implements ITraversalStrategy {
     workflowRunId: string,
     initialInputData: any,
     service: WorkflowTraversalService
-  }): Promise<number> {
+  }): Promise<number | { statusCode: number; headers: Record<string, string>; body: unknown }> {
     const { startingNodeId, nodes, edges, workflowRunId, initialInputData, service } = params;
     await service.processStartingNode(startingNodeId, nodes, workflowRunId, initialInputData);
 
     // console.log('nodes', nodes)
     // console.log('edges', edges)
 
+    let stop = false;
+    let responseData:any = null
+    
     const recursiveLooop = async (sourceId: string) => {
+      if (stop) return;
+
       const foundEdges = edges.filter(edge => edge.sourceId === sourceId)
       if (foundEdges.length === 0) return
 
@@ -64,12 +70,23 @@ export class RowFirstStrategy implements ITraversalStrategy {
           node: targetNode,
           workflowRunId
         });
+
+        if (result.success && targetNode.shortId) {
+          nodeOutput.setOutput(targetNode.shortId, result.output);
+        }
         
         // Fire and forget - don't await
         service.updateNodeLog(logId, result)
 
         if (!result.success) {
           console.log(`Failed to run node ${targetNode.id} (${targetNode.shortId}): ${result.error}`)
+        } 
+        
+        // response data when node's type is reponse
+        if (targetNode.type === 'response' && result.output && result.output.customResponse) {
+          stop = true;
+          responseData = result.output;
+          return;
         }
 
         await recursiveLooop(edge.targetId)
@@ -83,6 +100,11 @@ export class RowFirstStrategy implements ITraversalStrategy {
       status: 'ALL_COMPLETED',
       timestamp: Date.now()
     });
+
+    // If result is from a response node, return it
+    if (responseData) {
+      return responseData;
+    }
 
     return service.getProcessedNodesCount();
   }

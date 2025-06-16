@@ -3,6 +3,7 @@ import { PrismaClient } from '../generated/prisma/index.js'
 import { TriggerType } from '../generated/prisma/index.js'
 import { WorkflowTraversalService } from '../services/node.traversal.service.js'
 import { TraversalStrategy } from '../services/nodes/traversal/types.js'
+import type { ContentfulStatusCode } from 'hono/utils/http-status'
 
 const prisma = new PrismaClient()
 const workflowTriggerRouter = new Hono()
@@ -75,7 +76,7 @@ workflowTriggerRouter.post('/workflow-by/:webhookId', async (c) => {
 
     // Traverse and process all nodes in the workflow
     const traversalService = new WorkflowTraversalService();
-    await traversalService.traverse({
+    const result = await traversalService.traverse({
       startingNodeId: workflow.startingNodeId!,
       nodes: workflow.nodes,
       edges: workflow.edges,
@@ -94,6 +95,14 @@ workflowTriggerRouter.post('/workflow-by/:webhookId', async (c) => {
         completedAt: new Date()
       }
     })
+
+    if (result && typeof result === 'object' && 'customResponse' in result) {
+      const { statusCode, headers, body } = result;
+      const bodyData = {}
+      Object.assign(bodyData, body)
+    
+      return c.json(bodyData, statusCode as unknown as ContentfulStatusCode, headers)
+    }
 
     return c.json({ 
       success: true, 
