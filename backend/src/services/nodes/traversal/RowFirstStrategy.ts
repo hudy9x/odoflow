@@ -35,14 +35,19 @@ export class RowFirstStrategy implements ITraversalStrategy {
     workflowRunId: string,
     initialInputData: any,
     service: WorkflowTraversalService
-  }): Promise<number> {
+  }): Promise<number | { statusCode: number; headers: Record<string, string>; body: unknown }> {
     const { startingNodeId, nodes, edges, workflowRunId, initialInputData, service } = params;
     await service.processStartingNode(startingNodeId, nodes, workflowRunId, initialInputData);
 
     // console.log('nodes', nodes)
     // console.log('edges', edges)
 
+    let stop = false;
+    let responseData:any = null
+    
     const recursiveLooop = async (sourceId: string) => {
+      if (stop) return;
+
       const foundEdges = edges.filter(edge => edge.sourceId === sourceId)
       if (foundEdges.length === 0) return
 
@@ -70,6 +75,13 @@ export class RowFirstStrategy implements ITraversalStrategy {
 
         if (!result.success) {
           console.log(`Failed to run node ${targetNode.id} (${targetNode.shortId}): ${result.error}`)
+        } 
+        
+        // response data when node's type is reponse
+        if (targetNode.type === 'response' && result.output && result.output.customResponse) {
+          stop = true;
+          responseData = result.output;
+          return;
         }
 
         await recursiveLooop(edge.targetId)
@@ -83,6 +95,11 @@ export class RowFirstStrategy implements ITraversalStrategy {
       status: 'ALL_COMPLETED',
       timestamp: Date.now()
     });
+
+    // If result is from a response node, return it
+    if (responseData) {
+      return responseData;
+    }
 
     return service.getProcessedNodesCount();
   }

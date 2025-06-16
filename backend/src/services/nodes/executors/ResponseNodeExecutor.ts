@@ -38,6 +38,7 @@ export class ResponseNodeExecutor implements NodeExecutor {
       return {
         success: true,
         output: {
+          customResponse: true,
           statusCode: parseInt(parsedStatusCode) || 200,
           headers: parsedHeaders,
           body: responseData

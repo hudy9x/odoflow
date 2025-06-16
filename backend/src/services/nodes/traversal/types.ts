@@ -14,5 +14,5 @@ export interface ITraversalStrategy {
     workflowRunId: string,
     initialInputData: any,
     service: WorkflowTraversalService
-  }): Promise<number>;
+  }): Promise<number | { statusCode: number; headers: Record<string, string>; body: unknown }>;
 }
