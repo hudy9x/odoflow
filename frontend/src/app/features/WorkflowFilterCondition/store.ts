@@ -19,15 +19,20 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
   error: null,
 
   fetchFilters: async (workflowId: string) => {
+    const state = get()
+    if (state.isLoading) return;
+
+    console.log('useFilterStore.fetchFilters', workflowId, state)
     set({ isLoading: true, error: null });
+
     try {
       const response = await nodeFilterService.getWorkflowFilters(workflowId);
       set({ filters: response.data });
+      toast.success('Filters fetched successfully')
     } catch (err) {
       console.log('useFilterStore.fetchFilters', err)
       set({ error: 'Failed to fetch filters' });
     } finally {
-      toast.success('Filters fetched successfully')
       set({ isLoading: false });
     }
   },
