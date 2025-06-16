@@ -9,14 +9,14 @@ export default function WorkflowFilterCondition({ edgeId }: { edgeId: string }) 
   const { findFilterByNodes } = useFilterStore();
   
   if (!workflowId) {
-    console.error('No workflow ID available');
+    console.log('No workflow ID available');
     return null;
   }
   
   const edge = edges.find((e: Edge) => e.id === edgeId);
   
   if (!edge) {
-    console.error('Edge not found:', edgeId);
+    console.log('Edge not found:', edgeId);
     return null;
   }
 
