@@ -33,6 +33,8 @@ export default function WorkflowNodes() {
     }]);
   }, [updateNodes]);
 
+  console.log('rendr node')
+
   return (
     <div className="w-full h-full">
       <ReactFlow

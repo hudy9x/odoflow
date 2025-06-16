@@ -1,4 +1,4 @@
-import React, { useEffect, useId } from 'react';
+import React, { useEffect, useCallback, useId } from 'react';
 import {
   BaseEdge,
   EdgeLabelRenderer,
@@ -51,6 +51,10 @@ export default function CustomEdge({
     setIsOpen(true)
   }
 
+  const openContextMenu = useCallback(() => {
+    setIsOpen(true)
+  }, [])
+
   useEffect(() => {
     const path = document.getElementById(randomId)
     const svg = path?.closest('svg')
@@ -74,6 +78,8 @@ export default function CustomEdge({
     pointerEvents: 'none' as const,
   }
 
+  console.log('customEdge render')
+
   return (
     <>
       <BaseEdge path={edgePath} id={randomId} className='workflow-edge' markerEnd={markerEnd} style={style}  />
@@ -83,7 +89,7 @@ export default function CustomEdge({
           style={styleDiv}
         >
           
-          <EdgeLabel edgeId={id} onClick={() => setIsOpen(true)} />
+          <EdgeLabel edgeId={id} onClick={openContextMenu} />
           <WorkflowFilterCondition edgeId={id} />
           <EdgeStatus edgeId={id} />
 
