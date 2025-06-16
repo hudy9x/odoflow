@@ -37,3 +37,13 @@ export interface WebhookNodeConfig {
   headers?: Record<string, string>;
   body?: any;
 }
+
+export interface ResponseNodeConfig {
+  statusCode: string;
+  headers: Array<{
+    id: string;
+    key: string;
+    value: string;
+  }>;
+  responseData: string; // JSON string
+}

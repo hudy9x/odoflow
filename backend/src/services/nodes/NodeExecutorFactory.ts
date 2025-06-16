@@ -1,13 +1,15 @@
 import { HttpNodeExecutor } from './executors/HttpNodeExecutor.js';
 import { DiscordNodeExecutor } from './executors/DiscordNodeExecutor.js';
 import { WebhookNodeExecutor } from './executors/WebhookNodeExecutor.js';
+import { ResponseNodeExecutor } from './executors/ResponseNodeExecutor.js';
 import type { NodeExecutor } from './types.js';
 
 export class NodeExecutorFactory {
   private static executors = new Map<string, NodeExecutor>([
     ['http', new HttpNodeExecutor()],
     ['discord', new DiscordNodeExecutor()],
-    ['webhook', new WebhookNodeExecutor()]
+    ['webhook', new WebhookNodeExecutor()],
+    ['response', new ResponseNodeExecutor()]
   ]);
 
   static getExecutor(nodeType: string): NodeExecutor {
