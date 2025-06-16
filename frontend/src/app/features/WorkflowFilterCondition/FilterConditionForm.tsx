@@ -32,7 +32,7 @@ interface FilterConditionFormProps {
 }
 
 export default function FilterConditionForm({ filterData }: FilterConditionFormProps) {
-  const { updateFilter } = useFilterStore();
+  const updateFilter = useFilterStore(state => state.updateFilter);
   const defaultConditions = filterData?.conditions.length ? filterData?.conditions : [[{ field: '', operator: 'equals', value: '' }]];
   const [conditions, setConditions] = useState<FilterCondition[][]>(defaultConditions);
   const [label, setLabel] = useState(filterData?.label || '');
@@ -232,13 +232,15 @@ export default function FilterConditionForm({ filterData }: FilterConditionFormP
                                 </SelectItem>
                               </SelectContent>
                           </Select>
-                          <Input 
+                          {condition.operator !== 'empty' && condition.operator !== 'notEmpty' && (
+                            <Input 
                               type="text" 
                               className="bg-white"
                               placeholder="Value" 
                               value={condition.value}
                               onChange={(e) => updateCondition(orIndex, andIndex, 'value', e.target.value)}
-                          />
+                            />
+                          )}
                           </div>
                       ))}
                       <div className="flex gap-2">
