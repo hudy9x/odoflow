@@ -1,5 +1,5 @@
 
-import { Equal, SlashSquare, AlignLeft, AlignRight, ChevronRight, ChevronLeft, Ban, CircleDot } from 'lucide-react';
+import { Equal, SlashSquare, AlignLeft, AlignRight, ChevronRight, ChevronLeft } from 'lucide-react';
 
 interface FilterCondition {
     field: string;
