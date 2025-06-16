@@ -71,7 +71,11 @@ export const NodeConfigPopover = ({
         <PopoverTrigger asChild onClick={handleTriggerClick}> 
           {trigger}
         </PopoverTrigger>
-        <PopoverContent className={`${width} rounded-xl bg-gray-100/40 backdrop-blur-lg p-1 border border-gray-200`}>
+        <PopoverContent onInteractOutside={ev => {
+          ev.stopPropagation();
+          ev.preventDefault();
+          // hidePopover();
+        }} className={`${width} rounded-xl bg-gray-100/40 backdrop-blur-lg p-1 border border-gray-200`}>
           <div className="">
             <div className="flex items-center justify-between px-2 pt-1 pb-2">
               <h4 className="font-medium leading-none">{title}</h4>
