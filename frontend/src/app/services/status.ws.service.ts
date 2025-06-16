@@ -42,10 +42,10 @@ export class StatusWebSocketService {
       this.ws = null;
       
       // Try to reconnect after 3 seconds
-      this.reconnectTimeout = setTimeout(() => {
-        console.log('Attempting to reconnect...');
-        this.connect(onMessage);
-      }, 3000);
+      // this.reconnectTimeout = setTimeout(() => {
+      //   console.log('Attempting to reconnect...');
+      //   this.connect(onMessage);
+      // }, 3000);
     };
 
     this.ws.onerror = (error) => {

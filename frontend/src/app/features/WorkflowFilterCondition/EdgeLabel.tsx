@@ -1,8 +1,9 @@
 import { useEdges } from '@xyflow/react';
 import { useFilterStore } from "./store";
 import type { Edge } from '@xyflow/react';
+import { memo } from 'react';
 
-export default function EdgeLabel({ edgeId, onClick }: { edgeId: string, onClick: () => void }) {
+function EdgeLabel({ edgeId, onClick }: { edgeId: string, onClick: () => void }) {
   const edges = useEdges();
   const filters = useFilterStore((state) => state.filters);
 
@@ -21,8 +22,10 @@ export default function EdgeLabel({ edgeId, onClick }: { edgeId: string, onClick
   return (
     <div style={{ pointerEvents: 'all' }} 
       onClick={onClick}
-      className="text-[10px] text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer bg-gray-100 border-2 border-white shadow-lg backdrop-blur-sm px-2 py-1 rounded-md">
-      {existingFilter.label}
+      className="text-[10px] text-gray-600 relative hover:bg-gray-200 transition-colors cursor-pointer bg-gray-100 border-2 border-white shadow-lg backdrop-blur-sm px-2 py-1 rounded-md">
+      {existingFilter.label} 
     </div>
   );
 }
+
+export default memo(EdgeLabel)
