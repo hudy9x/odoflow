@@ -38,7 +38,9 @@ interface WorkflowState {
   triggerType: TriggerType | null
   triggerValue: string | null
   isActive: boolean
+  background: string | null
   setWorkflowId: (id: string) => void
+  setBackground: (background: string | null) => void
   setInitialData: (nodes: Node[], edges: Edge[], startingNodeId: string | null, triggerType: TriggerType | null, triggerValue: string | null, isActive: boolean) => void
   addNode: (node: Node) => void
   removeNode: (nodeId: string) => void
@@ -59,8 +61,11 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   triggerType: null,
   triggerValue: null,
   isActive: false,
+  background: null,
 
   setWorkflowId: (id) => set({ workflowId: id }),
+
+  setBackground: (background) => set({ background }),
 
   setInitialData: (nodes, edges, startingNodeId, triggerType, triggerValue, isActive) => {
     set({ nodes, edges, startingNodeId, triggerType, triggerValue, isActive })

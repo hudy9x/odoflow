@@ -1,6 +1,7 @@
 import AddNewNode from './AddNewNode'
 import ToggleWorkflowActive from './ToggleWorkflowActive'
 import StatusButton from './StatusButton'
+import BackgroundPatternSelector from './BackgroundPatternSelector'
 import {
   Tooltip,
   TooltipContent,
@@ -31,6 +32,17 @@ export default function WorkflowToolbar() {
           </TooltipTrigger>
           <TooltipContent>
             <p>Active workflow</p>
+          </TooltipContent>
+        </Tooltip>
+
+        <div className="h-6 w-px bg-gray-200" />
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div><BackgroundPatternSelector /></div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Change background pattern</p>
           </TooltipContent>
         </Tooltip>
     </div>

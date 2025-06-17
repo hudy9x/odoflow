@@ -10,6 +10,7 @@ import '@xyflow/react/dist/style.css';
 import { useWorkflowStore } from './store';
 import { nodeTypes } from '../WorkflowNodes';
 import { edgeTypes } from '../WorkflowEdge';
+import WorkflowBackground from './WorkflowBackground';
 
 const defaultEdgeStyle = {
   stroke: '#d2d2d2',
@@ -55,6 +56,7 @@ export default function WorkflowNodes() {
         {/* <Controls /> */}
         {/* <MiniMap /> */}
         <Background bgColor="#f3f3f4" variant={BackgroundVariant.Cross} gap={12} size={1.5} />
+        <WorkflowBackground />
       </ReactFlow>
     </div>
   );
