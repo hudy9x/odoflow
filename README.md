@@ -41,7 +41,7 @@ A powerful workflow automation platform built with Next.js and Node.js.
 
 - Node.js (v18 or higher recommended)
 - pnpm (v8 or higher)
-- PostgreSQL
+- Docker and Docker Compose
 
 ## Getting Started
 
@@ -71,7 +71,17 @@ cp frontend/.env.example frontend/.env.local
 cp backend/.env.example backend/.env
 ```
 
-4. Start the development servers:
+4. Start the required services using Docker Compose:
+
+```bash
+# Start PostgreSQL and Redis in detached mode using docker-compose.yml
+docker compose -f docker-compose.yml up -d
+
+# Verify services are running
+docker compose ps
+```
+
+5. Start the development servers:
 
 ```bash
 # Start frontend (from frontend directory)
