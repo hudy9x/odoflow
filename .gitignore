@@ -1,6 +1,7 @@
 # deps
 node_modules/
 backend/build
+backend/dist
 
 # bun
 .env

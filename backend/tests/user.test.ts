@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeAll, afterAll } from "vitest";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '../src/generated/prisma/index.js';
 
 const prisma = new PrismaClient();
 

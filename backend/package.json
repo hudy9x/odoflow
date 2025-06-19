@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node ./dist/src/index.js",
+    "deploy": "prisma migrate deploy",
+    "generate": "prisma generate",
     "test": "vitest",
     "test:workflow": "vitest tests/workflow.test.ts",
     "test:api": "vitest tests/api.test.ts",

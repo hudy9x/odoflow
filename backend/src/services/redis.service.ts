@@ -36,9 +36,10 @@ export class RedisService {
 
   private constructor() {
     // Initialize Redis connections
-    this.publisher = new Redis({ port: 6378 });
-    this.subscriber = new Redis({ port: 6378 });
-
+    // this.publisher = new Redis({ port: Number(process.env.REDIS_PORT || 6378) });
+    // this.subscriber = new Redis({ port: Number(process.env.REDIS_PORT || 6378) });
+    this.subscriber = new Redis(process.env.REDIS_URL || 'redis://localhost:6378')
+    this.publisher = new Redis(process.env.REDIS_URL || 'redis://localhost:6378')
     // Handle connection events
     this.handleConnectionEvents(this.publisher, 'Publisher');
     this.handleConnectionEvents(this.subscriber, 'Subscriber');
