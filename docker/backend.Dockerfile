@@ -34,6 +34,7 @@ COPY --from=builder --chown=hono:nodejs /app/node_modules /app/node_modules
 COPY --from=builder --chown=hono:nodejs /app/dist /app/dist
 COPY --from=builder --chown=hono:nodejs /app/package.json /app/package.json
 COPY --from=builder --chown=hono:nodejs /app/prisma /app/prisma
+COPY --from=builder --chown=hono:nodejs /app/src/generated /app/dist/src/generated
 
 # Switch to non-root user
 USER hono
@@ -41,5 +42,9 @@ USER hono
 # Expose the backend port
 EXPOSE 3003
 
-# Start the application
-CMD ["pnpm", "start"]
+# Copy and prepare the entrypoint script
+COPY --chown=hono:nodejs docker/backend-entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Start the application with migrations
+CMD ["/app/entrypoint.sh"]
