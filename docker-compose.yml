@@ -3,6 +3,10 @@ services:
     build:
       context: .
       dockerfile: ./docker/frontend.Dockerfile
+      # args:
+      #   NEXT_PUBLIC_API_URL: http://odo-backend:3200
+      #   NEXT_PUBLIC_WEBSOCKET_URL: ws://odo-backend:3200
+      #   NEXT_PUBLIC_WEBHOOK_TRIGGER_URL: http://odo-backend:3200/webhook/trigger
     ports:
       - "3100:3000"
     environment:
@@ -22,7 +26,7 @@ services:
       - "3200:3003"
     environment:
       - DATABASE_URL=postgresql://postgres:dainh4123@odo-db:5432/odoflow?schema=public
-      - FRONTEND_URL=http://odo-frontend:3100
+      - FRONTEND_URL=http://localhost:3100
       - REDIS_URL=redis://odo-redis:6379
     depends_on:
       - odo-db

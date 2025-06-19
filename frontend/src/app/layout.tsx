@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner"
 
 import "./globals.css";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,6 +30,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Script id="env-config">
+        {`window.ENV = ${JSON.stringify({
+          NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+          NEXT_PUBLIC_WEBSOCKET_URL: process.env.NEXT_PUBLIC_WEBSOCKET_URL,
+          NEXT_PUBLIC_WEBHOOK_TRIGGER_URL: process.env.NEXT_PUBLIC_WEBHOOK_TRIGGER_URL,
+        })}`}
+      </Script>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
