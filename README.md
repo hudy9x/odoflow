@@ -1,6 +1,12 @@
-# 🌊 OdoFlow
+# 🌊 Odoflow
 
-A powerful workflow automation platform built with Next.js and Node.js.
+A lightweight workflow automation platform built with Next.js and Honojs.
+
+![Commit Activity](https://img.shields.io/github/commit-activity/t/hudy9x/odoflow.svg)
+![GitHub](https://img.shields.io/github/license/hudy9x/odoflow.svg)
+![Last Commit](https://img.shields.io/github/last-commit/hudy9x/odoflow.svg)
+![Open Issues](https://img.shields.io/github/issues/hudy9x/odoflow.svg)
+![Contributors](https://img.shields.io/github/contributors/hudy9x/odoflow.svg)
 
 ## 📋 Prerequisites
 
@@ -8,14 +14,7 @@ A powerful workflow automation platform built with Next.js and Node.js.
 - pnpm (v8 or higher)
 - Docker and Docker Compose
 
-## 🛠️ Tech Stack
-
-| Category | Technologies |
-|----------|---------------|
-| Frontend | Next.js, Shadcn UI Components, TypeScript, Tailwind CSS |
-| Backend  | Honojs, Prisma (ORM), TypeScript, Redis, PostgreSQL |
-
-## 🚀 Production Deployment
+## 🚀 How to try it
 
 To run the entire application in production mode:
 
@@ -106,6 +105,13 @@ The development environment will be available at:
 │       └── schema.prisma  # Database schema
 └── README.md
 ```
+
+## 🛠️ Tech Stack
+
+| Category | Technologies |
+|----------|---------------|
+| Frontend | Next.js, Shadcn UI Components, TypeScript, Tailwind CSS |
+| Backend  | Honojs, Prisma (ORM), TypeScript, Redis, PostgreSQL |
 
 ## 📖 Development Guidelines
 
