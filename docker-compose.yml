@@ -1,35 +1,36 @@
-version: '3.8'
-
 services:
-  frontend:
+  odo-frontend:
     build:
       context: .
       dockerfile: ./docker/frontend.Dockerfile
     ports:
-      - "3000:3000"
+      - "3100:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://backend:3001
+      - NEXT_PUBLIC_API_URL=http://odo-backend:3200
+      - NEXT_PUBLIC_WEBSOCKET_URL=ws://odo-backend:3200
+      - NEXT_PUBLIC_WEBHOOK_TRIGGER_URL=http://odo-backend:3200/webhook/trigger
     depends_on:
-      - backend
+      - odo-backend
     networks:
-      - app-network
+      - odo-app-network
 
-  backend:
+  odo-backend:
     build:
       context: .
       dockerfile: ./docker/backend.Dockerfile
     ports:
-      - "3001:3001"
+      - "3200:3003"
     environment:
-      - DATABASE_URL=postgresql://postgres:dainh4123@postgres:5432/odoflow
-      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:dainh4123@odo-db:5432/odoflow?schema=public
+      - FRONTEND_URL=http://odo-frontend:3100
+      - REDIS_URL=redis://odo-redis:6379
     depends_on:
-      - postgres
-      - redis
+      - odo-db
+      - odo-redis
     networks:
-      - app-network
+      - odo-app-network
 
-  postgres:
+  odo-db:
     image: postgres:16
     restart: always
     environment:
@@ -39,29 +40,34 @@ services:
     ports:
       - "5430:5432"
     networks:
-      - app-network
+      - odo-app-network
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - odo_postgres_data:/var/lib/postgresql/data
     command: postgres -c listen_addresses='*'
     logging:
       options:
         max-size: "10m"
         max-file: "3"
 
-  redis:
+  odo-redis:
     image: redis:7.2-alpine
     restart: always
     ports:
       - "6370:6379"
     networks:
-      - app-network
+      - odo-app-network
+    volumes:
+      - odo_redis_data:/data
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
 
 volumes:
-  postgres_data:
-  redis_data:
+  odo_postgres_data:
+  odo_redis_data:
 
 networks:
-  app-network:
+  odo-app-network:
     driver: bridge

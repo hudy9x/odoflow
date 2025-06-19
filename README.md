@@ -74,6 +74,10 @@ cp backend/.env.example backend/.env
 4. Start the required services using Docker Compose:
 
 ```bash
+# Build and start containers
+docker build -t odo-frontend -f ./docker/frontend.Dockerfile .
+docker build -t odo-backend -f ./docker/backend.Dockerfile .
+
 # Start PostgreSQL and Redis in detached mode using docker-compose.yml
 docker compose -f docker-compose.yml up -d
 
