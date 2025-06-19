@@ -3,16 +3,12 @@ services:
     build:
       context: .
       dockerfile: ./docker/frontend.Dockerfile
-      # args:
-      #   NEXT_PUBLIC_API_URL: http://odo-backend:3200
-      #   NEXT_PUBLIC_WEBSOCKET_URL: ws://odo-backend:3200
-      #   NEXT_PUBLIC_WEBHOOK_TRIGGER_URL: http://odo-backend:3200/webhook/trigger
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:3200
+        - NEXT_PUBLIC_WEBSOCKET_URL=ws://localhost:3200
+        - NEXT_PUBLIC_WEBHOOK_TRIGGER_URL=http://localhost:3200/webhook/trigger
     ports:
       - "3100:3000"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://odo-backend:3200
-      - NEXT_PUBLIC_WEBSOCKET_URL=ws://odo-backend:3200
-      - NEXT_PUBLIC_WEBHOOK_TRIGGER_URL=http://odo-backend:3200/webhook/trigger
     depends_on:
       - odo-backend
     networks:

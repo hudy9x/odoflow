@@ -27,13 +27,10 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY frontend .
 # Disable Next.js telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
-# ARG NEXT_PUBLIC_API_URL
-# ARG NEXT_PUBLIC_WEBSOCKET_URL
-# ARG NEXT_PUBLIC_WEBHOOK_TRIGGER_URL
 
-ENV NEXT_PUBLIC_API_URL=http://localhost:3200
-ENV NEXT_PUBLIC_WEBSOCKET_URL=ws://localhost:3200
-ENV NEXT_PUBLIC_WEBHOOK_TRIGGER_URL=http://localhost:3200/webhook/trigger
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_WEBSOCKET_URL
+ARG NEXT_PUBLIC_WEBHOOK_TRIGGER_URL
 
 RUN echo "=================== ENV VARS ===================\n"; \
     echo "API URL: ${NEXT_PUBLIC_API_URL}\n"; \
