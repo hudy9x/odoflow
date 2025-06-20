@@ -2,7 +2,7 @@
 
 A lightweight workflow automation platform built with Next.js and Honojs.
 
-![Logo](./docs/odoflow-banner.jpg)
+![Logo](./docs/odoflow-banner.png)
 
 ![Commit Activity](https://img.shields.io/github/commit-activity/t/hudy9x/odoflow.svg)
 ![GitHub](https://img.shields.io/github/license/hudy9x/odoflow.svg)
