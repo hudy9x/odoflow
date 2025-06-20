@@ -110,12 +110,12 @@ export class WorkflowTraversalService {
     console.log(`🎬 Processing starting node: ${startNode?.shortId}`);
     if (startNode?.type === 'webhook' && startNode.shortId) {
       nodeOutput.setOutput(startNode.shortId, initialInputData);
-      redisService.publish('node-run-log', {
+      this.nodeLogger.createLogForFirstNode({
         workflowRunId,
-        nodeId: startingNodeId,
+        node: startNode,
         status: 'COMPLETED',
-        outputData: initialInputData,
-        timestamp: Date.now()
+        inputData: null,
+        outputData: initialInputData
       });
     }
   }

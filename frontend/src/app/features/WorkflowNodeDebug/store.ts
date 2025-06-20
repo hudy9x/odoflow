@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-interface NodeDebugData {
+export interface NodeDebugData {
   status: string
   outputData: Record<string, unknown>
   error?: string
@@ -9,6 +9,7 @@ interface NodeDebugData {
 interface NodeDebugStore {
   nodes: Record<string, NodeDebugData>
   set: (nodeId: string, data: NodeDebugData) => void
+  setInitialData: (data: Record<string, NodeDebugData>) => void
 }
 
 export const useNodeDebugStore = create<NodeDebugStore>((set) => ({
@@ -20,4 +21,5 @@ export const useNodeDebugStore = create<NodeDebugStore>((set) => ({
         [nodeId]: data,
       },
     })),
+  setInitialData: (data) => set({ nodes: data }),
 }))
