@@ -38,12 +38,44 @@ export class NodeRunLogger {
     });
   }
 
+  async createLogForFirstNode(params: {
+    workflowRunId: string,
+    node: WorkflowNode,
+    status: 'STARTED' | 'COMPLETED' | 'FAILED',
+    inputData: any,
+    outputData: any
+  }): Promise<void> {
+    await this.prisma.workflowRunLog.create({
+      data: {
+        id: this.generateLogId(),
+        workflowRunId: params.workflowRunId,
+        nodeId: params.node.id,
+        nodeType: params.node.type,
+        nodeName: params.node.name,
+        status: params.status,
+        inputData: params.inputData || null,
+        outputData: params.outputData || null,
+      }
+    });
+
+    redisService.publish('node-run-log', {
+      workflowRunId: params.workflowRunId,
+      nodeId: params.node.id,
+      status: params.status,
+      outputData: params.outputData,
+      timestamp: Date.now()
+    });
+
+  }
+
   async updateLog(params: {
     logId: string,
     result: NodeExecutionResult
   }): Promise<void> {
+    console.log('🚀 Trying to find node log ===========================================', params.logId);
     const log = await this.prisma.workflowRunLog.findUnique({ where: { id: params.logId } });
-    this.prisma.workflowRunLog.update({
+    console.log('🚀 Found log ===========================================', log, params.result);
+    await this.prisma.workflowRunLog.update({
       where: { id: params.logId },
       data: {
         status: params.result.success ? 'COMPLETED' : 'FAILED',

@@ -13,6 +13,7 @@ import nodeFilterController from './controllers/node.filter.controller.js'
 // import statusWsController from './controllers/websocket.controller.js'
 import { createNodeWebSocket } from '@hono/node-ws'
 import { RedisService } from './services/redis.service.js'
+import workflowLogsRouter from './controllers/workflow.logs.controller.js'
 
 export const app = new Hono()
 const { injectWebSocket, upgradeWebSocket } = createNodeWebSocket({ app })
@@ -43,6 +44,7 @@ app.route('/api', webhookRouter) // Webhook routes are mounted at /api/webhooks
 app.route('/api/trigger', workflowTriggerRouter) // Workflow trigger routes
 app.route('/api', migrationRouter) // Migration routes
 app.route('/api/node-filters', nodeFilterController)
+app.route('/api/workflow-logs', workflowLogsRouter)
 
 
 const redisService = RedisService.getInstance();

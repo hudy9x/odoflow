@@ -76,6 +76,7 @@ export class RowFirstStrategy implements ITraversalStrategy {
         }
         
         // Fire and forget - don't await
+        console.log('🚀 Updating node log ===========================================', logId);
         service.updateNodeLog(logId, result)
 
         if (!result.success) {
