@@ -14,6 +14,16 @@ A lightweight workflow automation platform built with Next.js and Honojs.
 - pnpm (v8 or higher)
 - Docker and Docker Compose
 
+## Demo
+
+|Node Config|Quick Add|Node Debugger|
+|-|-|-|
+|![Node configuration](./docs/node-configuration.jpg)|![Node connection](./docs/node-connection.jpg)|![Node debugger](./docs/node-debugger.jpg)|
+
+|Filter Condition|Quick Add|Workflow List|
+|-|-|-|
+|![Filter condition](./docs/node-filter-condition.jpg)|![Quick add](./docs/node-quick-add.jpg)|![Workflow list](./docs/workflow-list.jpg)|
+
 ## 🚀 How to try it
 
 To run the entire application in production mode:
