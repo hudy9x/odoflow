@@ -1,4 +1,5 @@
-import { LoginForm } from "@/features/Login"
+import { LoginForm } from "@/app/features/Login";
+import { CommonCarousel } from "@/components/CommonCarousel";
 import Link from "next/link"
 
 export default function LoginPage() {
@@ -17,11 +18,9 @@ export default function LoginPage() {
         </div>
       </div>
       <div className="bg-muted relative hidden lg:block">
-        <img
-          src="/placeholder.svg"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        />
+        <div className="flex h-full items-center justify-center">
+          <CommonCarousel />
+        </div>
       </div>
     </div>
   )
