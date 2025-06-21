@@ -1,5 +1,3 @@
-import { GalleryVerticalEnd } from "lucide-react"
-
 import { RegisterForm } from "@/features/Register"
 
 export default function RegisterPage() {
@@ -9,9 +7,9 @@ export default function RegisterPage() {
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="#" className="flex items-center gap-2 font-medium">
             <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-              <GalleryVerticalEnd className="size-4" />
+              <img src="/logo/app-icon-smile.png" alt="Logo" />
             </div>
-            Acme Inc.
+            Odoflow
           </a>
         </div>
         <div className="flex flex-1 items-center justify-center">
