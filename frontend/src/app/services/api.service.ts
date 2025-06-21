@@ -8,7 +8,7 @@ export type ApiResponse<T> = {
   error?: string;
 } & T
 
-const getAuthToken = () => {
+export const getAuthToken = () => {
   try {
     const data = localStorage.getItem('auth')
     if (!data) return null

@@ -25,3 +25,12 @@ export function debounce<T extends AnyFunction>(func: T, wait: number) {
     timeout = setTimeout(later, wait)
   }
 }
+
+export const delay = async function (time = 500) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(1)
+    }, time)
+
+  })
+}
