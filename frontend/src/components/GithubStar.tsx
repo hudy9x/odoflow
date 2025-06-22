@@ -18,7 +18,7 @@ const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export const GithubStar = () => {
   return (
-    <div className="fixed top-4 right-4 z-50">
+    <div className="hidden sm:block fixed top-4 right-4 z-50">
       <Button
         variant="outline"
         size="sm"
