@@ -1,12 +1,12 @@
 "use client";
 import { Carousel } from "./Carousel";
-import { Rocket, Zap, Lock, Filter, Plus, List } from "lucide-react";
+import { Zap, PackagePlus, AlignJustify, Bolt, BugPlay, ListFilter } from "lucide-react";
 
 const carouselItems = [
 
   {
     id: 6,
-    icon: <List className="h-5 w-5" />,
+    icon: <AlignJustify className="h-7 w-7 p-1.5 rounded-md bg-red-400" />,
     heading: "Workflow Management",
     image: "/carousel/workfow-list.png",
     style: { width: 832, left: -129, top: -95 },
@@ -15,7 +15,7 @@ const carouselItems = [
 
   {
     id: 5,
-    icon: <Plus className="h-5 w-5" />,
+    icon: <PackagePlus className="h-7 w-7 p-1.5 rounded-md bg-indigo-400" />,
     heading: "Quick Add",
     image: "/carousel/node-quick-add.png",
     style: { width: 900, left: -180, top: -154 },
@@ -24,7 +24,7 @@ const carouselItems = [
 
   {
     id: 2,
-    icon: <Zap className="h-5 w-5" />,
+    icon: <Zap className="h-7 w-7 p-1.5 rounded-md bg-emerald-400" />,
     heading: "Create Workflows",
     image: "/carousel/node-connection.png",
     style: { 
@@ -37,7 +37,7 @@ const carouselItems = [
 
   {
     id: 1,
-    icon: <Rocket className="h-5 w-5" />,
+    icon: <Bolt className="h-7 w-7 p-1.5 rounded-md bg-yellow-400" />,
     heading: "Easy Configure",
     image: "/carousel/node-config.png",
     style: { width: 900, left: -217, top: -66 },
@@ -46,7 +46,7 @@ const carouselItems = [
 
   {
     id: 3,
-    icon: <Lock className="h-5 w-5" />,
+    icon: <BugPlay className="h-7 w-7 p-1.5 rounded-md bg-purple-400" />,
     heading: "Debug Mode",
     image: "/carousel/node-debugger.png",
     style: {
@@ -59,7 +59,7 @@ const carouselItems = [
   
   {
     id: 4,
-    icon: <Filter className="h-5 w-5" />,
+    icon: <ListFilter className="h-7 w-7 p-1.5 rounded-md bg-pink-400" />,
     heading: "Filter by condition",
     image: "/carousel/node-filter.png",
     style: { width: 900, left: -157, top: -121 },

@@ -18,7 +18,7 @@ export default function LoginPage() {
         </div>
       </div>
       <div className="bg-muted relative hidden lg:block">
-        <div className="flex h-full items-center justify-center">
+        <div className="flex h-full items-center justify-center overflow-hidden">
           <CommonCarousel />
         </div>
       </div>
