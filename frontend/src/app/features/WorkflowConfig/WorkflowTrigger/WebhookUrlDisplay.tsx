@@ -16,7 +16,7 @@ export function WebhookUrlDisplay({ nodeId }: WebhookUrlDisplayProps) {
     async function loadNodeConfig() {
       try {
         const response = await getNodeConfig(nodeId);
-        const config = response.config.config;
+        const config = response.config.config || {};
         if (response.success) {
           setWebhookUrl(config.webhookUrl);
         }
