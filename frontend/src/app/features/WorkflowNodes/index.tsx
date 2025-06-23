@@ -1,12 +1,19 @@
-import { Globe, MessageSquare, Reply, Webhook } from 'lucide-react';
+import { Globe, MessageSquare, Reply, Webhook, Code2 } from 'lucide-react';
 import { NodeCreate } from './NodeCreate';
 import { NodeWebhook } from './NodeWebhook';
 import { NodeHttp } from './NodeHttp';
 import { NodeDiscord } from './NodeDiscord';
 import { NodeResponse } from './NodeResponse';
+import { NodeCodeScript } from './NodeCodeScript';
 
 // Node type configuration with metadata
 export const nodeTypeConfig = [
+  {
+    type: 'code-script',
+    title: 'Code Script',
+    description: 'Execute JavaScript code',
+    icon: <Code2 className="w-4 h-4" />,
+  },
   { 
     type: 'webhook',
     title: 'Webhook',
@@ -35,6 +42,7 @@ export const nodeTypeConfig = [
 
 // Export node components for ReactFlow
 export const nodeTypes = {
+  'code-script': NodeCodeScript,
   create: NodeCreate,
   webhook: NodeWebhook,
   http: NodeHttp,
