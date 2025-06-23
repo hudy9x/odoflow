@@ -115,13 +115,14 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
 
   addNode: async (node: Node) => {
     try {
-      if (!get().workflowId) {
+      const state = get()
+      if (!state.workflowId) {
         console.error('No workflow ID available')
         return
       }
 
       const response = await createNode({
-        workflowId: get().workflowId || '',
+        workflowId: state.workflowId || '',
         type: node.type || 'default',
         name: (node.data?.label as string) || node.type || 'Unnamed Node',
         positionX: Math.round(node.position.x),
@@ -130,24 +131,45 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
       })
 
       if (response.success) {
+
         set((state) => {
           let newNodes = [...state.nodes]
+          const merged:Record<string, string> = {};
+          const autoAssignStartingNode = (nodeId:string) =>  { merged.startingNodeId = nodeId }
 
+          console.log('newNodes', newNodes.length)
           // If this is the only node and it's a create node, remove it
           if (newNodes.length === 1 && newNodes[0].type === 'create') {
             newNodes = []
+
+            // Mark this node as the starting node
+            autoAssignStartingNode(response.node.id)
           }
 
           // Add the new node with database ID
           const newNode = {
             ...node,
             id: response.node.id,
-            shortId: response.node.shortId
+            shortId: response.node.shortId,
           }
+
           newNodes.push(newNode)
 
-          return { nodes: newNodes }
+          // If this is the first node, set it as the starting node
+          if (merged.startingNodeId) {
+            updateWorkflowStartingNode({
+              workflowId: state.workflowId || '',
+              startingNodeId: merged.startingNodeId,
+              triggerType: state.triggerType || undefined,
+              triggerValue: state.triggerValue || undefined
+            })
+          }
+
+          return { nodes: newNodes, ...merged }
         })
+
+       
+
       }
     } catch (error) {
       console.error('Failed to create node:', error)
@@ -155,6 +177,22 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   },
 
   removeNode: (nodeId: string) => {
+
+    const autoCreateNodeWhenNoNodeLeft = () => {
+      console.log('autoCreateNodeWhenNoNodeLeft')
+      set(() => {
+        return {
+          nodes: [{
+            id: `create-${Math.random().toString(36).substring(2, 9)}`,
+            type: 'create',
+            position: { x: 250, y: 200 },
+            data: {}
+          }],
+        }
+      })
+    }
+
+    console.log('removeNode', nodeId)
     set((state) => ({
       nodes: state.nodes.filter(n => n.id !== nodeId),
       edges: state.edges.filter(e => e.source !== nodeId && e.target !== nodeId),
@@ -162,10 +200,16 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     }))
     
     // Fire and forget delete request
+    console.log('deleteNode from server', nodeId)
     deleteNode(nodeId).catch(error => {
       toast.error('Failed to delete node')
       console.error('Failed to delete node:', error)
     })
+
+    if (get().nodes.length === 0) {
+      autoCreateNodeWhenNoNodeLeft()
+    }
+    
   },
 
   updateNodes: (changes) => {
