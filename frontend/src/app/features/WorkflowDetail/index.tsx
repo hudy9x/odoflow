@@ -45,7 +45,7 @@ function WorkflowDetail({ id }: { id: string }) {
               }
             })) : 
             [{
-              id: `create-${Math.random().toString(36).substr(2, 9)}`,
+              id: `create-${Math.random().toString(36).substring(2, 9)}`,
               type: 'create',
               position: { x: 250, y: 200 },
               data: {}
