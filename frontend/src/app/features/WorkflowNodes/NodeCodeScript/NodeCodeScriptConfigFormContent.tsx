@@ -7,6 +7,7 @@ import { CodeEditor } from '@/components/ui/code-editor';
 import { updateNodeConfig } from '@/app/services/node.service';
 import { KeyValuePair, NodeCodeScriptConfig } from './types';
 import { Plus, Trash2 } from 'lucide-react';
+import { NodeConfigPopoverCloseButton } from '../../WorkflowConfig/NodeConfigPopoverCloseButton';
 
 interface Props {
   nodeId: string;
@@ -103,10 +104,10 @@ export function NodeCodeScriptConfigFormContent({ nodeId, initialConfig }: Props
           />
         </div>
       </div>
-
-      <Button onClick={handleSave} className="w-full">
-        Save Configuration
-      </Button>
+      <div className="grid grid-cols-2 space-x-2">
+        <NodeConfigPopoverCloseButton />
+        <Button onClick={handleSave}>Save</Button>
+      </div>
     </div>
   );
 }

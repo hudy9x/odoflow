@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Code2 } from 'lucide-react';
+import { Braces } from 'lucide-react';
 import { NodeBase } from '../NodeBase';
 
 import { NodeCodeScriptConfigForm } from './NodeCodeScriptConfigForm';
@@ -16,8 +16,8 @@ export const NodeCodeScript = memo(({ id, data }: Props) => {
       id={id}
       title="Code Script"
       description="Execute JS code"
-      icon={<Code2 className="w-8 h-8" />}
-      color="#F7DF1E"
+      icon={<Braces className="w-8 h-8" />}
+      color="#84d24a"
       type="code-script"
       badgeNumber={1}
       shortId={data.shortId}

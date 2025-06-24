@@ -1,4 +1,4 @@
-import { Globe, MessageSquare, Reply, Webhook, Code2 } from 'lucide-react';
+import { Globe, MessageSquare, Reply, Webhook, Braces } from 'lucide-react';
 import { NodeCreate } from './NodeCreate';
 import { NodeWebhook } from './NodeWebhook';
 import { NodeHttp } from './NodeHttp';
@@ -12,7 +12,7 @@ export const nodeTypeConfig = [
     type: 'code-script',
     title: 'Code Script',
     description: 'Execute JavaScript code',
-    icon: <Code2 className="w-4 h-4" />,
+    icon: <Braces className="w-4 h-4" />,
   },
   { 
     type: 'webhook',
