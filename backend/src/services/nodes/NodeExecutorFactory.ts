@@ -2,6 +2,7 @@ import { HttpNodeExecutor } from './executors/HttpNodeExecutor.js';
 import { DiscordNodeExecutor } from './executors/DiscordNodeExecutor.js';
 import { WebhookNodeExecutor } from './executors/WebhookNodeExecutor.js';
 import { ResponseNodeExecutor } from './executors/ResponseNodeExecutor.js';
+import { CodeScriptNodeExecutor } from './executors/CodeScriptNodeExecutor.js';
 import type { NodeExecutor } from './types.js';
 
 export class NodeExecutorFactory {
@@ -9,7 +10,8 @@ export class NodeExecutorFactory {
     ['http', new HttpNodeExecutor()],
     ['discord', new DiscordNodeExecutor()],
     ['webhook', new WebhookNodeExecutor()],
-    ['response', new ResponseNodeExecutor()]
+    ['response', new ResponseNodeExecutor()],
+    ['code-script', new CodeScriptNodeExecutor()]
   ]);
 
   static getExecutor(nodeType: string): NodeExecutor {

@@ -47,3 +47,8 @@ export interface ResponseNodeConfig {
   }>;
   responseData: string; // JSON string
 }
+
+export interface CodeScriptNodeConfig {
+  variables: Record<string, any>;
+  script: string;
+}

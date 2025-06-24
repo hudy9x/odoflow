@@ -65,6 +65,7 @@ export function NodeCodeScriptConfigFormContent({ nodeId, initialConfig }: Props
     <div className="space-y-4">
       <div className="space-y-2">
         <Label>Variables</Label>
+       
         <div className="space-y-2">
           {variables.map(({ id, key, value }) => (
             <div key={id} className="flex gap-2">
@@ -92,6 +93,11 @@ export function NodeCodeScriptConfigFormContent({ nodeId, initialConfig }: Props
             Add Variable
           </Button>
         </div>
+
+        <p className="text-xs text-muted-foreground mb-2">
+          Variables can be accessed in your code using the <code className="text-pink-600">vars</code> object. 
+          For example, if you add a variable named <code className="border rounded-md px-1 py-0.5 text-[10px]">body</code>, use it as <code className="text-pink-600">vars.body</code> in your code.
+        </p>
       </div>
 
       <div className="space-y-2">

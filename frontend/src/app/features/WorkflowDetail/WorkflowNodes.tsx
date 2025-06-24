@@ -42,6 +42,8 @@ export default function WorkflowNodes() {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
+        snapGrid={[100, 100]}
+        snapToGrid
         edgeTypes={edgeTypes}
         onNodesChange={handleNodesChange}
         onEdgesChange={updateEdges}

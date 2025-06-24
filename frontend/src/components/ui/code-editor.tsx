@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { atomone } from '@uiw/codemirror-theme-atomone';
+// import { atomone } from '@uiw/codemirror-theme-atomone';
 import { Maximize2, Minimize2 } from 'lucide-react';
-import { Button } from './button';
 import { Portal } from '@radix-ui/react-portal';
 
 interface CodeEditorProps {
@@ -27,25 +26,23 @@ export function CodeEditor({
 
   const editorContent = (
     <div className="relative">
-      <Button
-        type="button"
-        size="icon"
-        variant="outline"
-        className="absolute right-2 top-2 z-10 transition-opacity hover:opacity-100 opacity-50"
+      <div
+        role="button"
+        className="absolute right-2 -top-4 z-10 transition-opacity hover:opacity-100 opacity-50 border rounded-md p-1.5 hover:bg-accent cursor-pointer"
         onClick={handleExpandToggle}
       >
         {isExpanded ? (
-          <Minimize2 className="h-4 w-4" />
+          <Minimize2 className="h-3.5 w-3.5" />
         ) : (
-          <Maximize2 className="h-4 w-4" />
+          <Maximize2 className="h-3.5 w-3.5" />
         )}
-      </Button>
+      </div>
       <CodeMirror
       value={value}
       onChange={onChange}
-      height={isExpanded ? 'calc(100vh - 6rem)' : height}
+      height={isExpanded ? 'calc(100vh - 6rem - 1rem)' : height}
       width="100%"
-      theme={atomone}
+      theme={"light"}
       placeholder={placeholder}
       className=""
       style={{
