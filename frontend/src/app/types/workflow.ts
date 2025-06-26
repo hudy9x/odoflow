@@ -1,7 +1,8 @@
 export enum TriggerType {
   WEBHOOK = 'WEBHOOK',
   REGULAR = 'REGULAR',
-  DAILY = 'DAILY'
+  DAILY = 'DAILY',
+  CUSTOM = 'CUSTOM'
 }
 
 export interface TriggerConfig {
