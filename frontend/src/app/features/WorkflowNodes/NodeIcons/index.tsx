@@ -1,4 +1,4 @@
-import { Globe, Webhook as WebhookIcon, FileText, Reply } from 'lucide-react';
+import { Globe, Webhook as WebhookIcon, FileText, Reply, Braces } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import DiscordIcon from './DiscordIcon';
 
@@ -29,6 +29,11 @@ export const nodeIconMap: Record<string, NodeIconMeta> = {
   response: {
     icon: Reply,
     bg: '#eeb71d',
+    color: '#fff',
+  },
+  'code-script': {
+    icon: Braces,
+    bg: '#84d24a',
     color: '#fff',
   },
 };

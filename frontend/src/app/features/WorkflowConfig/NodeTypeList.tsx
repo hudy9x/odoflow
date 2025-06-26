@@ -7,6 +7,7 @@ export const nodeTypes = [
   { type: 'webhook', title: 'Webhook', description: 'Custom webhook' },
   { type: 'http', title: 'HTTP', description: 'Make a request' },
   { type: 'discord', title: 'Discord', description: 'Send a Message' },
+  { type: 'code-script', title: 'Code script', description: 'Execute JavaScript code'}
 ] as const;
 
 interface NodeTypeListProps {
