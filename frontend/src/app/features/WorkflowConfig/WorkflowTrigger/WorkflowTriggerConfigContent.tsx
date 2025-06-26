@@ -42,8 +42,9 @@ export function WorkflowTriggerConfigContent({
       if (triggerType === TriggerType.WEBHOOK) {
         const response = await getNodeConfig(nodeId);
         const config = response.config.config;
-        if (response.success && config.webhookUrl) {
-          triggerValue = config.webhookUrl;
+        console.log('config', config)
+        if (response.success && config.webhookId) {
+          triggerValue = config.webhookId;
         }
       } else if (triggerType === TriggerType.REGULAR) {
         triggerValue = minutes;
@@ -79,8 +80,10 @@ export function WorkflowTriggerConfigContent({
             {nodeType === 'webhook' && (
               <SelectItem value={TriggerType.WEBHOOK}>Webhook</SelectItem>
             )}
-            <SelectItem value={TriggerType.REGULAR}>At regular intervals</SelectItem>
-            <SelectItem value={TriggerType.DAILY}>Every day</SelectItem>
+            <SelectItem disabled value={TriggerType.REGULAR}>At regular intervals</SelectItem>
+            <SelectItem disabled value={TriggerType.DAILY}>Every day</SelectItem>
+            <SelectItem disabled value={TriggerType.CUSTOM}>Custom</SelectItem>
+
           </SelectContent>
         </Select>
       </div>
@@ -106,7 +109,7 @@ export function WorkflowTriggerConfigContent({
         </div>
       )}
 
-      {triggerType === TriggerType.WEBHOOK && <WebhookUrlDisplay nodeId={nodeId} />}
+      {triggerType === TriggerType.WEBHOOK && <WebhookUrlDisplay nodeId={nodeId} workflowId={workflowId} />}
 
       {triggerType === TriggerType.DAILY && (
         <div className="space-y-2">

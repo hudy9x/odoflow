@@ -9,9 +9,10 @@ const prisma = new PrismaClient()
 const workflowTriggerRouter = new Hono()
 
 // Handle webhook triggers
-workflowTriggerRouter.post('/workflow-by/:webhookId', async (c) => {
+workflowTriggerRouter.post('/workflow-by/:webhookId/:workflowId', async (c) => {
   try {
     const webhookId = c.req.param('webhookId')
+    const workflowId = c.req.param('workflowId')
     let requestBody = {}
 
     // Check if there's a request body
@@ -29,12 +30,14 @@ workflowTriggerRouter.post('/workflow-by/:webhookId', async (c) => {
       triggerType: TriggerType.WEBHOOK,
       requestBody,
       triggerValue: webhookId,
-      isActive: true
+      isActive: true,
+      workflowId
     })
 
     // Find workflow by webhook ID with nodes and edges
     const workflow = await prisma.workflow.findFirst({
       where: {
+        id: workflowId,
         triggerType: TriggerType.WEBHOOK,
         triggerValue: webhookId,
         isActive: true
